@@ -13,6 +13,7 @@
 **
 *****************************************************************************/
 
+#include "libqnapi.h"
 #include "qnapisy24engine.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -21,6 +22,7 @@
 #include <QProcess>
 
 QNapisy24Engine::QNapisy24Engine()
+  : staticConfig(LibQNapi::staticConfigProvider())
 {
     p7zipPath = GlobalConfig().p7zipPath();
 }
@@ -440,7 +442,7 @@ bool QNapisy24Engine::unpack(QUuid id)
     }
 
     QString subFileName = "";
-    QStringList subExts = GlobalConfig().subtitleExtensions();
+    QStringList subExts = staticConfig->subtitleExtensions();
     foreach (QString archiveFileName, pathMatches) {
         if(subExts.contains(QFileInfo(archiveFileName).suffix(), Qt::CaseInsensitive)) {
             subFileName = archiveFileName;

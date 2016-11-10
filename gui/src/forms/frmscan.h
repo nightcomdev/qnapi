@@ -16,8 +16,8 @@
 #define __FRMSCAN__H__
 
 #include "ui_frmscan.h"
-#include <QtWidgets>
-#include <QSet>
+
+#include "config/staticconfig.h"
 
 #include "qnapithread.h"
 #include "qnapiconfig.h"
@@ -25,11 +25,15 @@
 
 #include "frmsummary.h"
 
+#include <QtWidgets>
+#include <QSet>
+#include <QSharedPointer>
 
 class ScanFilesThread : public QNapiThread
 {
     Q_OBJECT
     public:
+        ScanFilesThread();
         void run();
         void setSearchPath(const QString & path) { searchPath = path; }
         void setFilters(const QString & filters) { scanFilters = filters.split(" "); }
@@ -46,6 +50,8 @@ class ScanFilesThread : public QNapiThread
 
     private:
         bool doScan(const QString & path, QDir::Filters filters);
+
+        QSharedPointer<const StaticConfig> staticConfig;
         QString searchPath;
         QStringList scanFilters, skipFilters;
         bool skipIfSubtitlesExists, followSymLinks;

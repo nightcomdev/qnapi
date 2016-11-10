@@ -15,11 +15,14 @@
 #ifndef __QNAPICONFIG__H__
 #define __QNAPICONFIG__H__
 
+#include "config/staticconfig.h"
+
 #include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QList>
 #include <QPair>
+#include <QSharedPointer>
 
 #ifdef Q_OS_MAC
 #include <QtXml>
@@ -150,19 +153,16 @@ class QNapiConfig
         QString lastScanDir();
         void setLastScanDir(const QString & dir);
 
-        QStringList movieExtensions();
-        QString movieExtensionsFilter();
-        QStringList subtitleExtensions();
-        QString subtitleExtensionsFilter();
-
     private:
-        QNapiConfig(const QString & qnapiVersion);
+        QNapiConfig(const QString & qnapiVersion,
+                    const QSharedPointer<const StaticConfig> & staticConfig);
         QNapiConfig(const QNapiConfig &);
         ~QNapiConfig();
 
         QSettings *settings;
         bool isPortableMode;
         QString qnapiVersion;
+        QSharedPointer<const StaticConfig> staticConfig;
 
     friend QNapiConfig& GlobalConfig();
 };

@@ -12,6 +12,7 @@
 **
 *****************************************************************************/
 
+#include "libqnapi.h"
 #include "frmscan.h"
 
 frmScan::frmScan(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
@@ -254,6 +255,10 @@ void frmScan::accept()
     QDialog::accept();
 }
 
+ScanFilesThread::ScanFilesThread()
+    : staticConfig(LibQNapi::staticConfigProvider())
+{}
+
 void ScanFilesThread::run()
 {
     abort = false;
@@ -302,7 +307,7 @@ bool ScanFilesThread::doScan(const QString & path, QDir::Filters filters)
 
             bool subtitleFileFound = false;
             if(skipIfSubtitlesExists) {
-                foreach(QString subExt, GlobalConfig().subtitleExtensions())
+                foreach(QString subExt, staticConfig->subtitleExtensions())
                 {
                     if(QFile::exists((*p).absolutePath() + "/" + (*p).completeBaseName() + "." + subExt))
                     {

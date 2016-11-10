@@ -17,6 +17,9 @@
 
 #include "qnapiabstractengine.h"
 #include "utils/synchttp.h"
+#include "config/staticconfig.h"
+
+#include <QSharedPointer>
 
 class QNapisy24Engine : public QNapiAbstractEngine
 {
@@ -41,6 +44,8 @@ public:
 
 private:
     QPair<QString, QString> getCredentials() const;
+
+    QSharedPointer<const StaticConfig> staticConfig;
 
     quint64 fileSize;
     QString p7zipPath;

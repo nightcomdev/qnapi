@@ -29,6 +29,7 @@
 frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
     : QDialog(parent, f),
       subConverter(LibQNapi::movieInfoProvider()),
+      staticConfig(LibQNapi::staticConfigProvider()),
       targetFileNameSelected(false)
 {
     ui.setupUi(this);
@@ -153,7 +154,7 @@ void frmConvert::checkFPSNeeded()
 
         QString movieFilePathBase = srcSubFI.absolutePath() + "/" + srcSubFI.completeBaseName();
 
-        foreach(QString movieExt, GlobalConfig().movieExtensions())
+        foreach(QString movieExt, staticConfig->movieExtensions())
         {
             QString movieFilePath = movieFilePathBase + "." + movieExt;
             if(QFileInfo(movieFilePath).exists())

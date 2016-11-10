@@ -41,7 +41,8 @@ SOURCES += src/libqnapi.cpp \
     src/qnapilanguage.cpp \
     src/qsubpostprocess.cpp \
     src/qnapisubtitleinfo.cpp \
-    src/qsubmatcher.cpp
+    src/qsubmatcher.cpp \
+    src/config/staticconfig.cpp
 
 
 HEADERS += src/libqnapi.h \
@@ -68,7 +69,8 @@ HEADERS += src/libqnapi.h \
     src/qnapilanguage.h \
     src/qnapisubtitleinfo.h \
     src/qsubpostprocess.h \
-    src/qsubmatcher.h
+    src/qsubmatcher.h \
+    src/config/staticconfig.h
 
 unix:!macx {
     PKGCONFIG += libmediainfo

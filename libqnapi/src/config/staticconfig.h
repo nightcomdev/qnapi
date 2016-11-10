@@ -12,35 +12,26 @@
 **
 *****************************************************************************/
 
-#include "libqnapi.h"
-#include "version.h"
-#include "movieinfo/libmediainfomovieinfoprovider.h"
+#ifndef STATICCONFIG_H
+#define STATICCONFIG_H
 
-LibQNapi::LibQNapi()
-{
-}
+#include <QString>
+#include <QStringList>
 
-QString LibQNapi::version()
-{
-    return QString(QNAPI_VERSION);
-}
 
-QString LibQNapi::displayableVersion()
+class StaticConfig
 {
-    return QString(QNAPI_DISPLAYABLE_VERSION);
-}
+public:
+    StaticConfig();
 
-QString LibQNapi::webpageUrl()
-{
-    return QString(QNAPI_URL);
-}
+    QStringList movieExtensions() const;
+    QString movieExtensionsFilter() const;
+    QStringList subtitleExtensions() const;
+    QString subtitleExtensionsFilter() const;
 
-QSharedPointer<const MovieInfoProvider> LibQNapi::movieInfoProvider()
-{
-    return QSharedPointer<const MovieInfoProvider>(new LibmediainfoMovieInfoProvider());
-}
+private:
 
-QSharedPointer<const StaticConfig> LibQNapi::staticConfigProvider()
-{
-    return QSharedPointer<const StaticConfig>(new StaticConfig());
-}
+    QString makeFilter(const QStringList & extensions) const;
+};
+
+#endif // STATICCONFIG_H

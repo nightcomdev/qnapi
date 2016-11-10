@@ -17,8 +17,10 @@
 
 #include "ui_frmconvert.h"
 #include "subconvert/subtitleconverter.h"
+#include "config/staticconfig.h"
 #include <Maybe.h>
 #include <QDialog>
+#include <QSharedPointer>
 
 class frmConvert : public QDialog
 {
@@ -29,6 +31,7 @@ public:
 private:
     Ui::frmConvert ui;
     SubtitleConverter subConverter;
+    QSharedPointer<const StaticConfig> staticConfig;
     QString srcFormat, targetFormat;
     bool targetFileNameSelected;
 

@@ -21,8 +21,10 @@
 #include <QProcess>
 #include <QRegExp>
 
-QNapiConfig::QNapiConfig(const QString & qnapiVersion)
-    : qnapiVersion(qnapiVersion)
+QNapiConfig::QNapiConfig(const QString & qnapiVersion,
+                         const QSharedPointer<const StaticConfig> & staticConfig)
+    : qnapiVersion(qnapiVersion),
+      staticConfig(staticConfig)
 {
 }
 
@@ -659,7 +661,7 @@ QStringList QNapiConfig::scanFilters()
 {
     QStringList defaultScanFilters;
 
-    defaultScanFilters << movieExtensionsFilter() << "*.*";
+    defaultScanFilters << staticConfig->movieExtensionsFilter() << "*.*";
 
     return settings->value("scan/filters", defaultScanFilters).toStringList();
 }
@@ -699,46 +701,9 @@ void QNapiConfig::setLastScanDir(const QString & dir)
     settings->setValue("scan/last_scan_dir", dir);
 }
 
-QStringList QNapiConfig::movieExtensions()
-{
-    QStringList exts = {
-        "avi", "asf", "divx", "mkv", "mov", "mp4", "mpeg", "mpg", "ogm", "rm", "rmvb", "wmv"
-    };
-    return exts;
-}
-
-QString QNapiConfig::movieExtensionsFilter()
-{
-    QStringList moviePatterns;
-    foreach(QString ext, movieExtensions())
-    {
-        moviePatterns << "*." + ext;
-    }
-    return moviePatterns.join(" ");
-}
-
-
-QStringList QNapiConfig::subtitleExtensions()
-{
-    QStringList exts = {
-        "srt", "sub", "txt"
-    };
-    return exts;
-}
-
-QString QNapiConfig::subtitleExtensionsFilter()
-{
-    QStringList subtitlePatterns;
-    foreach(QString ext, subtitleExtensions())
-    {
-        subtitlePatterns << "*." + ext;
-    }
-    return subtitlePatterns.join(" ");
-}
-
-
 QNapiConfig & GlobalConfig()
 {
-    static QNapiConfig cfg(LibQNapi::version());
+    static QNapiConfig cfg(LibQNapi::version(),
+                           LibQNapi::staticConfigProvider());
     return cfg;
 }

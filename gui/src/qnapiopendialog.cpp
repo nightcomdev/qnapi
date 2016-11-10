@@ -12,24 +12,26 @@
 **
 *****************************************************************************/
 
+#include "libqnapi.h"
 #include "qnapiopendialog.h"
 
 QNapiOpenDialog::QNapiOpenDialog(QWidget * parent,
                                  const QString & caption,
                                  const QString & init_path,
                                  FilterMode filterMode)
-                            : QFileDialog(parent)
+                            : QFileDialog(parent),
+                              staticConfig(LibQNapi::staticConfigProvider())
 {
     setAttribute(Qt::WA_QuitOnClose, false);
     setWindowTitle(caption);
 
     if(filterMode == Movies)
     {
-        setNameFilter(tr("Filmy (%1);;Wszystkie pliki (*.*)").arg(GlobalConfig().movieExtensionsFilter()));
+        setNameFilter(tr("Filmy (%1);;Wszystkie pliki (*.*)").arg(staticConfig->movieExtensionsFilter()));
     }
     else if(filterMode == Subtitles)
     {
-        setNameFilter(tr("Napisy (%1);;Wszystkie pliki (*.*)").arg(GlobalConfig().subtitleExtensionsFilter()));
+        setNameFilter(tr("Napisy (%1);;Wszystkie pliki (*.*)").arg(staticConfig->subtitleExtensionsFilter()));
     }
 
     if(QFileInfo(init_path).isDir())
