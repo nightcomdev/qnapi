@@ -12,27 +12,30 @@
 **
 *****************************************************************************/
 
-#ifndef STATICCONFIG_H
-#define STATICCONFIG_H
+#ifndef ENGINECONFIG_H
+#define ENGINECONFIG_H
 
 #include <QString>
-#include <QStringList>
 
-
-class StaticConfig
-{
-public:
-    StaticConfig();
-
-    QStringList movieExtensions() const;
-    QString movieExtensionsFilter() const;
-    QStringList subtitleExtensions() const;
-    QString subtitleExtensionsFilter() const;
-    QStringList subtitleEngineNames() const;
-
+class EngineConfig {
 private:
+    QString nick_;
+    QString password_;
 
-    QString makeFilter(const QStringList & extensions) const;
+public:
+    EngineConfig(const QString & nick, const QString & password)
+        : nick_(nick), password_(password)
+        {}
+
+    QString nick() const { return nick_; }
+    QString password() const { return password_; }
+
+    const EngineConfig setNick(const QString & nick) const {
+        return EngineConfig(nick, password_);
+    }
+    const EngineConfig setPassword(const QString & password) const {
+        return EngineConfig(nick_, password);
+    }
 };
 
-#endif // STATICCONFIG_H
+#endif

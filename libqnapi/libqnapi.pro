@@ -42,7 +42,9 @@ SOURCES += src/libqnapi.cpp \
     src/qsubpostprocess.cpp \
     src/qnapisubtitleinfo.cpp \
     src/qsubmatcher.cpp \
-    src/config/staticconfig.cpp
+    src/config/staticconfig.cpp \
+    src/config/configreader.cpp \
+    src/config/configwriter.cpp
 
 
 HEADERS += src/libqnapi.h \
@@ -70,7 +72,14 @@ HEADERS += src/libqnapi.h \
     src/qnapisubtitleinfo.h \
     src/qsubpostprocess.h \
     src/qsubmatcher.h \
-    src/config/staticconfig.h
+    src/config/staticconfig.h \
+    src/config/qnapiconfig.h \
+    src/config/generalconfig.h \
+    src/config/postprocessingconfig.h \
+    src/config/scanconfig.h \
+    src/config/engineconfig.h \
+    src/config/configreader.h \
+    src/config/configwriter.h
 
 unix:!macx {
     PKGCONFIG += libmediainfo
@@ -78,6 +87,8 @@ unix:!macx {
 
 macx {
     INCLUDEPATH += ../deps/libmediainfo/include
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
+    QMAKE_CXXFLAGS_X86_64 = -mmacosx-version-min=10.7
 }
 
 win32 {
