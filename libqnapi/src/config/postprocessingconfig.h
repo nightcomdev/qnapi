@@ -103,6 +103,8 @@ public:
     const PostProcessingConfig setRemoveWords(const QStringList & removeWords) const {
         return PostProcessingConfig(enabled_, encodingChangeMethod_, encodingFrom_, encodingAutoDetectFrom_, encodingTo_, showAllEncodings_, subFormat_, subExtension_, skipConvertAds_, removeWords);
     }
+
+    QString toString() const;
 };
 
 #endif

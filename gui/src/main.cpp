@@ -32,6 +32,14 @@ void sigHandler(int);
 
 int main(int argc, char **argv)
 {
+    QNapiConfig2 cfg = LibQNapi::configReader()->readUserConfig();
+
+    QTextStream(stdout) << cfg.toString();
+
+    return 0;
+
+
+
     bool isCliCall = QNapiCli::isCliCall(argc, argv);
 
     QStringList pathList = parseArgs(argc, argv);

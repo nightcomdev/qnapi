@@ -29,13 +29,13 @@ class ConfigReader
 public:
     ConfigReader(const QSharedPointer<const StaticConfig> & staticConfig);
 
-    const QNapiConfig readUserConfig() const;
-    const QNapiConfig readPortableConfig(const QString & configFilePath) const;
-    const QNapiConfig readConfig(const QSettings & settings) const;
+    const QNapiConfig2 readUserConfig() const;
+    const QNapiConfig2 readPortableConfig(const QString & configFilePath) const;
+    const QNapiConfig2 readConfig(const QSettings & settings) const;
 
 private:
     const GeneralConfig readGeneralConfig(const QSettings & settings) const;
-    const QStringList readEnabledEngines(const QSettings & settings) const;
+    const QList<QPair<QString, bool>> readEnabledEngines(const QSettings & settings) const;
     const QMap<QString, EngineConfig> readEnginesConfig(const QSettings & settings) const;
     const EngineConfig readEngineConfig(QString engineName, const QSettings & settings) const;
     const PostProcessingConfig readPostProcessingConfig(const QSettings & settings) const;

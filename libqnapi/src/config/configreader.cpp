@@ -13,25 +13,26 @@
 *****************************************************************************/
 
 #include "configreader.h"
+#include <QDebug>
 
 ConfigReader::ConfigReader(const QSharedPointer<const StaticConfig> & staticConfig)
     : staticConfig(staticConfig)
 {}
 
 
-const QNapiConfig ConfigReader::readUserConfig() const
+const QNapiConfig2 ConfigReader::readUserConfig() const
 {
     return readConfig(QSettings(QSettings::IniFormat, QSettings::UserScope, "qnapi"));
 }
 
-const QNapiConfig ConfigReader::readPortableConfig(const QString & configFilePath) const
+const QNapiConfig2 ConfigReader::readPortableConfig(const QString & configFilePath) const
 {
     return readConfig(QSettings(configFilePath, QSettings::IniFormat));
 }
 
-const QNapiConfig ConfigReader::readConfig(const QSettings & settings) const
+const QNapiConfig2 ConfigReader::readConfig(const QSettings & settings) const
 {
-    return QNapiConfig(settings.value("qnapi/firstrun", true).toBool(),
+    return QNapiConfig2(settings.value("qnapi/firstrun", true).toBool(),
                        settings.value("qnapi/version", "").toString(),
                        readGeneralConfig(settings),
                        readEnabledEngines(settings),
@@ -48,15 +49,39 @@ const GeneralConfig ConfigReader::readGeneralConfig(const QSettings & settings) 
                          settings.value("qnapi/language_backup", "en").toString(),
                          settings.value("qnapi/no_backup", false).toBool(),
                          settings.value("qnapi/quiet_batch", false).toBool(),
-                         (SearchPolicy) settings.value("qnapi/search_policy", SP_BREAK_IF_FOUND).toInt(),
-                         (DownloadPolicy) settings.value("qnapi/download_policy", DP_SHOW_LIST_IF_NEEDED).toInt(),
+                         (SearchPolicy2) settings.value("qnapi/search_policy", SP_BREAK_IF_FOUND_2).toInt(),
+                         (DownloadPolicy2) settings.value("qnapi/download_policy", DP_SHOW_LIST_IF_NEEDED_2).toInt(),
                          settings.value("qnapi/change_permissions", false).toBool(),
                          settings.value("qnapi/permissions", "644").toString());
 }
 
-const QStringList ConfigReader::readEnabledEngines(const QSettings & settings) const
+const QList<QPair<QString, bool>> ConfigReader::readEnabledEngines(const QSettings & settings) const
 {
-    return settings.value("qnapi/engines", QStringList()).toStringList();
+    QList<QPair<QString, bool>> defaultEngines;
+    foreach(QString engineName, staticConfig->subtitleEngineNames())
+    {
+        defaultEngines << qMakePair(engineName, true);
+    }
+
+    QString enginesStr = settings.value("qnapi/engines", "").toString();
+
+    QStringList splitEnginesStr = enginesStr.split(",", QString::SkipEmptyParts);
+
+    if(splitEnginesStr.size() != staticConfig->subtitleEngineNames().size()) {
+        return defaultEngines;
+    } else {
+        QList<QPair<QString, bool>> enabledEngines;
+        foreach(QString engineEnableStr, splitEnginesStr)
+        {
+            QStringList engineParts = engineEnableStr.split(":", QString::SkipEmptyParts);
+            if(engineParts.size() != 2)
+            {
+                return defaultEngines;
+            }
+            enabledEngines << qMakePair(engineParts[0], engineParts[1] == "on");
+        }
+        return enabledEngines;
+    }
 }
 
 const QMap<QString, EngineConfig> ConfigReader::readEnginesConfig(const QSettings & settings) const

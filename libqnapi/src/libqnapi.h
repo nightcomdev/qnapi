@@ -17,6 +17,8 @@
 
 #include "movieinfo/movieinfoprovider.h"
 #include "config/staticconfig.h"
+#include "config/configreader.h"
+#include "config/configwriter.h"
 #include <QString>
 #include <QSharedPointer>
 
@@ -31,6 +33,8 @@ public:
     static QString webpageUrl();
     static QSharedPointer<const MovieInfoProvider> movieInfoProvider();
     static QSharedPointer<const StaticConfig> staticConfigProvider();
+    static QSharedPointer<const ConfigReader> configReader();
+    static QSharedPointer<const ConfigWriter> configWriter();
 };
 
 #endif // LIBQNAPI_H

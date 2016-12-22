@@ -27,13 +27,13 @@ class ConfigWriter
 public:
     ConfigWriter(const QString & qnapiVersion);
 
-    void writeUserConfig(const QNapiConfig & config) const;
-    void readPortableConfig(const QString & configFilePath, const QNapiConfig & config) const;
-    void writeConfig(const QNapiConfig & config, QSettings & settings) const;
+    void writeUserConfig(const QNapiConfig2 & config) const;
+    void readPortableConfig(const QString & configFilePath, const QNapiConfig2 & config) const;
+    void writeConfig(const QNapiConfig2 & config, QSettings & settings) const;
 
 private:
     void writeGeneralConfig(const GeneralConfig & generalConfig, QSettings & settings) const;
-    void writeEnabledEngines(const QStringList & enabledEngines, QSettings & settings) const;
+    void writeEnabledEngines(const QList<QPair<QString, bool>> & enabledEngines, QSettings & settings) const;
     void writeEnginesConfig(const QMap<QString, EngineConfig> & enginesConfig, QSettings & settings) const;
     void writeEngineConfig(QString engineName, const EngineConfig & engineConfig, QSettings & settings) const;
     void writePostProcessingConfig(const PostProcessingConfig & postProcessingConfig, QSettings & settings) const;

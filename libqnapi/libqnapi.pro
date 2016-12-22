@@ -44,7 +44,11 @@ SOURCES += src/libqnapi.cpp \
     src/qsubmatcher.cpp \
     src/config/staticconfig.cpp \
     src/config/configreader.cpp \
-    src/config/configwriter.cpp
+    src/config/configwriter.cpp \
+    src/config/qnapiconfig2.cpp \
+    src/config/generalconfig.cpp \
+    src/config/scanconfig.cpp \
+    src/config/postprocessingconfig.cpp
 
 
 HEADERS += src/libqnapi.h \

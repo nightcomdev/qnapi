@@ -44,3 +44,15 @@ QSharedPointer<const StaticConfig> LibQNapi::staticConfigProvider()
 {
     return QSharedPointer<const StaticConfig>(new StaticConfig());
 }
+
+QSharedPointer<const ConfigReader> LibQNapi::configReader()
+{
+    return QSharedPointer<const ConfigReader>(new ConfigReader(staticConfigProvider()));
+}
+
+QSharedPointer<const ConfigWriter> LibQNapi::configWriter()
+{
+    QString ver = version();
+    return QSharedPointer<const ConfigWriter>(new ConfigWriter(ver));
+}
+

@@ -13,25 +13,26 @@
 *****************************************************************************/
 
 #include "configwriter.h"
+#include <QTextStream>
 
 ConfigWriter::ConfigWriter(const QString & qnapiVersion)
     : qnapiVersion(qnapiVersion)
 {
 }
 
-void ConfigWriter::writeUserConfig(const QNapiConfig & config) const
+void ConfigWriter::writeUserConfig(const QNapiConfig2 & config) const
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "qnapi");
     writeConfig(config, settings);
 }
 
-void ConfigWriter::readPortableConfig(const QString & configFilePath, const QNapiConfig & config) const
+void ConfigWriter::readPortableConfig(const QString & configFilePath, const QNapiConfig2 & config) const
 {
     QSettings settings(configFilePath, QSettings::IniFormat);
     writeConfig(config, settings);
 }
 
-void ConfigWriter::writeConfig(const QNapiConfig & config, QSettings & settings) const
+void ConfigWriter::writeConfig(const QNapiConfig2 & config, QSettings & settings) const
 {
     settings.setValue("qnapi/firstrun", false);
     settings.setValue("qnapi/version", qnapiVersion);
@@ -58,9 +59,19 @@ void ConfigWriter::writeGeneralConfig(const GeneralConfig & generalConfig, QSett
     settings.setValue("qnapi/permissions", generalConfig.changePermissionsTo());
 }
 
-void ConfigWriter::writeEnabledEngines(const QStringList & enabledEngines, QSettings & settings) const
+void ConfigWriter::writeEnabledEngines(const QList<QPair<QString, bool>> & enabledEngines, QSettings & settings) const
 {
-    settings.setValue("qnapi/engines", enabledEngines);
+    QString enabledEnginesStr;
+    QTextStream ts(&enabledEnginesStr);
+    typedef QPair<QString, bool> EngineEnableCfg;
+    foreach(EngineEnableCfg engineCfg, enabledEngines)
+    {
+        QString engineName = engineCfg.first;
+        QString engineEnableStr = engineCfg.second ? "on" : "off";
+        ts << engineName << ":" << engineEnableStr << ",";
+    }
+
+    settings.setValue("qnapi/engines", enabledEnginesStr.left(enabledEnginesStr.size() - 1));
 }
 
 void ConfigWriter::writeEnginesConfig(const QMap<QString, EngineConfig> & enginesConfig, QSettings & settings) const

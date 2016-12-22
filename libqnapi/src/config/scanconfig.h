@@ -48,6 +48,8 @@ public:
     const ScanConfig setSkipFilters(const QString & skipFilters) const {
         return ScanConfig(lastDir_, skipIfSubtitlesExist_, filters_, skipFilters);
     }
+
+    QString toString() const;
 };
 
 #endif
