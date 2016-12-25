@@ -15,46 +15,48 @@
 #ifndef OPENSUBTITLESDOWNLOADENGINE_H
 #define OPENSUBTITLESDOWNLOADENGINE_H
 
-#include "subtitledownloadengine.h"
+#include "config/engineconfig.h"
+#include "engines/subtitledownloadengine.h"
 #include "utils/syncxmlrpc.h"
+#include "utils/p7zipdecoder.h"
 
-const QString openSubtitlesXmlRpcUrl = "http://api.opensubtitles.org/xml-rpc";
 
 class OpenSubtitlesDownloadEngine : public SubtitleDownloadEngine
 {
 public:
 
-    OpenSubtitlesDownloadEngine(const QString & qnapiDisplayableVersion);
+    OpenSubtitlesDownloadEngine(const QString & tmpPath,
+                                const EngineConfig & config,
+                                const QSharedPointer<const P7ZipDecoder> & p7zipDecoder,
+                                const QString & qnapiDisplayableVersion,
+                                const QString & language);
     ~OpenSubtitlesDownloadEngine();
 
     static QString name;
+    static const char * const pixmapData[];
 
     QString engineName() const;
     QString engineInfo() const;
     QUrl registrationUrl() const;
     const char * const * enginePixmapData() const;
 
-    // oblicza sume kontrolna pliku filmowego
     QString checksum(QString filename = "");
-    // szuka napisow
     bool lookForSubtitles(QString lang);
-    // wyniki wyszukiwania
     QList<QNapiSubtitleInfo> listSubtitles();
-    // probuje pobrac napisy
     bool download(QUuid id);
-    // probuje rozpakowac napisy
     bool unpack(QUuid id);
-    // czysci smieci, pliki tymczasowe
     void cleanup();
 
 private:
 
-    QString p7zipPath, lang, subFileName;
-    quint64 fileSize;
-
+    const EngineConfig & engineConfig;
+    QSharedPointer<const P7ZipDecoder> p7zipDecoder;
+    const QString & qnapiDisplayableVersion;
+    const QString & language;
     SyncXmlRpc rpc;
-    QString token;
-    QString qnapiDisplayableVersion;
+
+    quint64 fileSize;
+    QString subFileName, token;
 
     // sprawdza czy dana instancja klasy jest zalogowana na sewerze
     bool isLogged() { return !token.isEmpty(); }

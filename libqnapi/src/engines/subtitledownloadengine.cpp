@@ -12,18 +12,20 @@
 **
 *****************************************************************************/
 
-#include "subtitledownloadengine.h"
+#include "engines/subtitledownloadengine.h"
 #include "subconvert/subtitleformatsregistry.h"
 #include <QFlags>
 #include <QDir>
 
-// ustawia sciezke do pliku filmowego
+SubtitleDownloadEngine::SubtitleDownloadEngine(const QString & tmpPath)
+    : tmpPath(tmpPath)
+{}
+
 void SubtitleDownloadEngine::setMoviePath(const QString & path)
 {
     movie = path;
 }
 
-// zwraca sciezke do pliku filmowego
 QString SubtitleDownloadEngine::moviePath()
 {
     return movie;
@@ -62,7 +64,6 @@ void SubtitleDownloadEngine::updateSubtitleInfo(const QNapiSubtitleInfo & si)
 
 }
 
-// generuje nazwe dla pliku tymczasowego
 QString SubtitleDownloadEngine::generateTmpFileName() const
 {
     static bool gen_inited;

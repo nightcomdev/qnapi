@@ -256,7 +256,7 @@ void frmScan::accept()
 }
 
 ScanFilesThread::ScanFilesThread()
-    : staticConfig(LibQNapi::staticConfigProvider())
+    : staticConfig(LibQNapi::staticConfig())
 {}
 
 void ScanFilesThread::run()

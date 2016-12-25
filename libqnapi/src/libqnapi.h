@@ -26,6 +26,8 @@
 #include "subconvert/subtitleconverter.h"
 #include "subconvert/subtitleformatsregistry.h"
 
+#include "utils/p7zipdecoder.h"
+
 #include <QString>
 #include <QSharedPointer>
 
@@ -35,13 +37,18 @@ class LibQNapi
 public:
     LibQNapi();
 
+    static QString appExecutablePath;
+
     static QString version();
     static QString displayableVersion();
     static QString webpageUrl();
 
-    static QSharedPointer<const StaticConfig> staticConfigProvider();
+    static QSharedPointer<const StaticConfig> staticConfig();
     static QSharedPointer<const ConfigReader> configReader();
     static QSharedPointer<const ConfigWriter> configWriter();
+
+    static const QNapiConfig2 loadConfig();
+    static void writeConfig(const QNapiConfig2 & config);
 
     static QSharedPointer<const SubtitleDownloadEnginesRegistry> subtitleDownloadEngineRegistry();
 
@@ -49,6 +56,11 @@ public:
 
     static QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry();
     static QSharedPointer<const SubtitleConverter> subtitleConverter();
+
+    static QSharedPointer<const P7ZipDecoder> p7zipDecoder(const QString & p7zipPath);
+
+    static bool isPortableMode();
+    static QString portableConfigPath();
 };
 
 #endif // LIBQNAPI_H

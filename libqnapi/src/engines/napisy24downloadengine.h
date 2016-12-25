@@ -15,19 +15,25 @@
 #ifndef NAPISY24DOWNLOADENGINE_H
 #define NAPISY24DOWNLOADENGINE_H
 
-#include "subtitledownloadengine.h"
-#include "utils/synchttp.h"
+#include "config/engineconfig.h"
 #include "config/staticconfig.h"
+#include "engines/subtitledownloadengine.h"
+#include "utils/synchttp.h"
+#include "utils/p7zipdecoder.h"
 
 #include <QSharedPointer>
 
 class Napisy24DownloadEngine : public SubtitleDownloadEngine
 {
 public:
-    Napisy24DownloadEngine();
+    Napisy24DownloadEngine(const QString & tmpPath,
+                           const EngineConfig & config,
+                           const QSharedPointer<const P7ZipDecoder> & p7zipDecoder,
+                           const QStringList & subtitleExtensions);
     ~Napisy24DownloadEngine();
 
     static QString name;
+    static const char * const pixmapData[];
 
     QString engineName() const;
     QString engineInfo() const;
@@ -45,10 +51,11 @@ public:
 private:
     QPair<QString, QString> getCredentials() const;
 
-    QSharedPointer<const StaticConfig> staticConfig;
+    const EngineConfig & engineConfig;
+    const QSharedPointer<const P7ZipDecoder> p7zipDecoder;
+    const QStringList & subtitleExtensions;
 
     quint64 fileSize;
-    QString p7zipPath;
 };
 
 #endif // NAPISY24DOWNLOADENGINE_H

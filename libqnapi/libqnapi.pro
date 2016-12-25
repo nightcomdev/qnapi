@@ -49,7 +49,8 @@ SOURCES += src/libqnapi.cpp \
     src/engines/napiprojektdownloadengine.cpp \
     src/engines/napisy24downloadengine.cpp \
     src/engines/opensubtitlesdownloadengine.cpp \
-    src/engines/subtitledownloadenginesregistry.cpp
+    src/engines/subtitledownloadenginesregistry.cpp \
+    src/utils/p7zipdecoder.cpp
 
 
 HEADERS += src/libqnapi.h \
@@ -85,7 +86,8 @@ HEADERS += src/libqnapi.h \
     src/engines/napiprojektdownloadengine.h \
     src/engines/napisy24downloadengine.h \
     src/engines/opensubtitlesdownloadengine.h \
-    src/engines/subtitledownloadenginesregistry.h
+    src/engines/subtitledownloadenginesregistry.h \
+    src/utils/p7zipdecoder.h
 
 unix:!macx {
     PKGCONFIG += libmediainfo

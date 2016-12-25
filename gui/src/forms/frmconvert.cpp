@@ -27,7 +27,7 @@
 
 frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
     : QDialog(parent, f),
-      staticConfig(LibQNapi::staticConfigProvider()),
+      staticConfig(LibQNapi::staticConfig()),
       subtitleFormatsRegistry(LibQNapi::subtitleFormatsRegistry()),
       subConverter(subtitleFormatsRegistry, LibQNapi::movieInfoProvider()),
       targetFileNameSelected(false)

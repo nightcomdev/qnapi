@@ -32,6 +32,8 @@ void sigHandler(int);
 
 int main(int argc, char **argv)
 {
+    LibQNapi::appExecutablePath = argv[0];
+
     bool isCliCall = QNapiCli::isCliCall(argc, argv);
 
     QStringList pathList = parseArgs(argc, argv);

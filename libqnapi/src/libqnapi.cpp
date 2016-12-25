@@ -16,9 +16,10 @@
 #include "version.h"
 #include "movieinfo/libmediainfomovieinfoprovider.h"
 
-LibQNapi::LibQNapi()
-{
-}
+#include <QFileInfo>
+#include <QDir>
+
+QString LibQNapi::appExecutablePath = ".";
 
 QString LibQNapi::version()
 {
@@ -36,7 +37,7 @@ QString LibQNapi::webpageUrl()
 }
 
 QSharedPointer<const StaticConfig>
-LibQNapi::staticConfigProvider()
+LibQNapi::staticConfig()
 {
     return QSharedPointer<const StaticConfig>(new StaticConfig);
 }
@@ -45,7 +46,7 @@ QSharedPointer<const ConfigReader>
 LibQNapi::configReader()
 {
     return QSharedPointer<const ConfigReader>(
-        new ConfigReader(staticConfigProvider(), subtitleDownloadEngineRegistry())
+        new ConfigReader(staticConfig(), subtitleDownloadEngineRegistry())
     );
 }
 
@@ -56,11 +57,31 @@ LibQNapi::configWriter()
     return QSharedPointer<const ConfigWriter>(new ConfigWriter(ver));
 }
 
+const QNapiConfig2 LibQNapi::loadConfig()
+{
+    if(LibQNapi::isPortableMode())
+        return LibQNapi::configReader()->readPortableConfig(LibQNapi::portableConfigPath());
+    else
+        return LibQNapi::configReader()->readUserConfig();
+}
+
+void LibQNapi::writeConfig(const QNapiConfig2 & config)
+{
+    if(LibQNapi::isPortableMode())
+        LibQNapi::configWriter()->writePortableConfig(LibQNapi::portableConfigPath(), config);
+    else
+        LibQNapi::configWriter()->writeUserConfig(config);
+}
+
 QSharedPointer<const SubtitleDownloadEnginesRegistry>
 LibQNapi::subtitleDownloadEngineRegistry()
 {
     return QSharedPointer<const SubtitleDownloadEnginesRegistry>(
-        new SubtitleDownloadEnginesRegistry(LibQNapi::displayableVersion())
+        new SubtitleDownloadEnginesRegistry(
+            LibQNapi::displayableVersion(),
+            LibQNapi::staticConfig()->subtitleExtensions(),
+            &LibQNapi::p7zipDecoder
+        )
     );
 }
 
@@ -83,3 +104,21 @@ LibQNapi::subtitleFormatsRegistry()
 {
     return QSharedPointer<SubtitleFormatsRegistry>(new SubtitleFormatsRegistry);
 }
+
+QSharedPointer<const P7ZipDecoder> LibQNapi::p7zipDecoder(const QString & p7zipPath)
+{
+    return QSharedPointer<const P7ZipDecoder>(new P7ZipDecoder(p7zipPath));
+}
+
+bool LibQNapi::isPortableMode()
+{
+    return QFileInfo(portableConfigPath()).exists();
+}
+
+QString LibQNapi::portableConfigPath()
+{
+    QString appExecutableDir = QFileInfo(appExecutablePath).absoluteDir().path();
+    return appExecutableDir + QDir::separator() + "qnapi.ini";
+}
+
+

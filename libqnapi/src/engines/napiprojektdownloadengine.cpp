@@ -55,12 +55,13 @@ using namespace NapiProjektDownloadEngineConsts;
 
 QString NapiProjektDownloadEngine::name = "NapiProjekt";
 
-NapiProjektDownloadEngine::NapiProjektDownloadEngine()
-{
-    p7zipPath = GlobalConfig().p7zipPath();
-    nick = GlobalConfig().nick(engineName());
-    pass = GlobalConfig().pass(engineName());
-}
+NapiProjektDownloadEngine::NapiProjektDownloadEngine(const QString & tmpPath,
+                                                     const EngineConfig & config,
+                                                     const QSharedPointer<const P7ZipDecoder> & p7zipDecoder)
+    : SubtitleDownloadEngine(tmpPath),
+      engineConfig(config),
+      p7zipDecoder(p7zipDecoder)
+{}
 
 NapiProjektDownloadEngine::~NapiProjektDownloadEngine()
 {
@@ -84,30 +85,7 @@ QUrl NapiProjektDownloadEngine::registrationUrl() const
 
 const char * const * NapiProjektDownloadEngine::enginePixmapData() const
 {
-    static const char * const icon[] = {
-        "16 16 5 1",
-        "   c #FFFFFF",
-        ".  c #000080",
-        "+  c #0052CC",
-        "@  c #005CE6",
-        "#  c #BFD9FF",
-        "           ...  ",
-        "         ... .  ",
-        "       ... ...  ",
-        "     ... ....   ",
-        "   ... ....     ",
-        " ... ....       ",
-        ".. ....         ",
-        "....+           ",
-        " ...............",
-        " . . . . . . . .",
-        " ...............",
-        " .@@####@####@@.",
-        " .@@#@@#@#@@#@@.",
-        " .@@#@@#@####@@.",
-        " .@@#@@#@#@@@@@.",
-        " ..............."};
-    return icon;
+    return NapiProjektDownloadEngine::pixmapData;
 }
 
 QString NapiProjektDownloadEngine::checksum(QString filename)
@@ -129,13 +107,13 @@ bool NapiProjektDownloadEngine::lookForSubtitles(QString lang)
 
     QString tmpPackedFile = tmpPackedFileOpt.value();
 
-    subtitlesList << QNapiSubtitleInfo( lang,
-                                        engineName(),
-                                        tmpPackedFile,
-                                        QFileInfo(movie).completeBaseName(),
-                                        "",
-                                        "txt",
-                                        SUBTITLE_UNKNOWN);
+    subtitlesList << QNapiSubtitleInfo(lang,
+                                       engineName(),
+                                       tmpPackedFile,
+                                       QFileInfo(movie).completeBaseName(),
+                                       "",
+                                       "txt",
+                                       SUBTITLE_UNKNOWN);
     return true;
 }
 
@@ -159,8 +137,8 @@ Maybe<QString> NapiProjektDownloadEngine::downloadByLangAndChecksum(QString lang
     QString urlTxt = napiDownloadUrlTpl.arg(npLangWrapper(lang))
                                        .arg(checksum)
                                        .arg(npFDigest(checksum))
-                                       .arg(nick)
-                                       .arg(pass)
+                                       .arg(engineConfig.nick())
+                                       .arg(engineConfig.password())
                                        .arg(napiOS());
 
     QUrl url(urlTxt);
@@ -183,7 +161,7 @@ Maybe<QString> NapiProjektDownloadEngine::downloadByLangAndChecksum(QString lang
     if(!file.open(QIODevice::WriteOnly))
         return nothing();
 
-    int r = file.write(buffer);
+    long r = file.write(buffer);
     file.close();
 
     if(r < 0)
@@ -203,16 +181,11 @@ bool NapiProjektDownloadEngine::unpack(QUuid id)
     if(QFile::exists(subtitlesTmp))
         QFile::remove(subtitlesTmp);
 
-    QStringList args;
-    args << "e" << "-y" << ("-p" + napiZipPassword) << ("-o" + tmpPath) << ms.value().sourceLocation;
+    QString archivePath = ms.value().sourceLocation;
 
-    QProcess p7zip;
-    p7zip.start(p7zipPath, args);
+    bool unpacked = p7zipDecoder->unpackSecureArchiveFiles(archivePath, napiZipPassword, tmpPath);
 
-    // Rozpakowujemy napisy max w ciagu 5 sekund
-    if(!p7zip.waitForFinished(5000)) return false;
-
-    return QFile::exists(subtitlesTmp);
+    return unpacked && QFile::exists(subtitlesTmp);
 }
 
 void NapiProjektDownloadEngine::cleanup()
@@ -256,7 +229,7 @@ QString NapiProjektDownloadEngine::checksum(QString filename, bool limit10M)
 
     for(int i = 0; i < 16; i++)
     {
-        snprintf(next, 3, "%.2x", (unsigned char)b[i]);
+        snprintf(next, 3, "%.2x", static_cast<unsigned char>(b[i]));
         out += next;
     }
     
@@ -283,8 +256,8 @@ QString NapiProjektDownloadEngine::npFDigest(const QString & input) const
         i = idx[j];
 
         tmp[0] = input[i].toLatin1();
-        t = a + (int)(strtol(tmp, NULL, 16));
-        v = (int)(strtol(input.mid(t, 2).toLocal8Bit(), NULL, 16));
+        t = a + static_cast<int>(strtol(tmp, NULL, 16));
+        v = static_cast<int>(strtol(input.mid(t, 2).toLocal8Bit(), NULL, 16));
 
         snprintf(tmp, 2, "%x", (v * m) % 0x10);
         b += tmp;
@@ -313,3 +286,28 @@ QString NapiProjektDownloadEngine::napiOS() const
     return "Linux/UNIX";
 #endif
 }
+
+const char * const NapiProjektDownloadEngine::pixmapData[] = {
+    "16 16 5 1",
+    "   c #FFFFFF",
+    ".  c #000080",
+    "+  c #0052CC",
+    "@  c #005CE6",
+    "#  c #BFD9FF",
+    "           ...  ",
+    "         ... .  ",
+    "       ... ...  ",
+    "     ... ....   ",
+    "   ... ....     ",
+    " ... ....       ",
+    ".. ....         ",
+    "....+           ",
+    " ...............",
+    " . . . . . . . .",
+    " ...............",
+    " .@@####@####@@.",
+    " .@@#@@#@#@@#@@.",
+    " .@@#@@#@####@@.",
+    " .@@#@@#@#@@@@@.",
+    " ..............."
+};

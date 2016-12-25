@@ -23,8 +23,9 @@ private:
     QString password_;
 
 public:
-    EngineConfig(const QString & nick, const QString & password)
-        : nick_(nick), password_(password)
+    EngineConfig(const QString & nick = "", const QString & password = "")
+        : nick_(nick),
+          password_(password)
         {}
 
     QString nick() const { return nick_; }

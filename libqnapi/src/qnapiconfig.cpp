@@ -704,6 +704,6 @@ void QNapiConfig::setLastScanDir(const QString & dir)
 QNapiConfig & GlobalConfig()
 {
     static QNapiConfig cfg(LibQNapi::version(),
-                           LibQNapi::staticConfigProvider());
+                           LibQNapi::staticConfig());
     return cfg;
 }

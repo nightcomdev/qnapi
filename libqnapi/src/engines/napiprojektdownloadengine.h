@@ -15,16 +15,23 @@
 #ifndef NAPIPROJEKTDOWNLOADENGINE_H
 #define NAPIPROJEKTDOWNLOADENGINE_H
 
-#include "subtitledownloadengine.h"
+#include "config/engineconfig.h"
+#include "engines/subtitledownloadengine.h"
+#include "utils/p7zipdecoder.h"
+
+#include <QSharedPointer>
 
 class NapiProjektDownloadEngine : public SubtitleDownloadEngine
 {
 public:
 
-    NapiProjektDownloadEngine();
+    NapiProjektDownloadEngine(const QString & tmpPath,
+                              const EngineConfig & config,
+                              const QSharedPointer<const P7ZipDecoder> & p7zipDecoder);
     ~NapiProjektDownloadEngine();
 
     static QString name;
+    static const char * const pixmapData[];
 
     QString engineName() const;
     QString engineInfo() const;
@@ -42,7 +49,8 @@ public:
 
 private:
 
-    QString p7zipPath, nick, pass;
+    const EngineConfig & engineConfig;
+    QSharedPointer<const P7ZipDecoder> p7zipDecoder;
 
     QString checksum(QString filename, bool limit10M);
     Maybe<QString> downloadByLangAndChecksum(QString lang, QString checksum) const;

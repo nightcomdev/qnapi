@@ -20,7 +20,7 @@ QNapiOpenDialog::QNapiOpenDialog(QWidget * parent,
                                  const QString & init_path,
                                  FilterMode filterMode)
                             : QFileDialog(parent),
-                              staticConfig(LibQNapi::staticConfigProvider())
+                              staticConfig(LibQNapi::staticConfig())
 {
     setAttribute(Qt::WA_QuitOnClose, false);
     setWindowTitle(caption);

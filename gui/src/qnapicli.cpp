@@ -14,6 +14,7 @@
 
 #include "qnapicli.h"
 #include "libqnapi.h"
+#include "qnapiconfig.h"
 
 bool QNapiCli::isCliCall(int argc, char **argv)
 {
