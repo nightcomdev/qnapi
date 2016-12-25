@@ -12,20 +12,20 @@
 **
 *****************************************************************************/
 
-#ifndef __QOPENSUBTITLESENGINE__H__
-#define __QOPENSUBTITLESENGINE__H__
+#ifndef OPENSUBTITLESDOWNLOADENGINE_H
+#define OPENSUBTITLESDOWNLOADENGINE_H
 
-#include "qnapiabstractengine.h"
+#include "subtitledownloadengine.h"
 #include "utils/syncxmlrpc.h"
 
 const QString openSubtitlesXmlRpcUrl = "http://api.opensubtitles.org/xml-rpc";
 
-class QOpenSubtitlesEngine : public QNapiAbstractEngine
+class OpenSubtitlesDownloadEngine : public SubtitleDownloadEngine
 {
 public:
 
-    QOpenSubtitlesEngine(const QString & qnapiDisplayableVersion);
-    ~QOpenSubtitlesEngine();
+    OpenSubtitlesDownloadEngine(const QString & qnapiDisplayableVersion);
+    ~OpenSubtitlesDownloadEngine();
 
     static QString name;
 

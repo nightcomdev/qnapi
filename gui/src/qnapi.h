@@ -17,7 +17,7 @@
 
 #include <QtCore>
 
-#include "engines/qnapiabstractengine.h"
+#include "engines/subtitledownloadengine.h"
 #include "qnapisubtitleinfo.h"
 
 // globalny menedzer pobierania napisow
@@ -79,9 +79,9 @@ class QNapi
         QString error();
 
         // zwraca wskaznik do zaladowanego! silnika z napisami po nazwie
-        QNapiAbstractEngine * engineByName(QString name);
+        SubtitleDownloadEngine * engineByName(QString name);
         // na odwrot ;)
-        QString nameByEngine(QNapiAbstractEngine * engine);
+        QString nameByEngine(SubtitleDownloadEngine * engine);
 
         // listuje zaladowane moduly pobierania
         QStringList listLoadedEngines();
@@ -93,12 +93,12 @@ class QNapi
         // aktualny komunikat o bledzie
         QString errorMsg;
         // lista zaladowanych silnikow z napisami
-        QList<QNapiAbstractEngine*> enginesList;
+        QList<SubtitleDownloadEngine*> enginesList;
         // lista znalezionych napisow
         QList<QNapiSubtitleInfo> subtitlesList;
         // wskaznik do obiektu silnika, na ktorym aktualnie pracujemy
         // ustawiany po wykonaniu metody download()
-        QNapiAbstractEngine * currentEngine;
+        SubtitleDownloadEngine * currentEngine;
         
         // najlepszy indeks napisow
         int theBestIdx;

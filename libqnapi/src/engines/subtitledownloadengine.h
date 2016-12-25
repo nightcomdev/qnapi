@@ -12,8 +12,8 @@
 **
 *****************************************************************************/
 
-#ifndef __QNAPIABSTRACTENGINE__H__
-#define __QNAPIABSTRACTENGINE__H__
+#ifndef SUBTITLEDOWNLOADENGINE_H
+#define SUBTITLEDOWNLOADENGINE_H
 
 #include <QString>
 #include <QFileInfo>
@@ -27,12 +27,12 @@
 #include "qnapiconfig.h"
 #include "qnapisubtitleinfo.h"
 
-class QNapiAbstractEngine
+class SubtitleDownloadEngine
 {
 public:
 
     // destruktor
-    virtual ~QNapiAbstractEngine() {}
+    virtual ~SubtitleDownloadEngine() {}
 
     // ustawia sciezke do pliku filmowego
     void setMoviePath(const QString & path);
@@ -82,7 +82,7 @@ protected:
     QString checkSum;
 
     // konstruktor klasy
-    QNapiAbstractEngine()
+    SubtitleDownloadEngine()
     {
         tmpPath = GlobalConfig().tmpPath();
     }

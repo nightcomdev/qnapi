@@ -22,10 +22,6 @@ RCC_DIR = tmp
 OBJECTS_DIR = tmp
 
 SOURCES += src/libqnapi.cpp \
-    src/engines/qnapiabstractengine.cpp \
-    src/engines/qnapiprojektengine.cpp \
-    src/engines/qnapisy24engine.cpp \
-    src/engines/qopensubtitlesengine.cpp \
     src/movieinfo/libmediainfomovieinfoprovider.cpp \
     src/subconvert/subtitleformatsregistry.cpp \
     src/subconvert/subtitleconverter.cpp \
@@ -48,15 +44,15 @@ SOURCES += src/libqnapi.cpp \
     src/config/qnapiconfig2.cpp \
     src/config/generalconfig.cpp \
     src/config/scanconfig.cpp \
-    src/config/postprocessingconfig.cpp
+    src/config/postprocessingconfig.cpp \
+    src/engines/subtitledownloadengine.cpp \
+    src/engines/napiprojektdownloadengine.cpp \
+    src/engines/napisy24downloadengine.cpp \
+    src/engines/opensubtitlesdownloadengine.cpp
 
 
 HEADERS += src/libqnapi.h \
     src/version.h \
-    src/engines/qnapiabstractengine.h \
-    src/engines/qnapiprojektengine.h \
-    src/engines/qnapisy24engine.h \
-    src/engines/qopensubtitlesengine.h \
     src/movieinfo/movieinfo.h \
     src/movieinfo/movieinfoprovider.h \
     src/movieinfo/libmediainfomovieinfoprovider.h \
@@ -83,7 +79,11 @@ HEADERS += src/libqnapi.h \
     src/config/scanconfig.h \
     src/config/engineconfig.h \
     src/config/configreader.h \
-    src/config/configwriter.h
+    src/config/configwriter.h \
+    src/engines/subtitledownloadengine.h \
+    src/engines/napiprojektdownloadengine.h \
+    src/engines/napisy24downloadengine.h \
+    src/engines/opensubtitlesdownloadengine.h
 
 unix:!macx {
     PKGCONFIG += libmediainfo

@@ -17,16 +17,16 @@
 #include "qnapiconfig.h"
 #include "qsubmatcher.h"
 #include "qsubpostprocess.h"
-#include "engines/qnapiprojektengine.h"
-#include "engines/qnapisy24engine.h"
-#include "engines/qopensubtitlesengine.h"
+#include "engines/napiprojektdownloadengine.h"
+#include "engines/napisy24downloadengine.h"
+#include "engines/opensubtitlesdownloadengine.h"
 #include <QtAlgorithms>
 
 QNapi::~QNapi()
 {
     cleanup();
 
-    foreach(QNapiAbstractEngine *e, enginesList)
+    foreach(SubtitleDownloadEngine *e, enginesList)
     {
         if(e) delete e;
     }
@@ -61,17 +61,17 @@ bool QNapi::addEngine(QString engine)
 {
     if(engine == "NapiProjekt")
     {
-        enginesList << (new QNapiProjektEngine());
+        enginesList << (new NapiProjektDownloadEngine());
         return true;
     }
     else if(engine == "OpenSubtitles")
     {
-        enginesList << (new QOpenSubtitlesEngine(LibQNapi::displayableVersion()));
+        enginesList << (new OpenSubtitlesDownloadEngine(LibQNapi::displayableVersion()));
         return true;
     }
     else if(engine == "Napisy24")
     {
-        enginesList << (new QNapisy24Engine());
+        enginesList << (new Napisy24DownloadEngine());
         return true;
     }
     else
@@ -110,7 +110,7 @@ bool QNapi::checkWritePermissions()
 void QNapi::clearSubtitlesList()
 {
     subtitlesList.clear();
-    foreach(QNapiAbstractEngine *e, enginesList)
+    foreach(SubtitleDownloadEngine *e, enginesList)
     {
         e->clearSubtitlesList();
     }
@@ -118,7 +118,7 @@ void QNapi::clearSubtitlesList()
 
 void QNapi::checksum()
 {
-    foreach(QNapiAbstractEngine *e, enginesList)
+    foreach(SubtitleDownloadEngine *e, enginesList)
     {
         e->checksum(movie);
     }
@@ -131,7 +131,7 @@ bool QNapi::lookForSubtitles(QString lang, QString engine)
 
     if(engine.isEmpty())
     {
-        foreach(QNapiAbstractEngine *e, enginesList)
+        foreach(SubtitleDownloadEngine *e, enginesList)
         {
             e->setMoviePath(movie);
             result = e->lookForSubtitles(lang) || result;
@@ -139,7 +139,7 @@ bool QNapi::lookForSubtitles(QString lang, QString engine)
     }
     else
     {
-        QNapiAbstractEngine *e = engineByName(engine);
+        SubtitleDownloadEngine *e = engineByName(engine);
         if(e)
         {
             e->setMoviePath(movie);
@@ -159,7 +159,7 @@ QList<QNapiSubtitleInfo> QNapi::listSubtitles()
 {
     subtitlesList.clear();
 
-    foreach(QNapiAbstractEngine *e, enginesList)
+    foreach(SubtitleDownloadEngine *e, enginesList)
     {
         QList<QNapiSubtitleInfo> list =  e->listSubtitles();
         subtitlesList << list;
@@ -258,7 +258,7 @@ void QNapi::pp()
 
 void QNapi::cleanup()
 {
-    foreach(QNapiAbstractEngine *e, enginesList)
+    foreach(SubtitleDownloadEngine *e, enginesList)
     {
         e->cleanup();
     }
@@ -269,9 +269,9 @@ QString QNapi::error()
     return errorMsg;
 }
 
-QNapiAbstractEngine * QNapi::engineByName(QString name)
+SubtitleDownloadEngine * QNapi::engineByName(QString name)
 {
-    foreach(QNapiAbstractEngine *e, enginesList)
+    foreach(SubtitleDownloadEngine *e, enginesList)
     {
         if(name == (e->engineName()))
         {
@@ -282,7 +282,7 @@ QNapiAbstractEngine * QNapi::engineByName(QString name)
     return 0;
 }
 
-QString QNapi::nameByEngine(QNapiAbstractEngine * engine)
+QString QNapi::nameByEngine(SubtitleDownloadEngine * engine)
 {
     return engine->engineName();
 }
@@ -290,7 +290,7 @@ QString QNapi::nameByEngine(QNapiAbstractEngine * engine)
 QStringList QNapi::listLoadedEngines()
 {
     QStringList list;
-    foreach(QNapiAbstractEngine *e, enginesList)
+    foreach(SubtitleDownloadEngine *e, enginesList)
     {
         list << e->engineName();
     }

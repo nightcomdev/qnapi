@@ -52,7 +52,7 @@ void frmListSubtitles::setSubtitlesList(QList<QNapiSubtitleInfo> list)
 
         QBrush brush((s.resolution == SUBTITLE_GOOD) ? QColor(qRgb(200, 255, 200)) : QColor(qRgb(255, 200, 200)));
 
-        QNapiAbstractEngine *e = n.engineByName(s.engine);
+        SubtitleDownloadEngine *e = n.engineByName(s.engine);
         QListWidgetItem *listItem = new QListWidgetItem();
 
         ui.twSubtitles->addItem(listItem);

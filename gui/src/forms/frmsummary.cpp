@@ -45,7 +45,7 @@ void frmSummary::setSummaryList(QList<QNapiSubtitleInfo> list)
     {
         bool isGood = s.resolution != SUBTITLE_NONE;
 
-        QNapiAbstractEngine *e = n.engineByName(s.engine);
+        SubtitleDownloadEngine *e = n.engineByName(s.engine);
         QListWidgetItem *listItem = new QListWidgetItem();
 
         ui.lwSummary->addItem(listItem);

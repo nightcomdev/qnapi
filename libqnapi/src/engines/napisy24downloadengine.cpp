@@ -14,41 +14,41 @@
 *****************************************************************************/
 
 #include "libqnapi.h"
-#include "qnapisy24engine.h"
+#include "napisy24downloadengine.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
 #include <QUrlQuery>
 #include <QProcess>
 
-QString QNapisy24Engine::name = "Napisy24";
+QString Napisy24DownloadEngine::name = "Napisy24";
 
-QNapisy24Engine::QNapisy24Engine()
+Napisy24DownloadEngine::Napisy24DownloadEngine()
   : staticConfig(LibQNapi::staticConfigProvider())
 {
     p7zipPath = GlobalConfig().p7zipPath();
 }
 
-QNapisy24Engine::~QNapisy24Engine()
+Napisy24DownloadEngine::~Napisy24DownloadEngine()
 {
     cleanup();
 }
 
-QString QNapisy24Engine::engineName() const
+QString Napisy24DownloadEngine::engineName() const
 {
-    return QNapisy24Engine::name;
+    return Napisy24DownloadEngine::name;
 }
 
-QString QNapisy24Engine::engineInfo() const
+QString Napisy24DownloadEngine::engineInfo() const
 {
     return "Moduł pobierania napisów z bazy <b>www.napisy24.pl</b><br />";
 }
 
-QUrl QNapisy24Engine::registrationUrl() const {
+QUrl Napisy24DownloadEngine::registrationUrl() const {
     return QUrl("http://napisy24.pl/cb-registration/registers");
 }
 
-const char * const * QNapisy24Engine::enginePixmapData() const
+const char * const * Napisy24DownloadEngine::enginePixmapData() const
 {
     static const char * icon[] = {
     "16 16 256 2",
@@ -328,7 +328,7 @@ const char * const * QNapisy24Engine::enginePixmapData() const
     return icon;
 }
 
-QString QNapisy24Engine::checksum(QString filename)
+QString Napisy24DownloadEngine::checksum(QString filename)
 {
     if(filename.isEmpty())
         filename = movie;
@@ -348,7 +348,7 @@ QString QNapisy24Engine::checksum(QString filename)
     return (checkSum = QString("%1").arg(hash, 16, 16, QChar('0')));
 }
 
-bool QNapisy24Engine::lookForSubtitles(QString lang)
+bool Napisy24DownloadEngine::lookForSubtitles(QString lang)
 {
     if(lang != "pl") return false;
 
@@ -403,19 +403,19 @@ bool QNapisy24Engine::lookForSubtitles(QString lang)
     return true;
 }
 
-QList<QNapiSubtitleInfo> QNapisy24Engine::listSubtitles()
+QList<QNapiSubtitleInfo> Napisy24DownloadEngine::listSubtitles()
 {
     return subtitlesList;
 }
 
-bool QNapisy24Engine::download(QUuid id)
+bool Napisy24DownloadEngine::download(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);
 
     return ms && QFile::exists(ms.value().sourceLocation);
 }
 
-bool QNapisy24Engine::unpack(QUuid id)
+bool Napisy24DownloadEngine::unpack(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);
     if(!ms) return false;
@@ -473,14 +473,14 @@ bool QNapisy24Engine::unpack(QUuid id)
     return QFile::exists(subtitlesTmp);
 }
 
-void QNapisy24Engine::cleanup()
+void Napisy24DownloadEngine::cleanup()
 {
     clearSubtitlesList();
     if(QFile::exists(subtitlesTmp))
         QFile::remove(subtitlesTmp);
 }
 
-QPair<QString, QString> QNapisy24Engine::getCredentials() const
+QPair<QString, QString> Napisy24DownloadEngine::getCredentials() const
 {
     QString configLogin = GlobalConfig().nick("Napisy24");
     QString configPass = GlobalConfig().pass("Napisy24");

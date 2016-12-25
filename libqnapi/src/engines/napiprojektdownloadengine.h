@@ -12,20 +12,17 @@
 **
 *****************************************************************************/
 
-#ifndef QNAPISY24ENGINE_H
-#define QNAPISY24ENGINE_H
+#ifndef NAPIPROJEKTDOWNLOADENGINE_H
+#define NAPIPROJEKTDOWNLOADENGINE_H
 
-#include "qnapiabstractengine.h"
-#include "utils/synchttp.h"
-#include "config/staticconfig.h"
+#include "subtitledownloadengine.h"
 
-#include <QSharedPointer>
-
-class QNapisy24Engine : public QNapiAbstractEngine
+class NapiProjektDownloadEngine : public SubtitleDownloadEngine
 {
 public:
-    QNapisy24Engine();
-    ~QNapisy24Engine();
+
+    NapiProjektDownloadEngine();
+    ~NapiProjektDownloadEngine();
 
     static QString name;
 
@@ -34,7 +31,6 @@ public:
     QUrl registrationUrl() const;
     const char * const * enginePixmapData() const;
 
-
     QString checksum(QString filename = "");
     bool lookForSubtitles(QString lang);
     QList<QNapiSubtitleInfo> listSubtitles();
@@ -42,13 +38,18 @@ public:
     bool unpack(QUuid id);
     void cleanup();
 
+    static bool checkUser(const QString & nick, const QString & pass);
+
 private:
-    QPair<QString, QString> getCredentials() const;
 
-    QSharedPointer<const StaticConfig> staticConfig;
+    QString p7zipPath, nick, pass;
 
-    quint64 fileSize;
-    QString p7zipPath;
+    QString checksum(QString filename, bool limit10M);
+    Maybe<QString> downloadByLangAndChecksum(QString lang, QString checksum) const;
+    QString npFDigest(const QString & input) const;
+    QString npLangWrapper(QString lang) const;
+    QString napiOS() const;
+
 };
 
-#endif // QNAPISY24ENGINE_H
+#endif

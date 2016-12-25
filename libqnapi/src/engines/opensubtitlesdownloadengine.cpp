@@ -12,15 +12,15 @@
 **
 *****************************************************************************/
 
-#include "qopensubtitlesengine.h"
+#include "opensubtitlesdownloadengine.h"
 #include "qnapilanguage.h"
 
 #include <QUrl>
 #include <QDir>
 
-QString QOpenSubtitlesEngine::name = "OpenSubtitles";
+QString OpenSubtitlesDownloadEngine::name = "OpenSubtitles";
 
-QOpenSubtitlesEngine::QOpenSubtitlesEngine(const QString & qnapiVersion)
+OpenSubtitlesDownloadEngine::OpenSubtitlesDownloadEngine(const QString & qnapiVersion)
     : rpc(QUrl(openSubtitlesXmlRpcUrl)),
       qnapiDisplayableVersion(qnapiVersion)
 {
@@ -28,28 +28,28 @@ QOpenSubtitlesEngine::QOpenSubtitlesEngine(const QString & qnapiVersion)
     lang = GlobalConfig().language();
 }
 
-QOpenSubtitlesEngine::~QOpenSubtitlesEngine()
+OpenSubtitlesDownloadEngine::~OpenSubtitlesDownloadEngine()
 {
     cleanup();
     if(isLogged())
         logout();
 }
 
-QString QOpenSubtitlesEngine::engineName() const
+QString OpenSubtitlesDownloadEngine::engineName() const
 {
-    return QOpenSubtitlesEngine::name;
+    return OpenSubtitlesDownloadEngine::name;
 }
 
-QString QOpenSubtitlesEngine::engineInfo() const
+QString OpenSubtitlesDownloadEngine::engineInfo() const
 {
     return "Moduł pobierania napisów z bazy <b>www.opensubtitles.org</b>";
 }
 
-QUrl QOpenSubtitlesEngine::registrationUrl() const {
+QUrl OpenSubtitlesDownloadEngine::registrationUrl() const {
     return QUrl("http://www.opensubtitles.org/newuser");
 }
 
-const char * const * QOpenSubtitlesEngine::enginePixmapData() const
+const char * const * OpenSubtitlesDownloadEngine::enginePixmapData() const
 {
     static const char *icon[]={
         "16 16 14 1",
@@ -87,7 +87,7 @@ const char * const * QOpenSubtitlesEngine::enginePixmapData() const
 }
 
 // oblicza sume kontrolna dla pliku filmowego
-QString QOpenSubtitlesEngine::checksum(QString filename)
+QString OpenSubtitlesDownloadEngine::checksum(QString filename)
 {
     if(filename.isEmpty())
         filename = movie;
@@ -108,7 +108,7 @@ QString QOpenSubtitlesEngine::checksum(QString filename)
 }
 
 // szuka napisow
-bool QOpenSubtitlesEngine::lookForSubtitles(QString lang)
+bool OpenSubtitlesDownloadEngine::lookForSubtitles(QString lang)
 {
     if(checkSum.isEmpty()) return false;
     if(!isLogged() && !login()) return false;
@@ -178,14 +178,14 @@ bool QOpenSubtitlesEngine::lookForSubtitles(QString lang)
 }
 
 // wyniki wyszukiwania
-QList<QNapiSubtitleInfo> QOpenSubtitlesEngine::listSubtitles()
+QList<QNapiSubtitleInfo> OpenSubtitlesDownloadEngine::listSubtitles()
 {
     std::sort(subtitlesList.begin(), subtitlesList.end());
     return subtitlesList;
 }
 
 // Probuje pobrac napisy do filmu z serwera OpenSubtitles
-bool QOpenSubtitlesEngine::download(QUuid id)
+bool OpenSubtitlesDownloadEngine::download(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);
 
@@ -235,7 +235,7 @@ bool QOpenSubtitlesEngine::download(QUuid id)
 }
 
 // Probuje dopasowac napisy do filmu
-bool QOpenSubtitlesEngine::unpack(QUuid id)
+bool OpenSubtitlesDownloadEngine::unpack(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);
     if(!ms) return false;
@@ -259,14 +259,14 @@ bool QOpenSubtitlesEngine::unpack(QUuid id)
     return true;
 }
 
-void QOpenSubtitlesEngine::cleanup()
+void OpenSubtitlesDownloadEngine::cleanup()
 {
     clearSubtitlesList();
     if(QFile::exists(subtitlesTmp))
         QFile::remove(subtitlesTmp);
 }
 
-bool QOpenSubtitlesEngine::login()
+bool OpenSubtitlesDownloadEngine::login()
 {
     QString userAgent = QString("QNapi v%1").arg(qnapiDisplayableVersion);
     QVariantList args;
@@ -278,7 +278,7 @@ bool QOpenSubtitlesEngine::login()
     return !token.isEmpty();
 }
 
-void QOpenSubtitlesEngine::logout()
+void OpenSubtitlesDownloadEngine::logout()
 {
     QVariantList args;
     args << token;

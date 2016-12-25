@@ -12,7 +12,7 @@
 **
 *****************************************************************************/
 
-#include "qnapiprojektengine.h"
+#include "napiprojektdownloadengine.h"
 #include "utils/synchttp.h"
 #include "qnapilanguage.h"
 
@@ -36,7 +36,7 @@
     #define snprintf _snprintf_s
 #endif
 
-namespace QNapiProjektEngineConsts
+namespace NapiProjektDownloadEngineConsts
 {
     const unsigned long NAPI_10MB = 10485760;
 
@@ -51,38 +51,38 @@ namespace QNapiProjektEngineConsts
     const QString napiReportBadUrlTpl = "http://www.napiprojekt.pl/unit_napisy/zlenapisyadd.php";
 }
 
-using namespace QNapiProjektEngineConsts;
+using namespace NapiProjektDownloadEngineConsts;
 
-QString QNapiProjektEngine::name = "NapiProjekt";
+QString NapiProjektDownloadEngine::name = "NapiProjekt";
 
-QNapiProjektEngine::QNapiProjektEngine()
+NapiProjektDownloadEngine::NapiProjektDownloadEngine()
 {
     p7zipPath = GlobalConfig().p7zipPath();
     nick = GlobalConfig().nick(engineName());
     pass = GlobalConfig().pass(engineName());
 }
 
-QNapiProjektEngine::~QNapiProjektEngine()
+NapiProjektDownloadEngine::~NapiProjektDownloadEngine()
 {
     cleanup();
 }
 
-QString QNapiProjektEngine::engineName() const
+QString NapiProjektDownloadEngine::engineName() const
 {
-    return QNapiProjektEngine::name;
+    return NapiProjektDownloadEngine::name;
 }
 
-QString QNapiProjektEngine::engineInfo() const
+QString NapiProjektDownloadEngine::engineInfo() const
 {
     return "Moduł pobierania napisów z bazy <b>www.napiprojekt.pl</b>";
 }
 
-QUrl QNapiProjektEngine::registrationUrl() const
+QUrl NapiProjektDownloadEngine::registrationUrl() const
 {
     return QUrl("http://www.napiprojekt.pl/rejestracja");
 }
 
-const char * const * QNapiProjektEngine::enginePixmapData() const
+const char * const * NapiProjektDownloadEngine::enginePixmapData() const
 {
     static const char * const icon[] = {
         "16 16 5 1",
@@ -110,7 +110,7 @@ const char * const * QNapiProjektEngine::enginePixmapData() const
     return icon;
 }
 
-QString QNapiProjektEngine::checksum(QString filename)
+QString NapiProjektDownloadEngine::checksum(QString filename)
 {
     if(filename.isEmpty())
         filename = movie;
@@ -118,7 +118,7 @@ QString QNapiProjektEngine::checksum(QString filename)
 }
 
 
-bool QNapiProjektEngine::lookForSubtitles(QString lang)
+bool NapiProjektDownloadEngine::lookForSubtitles(QString lang)
 {
     Maybe<QString> tmpPackedFileOpt = downloadByLangAndChecksum(lang, checkSum);
 
@@ -139,19 +139,19 @@ bool QNapiProjektEngine::lookForSubtitles(QString lang)
     return true;
 }
 
-QList<QNapiSubtitleInfo> QNapiProjektEngine::listSubtitles()
+QList<QNapiSubtitleInfo> NapiProjektDownloadEngine::listSubtitles()
 {
     return subtitlesList;
 }
 
-bool QNapiProjektEngine::download(QUuid id)
+bool NapiProjektDownloadEngine::download(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);
 
     return ms && QFile::exists(ms.value().sourceLocation);
 }
 
-Maybe<QString> QNapiProjektEngine::downloadByLangAndChecksum(QString lang, QString checksum) const
+Maybe<QString> NapiProjektDownloadEngine::downloadByLangAndChecksum(QString lang, QString checksum) const
 {
     if(checksum.isEmpty())
         return nothing();
@@ -192,7 +192,7 @@ Maybe<QString> QNapiProjektEngine::downloadByLangAndChecksum(QString lang, QStri
     return just(tmpPackedFile);
 }
 
-bool QNapiProjektEngine::unpack(QUuid id)
+bool NapiProjektDownloadEngine::unpack(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);
     if(!ms) return false;
@@ -215,14 +215,14 @@ bool QNapiProjektEngine::unpack(QUuid id)
     return QFile::exists(subtitlesTmp);
 }
 
-void QNapiProjektEngine::cleanup()
+void NapiProjektDownloadEngine::cleanup()
 {
     clearSubtitlesList();
     if(QFile::exists(subtitlesTmp))
         QFile::remove(subtitlesTmp);
 }
 
-bool QNapiProjektEngine::checkUser(const QString & nick, const QString & pass)
+bool NapiProjektDownloadEngine::checkUser(const QString & nick, const QString & pass)
 {
     SyncHTTP http;
     QString urlTxt = napiCheckUserUrlTpl.arg(nick).arg(pass);
@@ -237,7 +237,7 @@ bool QNapiProjektEngine::checkUser(const QString & nick, const QString & pass)
     return false;
 }
 
-QString QNapiProjektEngine::checksum(QString filename, bool limit10M)
+QString NapiProjektDownloadEngine::checksum(QString filename, bool limit10M)
 {
     QFile file(filename);
     QByteArray fileArray;
@@ -264,7 +264,7 @@ QString QNapiProjektEngine::checksum(QString filename, bool limit10M)
     return checkSum;
 }
 
-QString QNapiProjektEngine::npFDigest(const QString & input) const
+QString NapiProjektDownloadEngine::npFDigest(const QString & input) const
 {
     if(input.size() != 32) return "";
 
@@ -293,7 +293,7 @@ QString QNapiProjektEngine::npFDigest(const QString & input) const
     return b;
 }
 
-QString QNapiProjektEngine::npLangWrapper(QString lang) const
+QString NapiProjektDownloadEngine::npLangWrapper(QString lang) const
 {
     lang = QNapiLanguage(lang).toTwoLetter().toUpper();
 
@@ -303,7 +303,7 @@ QString QNapiProjektEngine::npLangWrapper(QString lang) const
     return lang;
 }
 
-QString QNapiProjektEngine::napiOS() const
+QString NapiProjektDownloadEngine::napiOS() const
 {
 #if defined(Q_OS_WIN)
     return "Windows";
