@@ -28,7 +28,7 @@ public:
     ConfigWriter(const QString & qnapiVersion);
 
     void writeUserConfig(const QNapiConfig2 & config) const;
-    void readPortableConfig(const QString & configFilePath, const QNapiConfig2 & config) const;
+    void writePortableConfig(const QString & configFilePath, const QNapiConfig2 & config) const;
     void writeConfig(const QNapiConfig2 & config, QSettings & settings) const;
 
 private:

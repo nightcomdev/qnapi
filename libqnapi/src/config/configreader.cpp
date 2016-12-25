@@ -57,26 +57,24 @@ const GeneralConfig ConfigReader::readGeneralConfig(const QSettings & settings) 
 
 const QList<QPair<QString, bool>> ConfigReader::readEnabledEngines(const QSettings & settings) const
 {
-    QList<QPair<QString, bool>> defaultEngines;
+    QList<QPair<QString, bool>> defaultEnabledEngines;
     foreach(QString engineName, staticConfig->subtitleEngineNames())
     {
-        defaultEngines << qMakePair(engineName, true);
+        defaultEnabledEngines << qMakePair(engineName, true);
     }
 
-    QString enginesStr = settings.value("qnapi/engines", "").toString();
+    QStringList enabledEnginesStr = settings.value("qnapi/engines", QStringList()).toStringList();
 
-    QStringList splitEnginesStr = enginesStr.split(",", QString::SkipEmptyParts);
-
-    if(splitEnginesStr.size() != staticConfig->subtitleEngineNames().size()) {
-        return defaultEngines;
+    if(enabledEnginesStr.size() != staticConfig->subtitleEngineNames().size()) {
+        return defaultEnabledEngines;
     } else {
         QList<QPair<QString, bool>> enabledEngines;
-        foreach(QString engineEnableStr, splitEnginesStr)
+        foreach(QString engineEnableStr, enabledEnginesStr)
         {
             QStringList engineParts = engineEnableStr.split(":", QString::SkipEmptyParts);
             if(engineParts.size() != 2)
             {
-                return defaultEngines;
+                return defaultEnabledEngines;
             }
             enabledEngines << qMakePair(engineParts[0], engineParts[1] == "on");
         }

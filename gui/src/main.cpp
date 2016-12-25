@@ -32,9 +32,11 @@ void sigHandler(int);
 
 int main(int argc, char **argv)
 {
-    QNapiConfig2 cfg = LibQNapi::configReader()->readUserConfig();
+    QNapiConfig2 cfg = LibQNapi::configReader()->readPortableConfig("qnapi.ini");
 
     QTextStream(stdout) << cfg.toString();
+
+    LibQNapi::configWriter()->writePortableConfig("qnapi.ini", cfg);
 
     return 0;
 

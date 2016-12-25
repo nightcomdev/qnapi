@@ -26,7 +26,7 @@ void ConfigWriter::writeUserConfig(const QNapiConfig2 & config) const
     writeConfig(config, settings);
 }
 
-void ConfigWriter::readPortableConfig(const QString & configFilePath, const QNapiConfig2 & config) const
+void ConfigWriter::writePortableConfig(const QString & configFilePath, const QNapiConfig2 & config) const
 {
     QSettings settings(configFilePath, QSettings::IniFormat);
     writeConfig(config, settings);
@@ -61,17 +61,16 @@ void ConfigWriter::writeGeneralConfig(const GeneralConfig & generalConfig, QSett
 
 void ConfigWriter::writeEnabledEngines(const QList<QPair<QString, bool>> & enabledEngines, QSettings & settings) const
 {
-    QString enabledEnginesStr;
-    QTextStream ts(&enabledEnginesStr);
+    QStringList enabledEnginesStr;
     typedef QPair<QString, bool> EngineEnableCfg;
     foreach(EngineEnableCfg engineCfg, enabledEngines)
     {
         QString engineName = engineCfg.first;
         QString engineEnableStr = engineCfg.second ? "on" : "off";
-        ts << engineName << ":" << engineEnableStr << ",";
+        enabledEnginesStr << engineName + ":" + engineEnableStr;
     }
 
-    settings.setValue("qnapi/engines", enabledEnginesStr.left(enabledEnginesStr.size() - 1));
+    settings.setValue("qnapi/engines", enabledEnginesStr);
 }
 
 void ConfigWriter::writeEnginesConfig(const QMap<QString, EngineConfig> & enginesConfig, QSettings & settings) const
