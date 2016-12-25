@@ -15,10 +15,15 @@
 #ifndef LIBQNAPI_H
 #define LIBQNAPI_H
 
-#include "movieinfo/movieinfoprovider.h"
 #include "config/staticconfig.h"
 #include "config/configreader.h"
 #include "config/configwriter.h"
+
+#include "movieinfo/movieinfoprovider.h"
+
+#include "subconvert/subtitleconverter.h"
+#include "subconvert/subtitleformatsregistry.h"
+
 #include <QString>
 #include <QSharedPointer>
 
@@ -31,10 +36,15 @@ public:
     static QString version();
     static QString displayableVersion();
     static QString webpageUrl();
-    static QSharedPointer<const MovieInfoProvider> movieInfoProvider();
+
     static QSharedPointer<const StaticConfig> staticConfigProvider();
     static QSharedPointer<const ConfigReader> configReader();
     static QSharedPointer<const ConfigWriter> configWriter();
+
+    static QSharedPointer<const MovieInfoProvider> movieInfoProvider();
+
+    static QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry();
+    static QSharedPointer<const SubtitleConverter> subtitleConverter();
 };
 
 #endif // LIBQNAPI_H

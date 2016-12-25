@@ -14,11 +14,6 @@
 
 #include "subtitleformatsregistry.h"
 
-#include "subconvert/formats/microdvd.h"
-#include "subconvert/formats/mpl2.h"
-#include "subconvert/formats/subrip.h"
-#include "subconvert/formats/tmplayer.h"
-
 SubtitleFormatsRegistry::SubtitleFormatsRegistry()
 {}
 
@@ -45,16 +40,3 @@ SubtitleFormat* SubtitleFormatsRegistry::select(const QString & format) const
     return formats.value(format, 0);
 }
 
-
-SubtitleFormatsRegistry & GlobalFormatsRegistry()
-{
-    static SubtitleFormatsRegistry registry;
-    if(registry.enumerateFormats().isEmpty())
-    {
-        registry.registerFormat(new MicroDVDSubtitleFormat);
-        registry.registerFormat(new MPL2SubtitleFormat);
-        registry.registerFormat(new SubRipSubtitleFormat);
-        registry.registerFormat(new TMPlayerSubtitleFormat);
-    }
-    return registry;
-}

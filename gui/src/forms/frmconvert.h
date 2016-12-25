@@ -17,6 +17,7 @@
 
 #include "ui_frmconvert.h"
 #include "subconvert/subtitleconverter.h"
+#include "subconvert/subtitleformatsregistry.h"
 #include "config/staticconfig.h"
 #include <Maybe.h>
 #include <QDialog>
@@ -30,10 +31,11 @@ public:
     ~frmConvert() {}
 private:
     Ui::frmConvert ui;
-    SubtitleConverter subConverter;
     QSharedPointer<const StaticConfig> staticConfig;
-    QString srcFormat, targetFormat;
+    QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry;
+    SubtitleConverter subConverter;
     bool targetFileNameSelected;
+    QString srcFormat, targetFormat;
 
     void checkFPSNeeded();
     Maybe<QString> determineMovieFPS(const QString & defaultMovieFilePath);

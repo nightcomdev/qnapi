@@ -14,10 +14,16 @@
 
 #include "frmoptions.h"
 #include "qnapiapp.h"
-#include "subconvert/subtitleformatsregistry.h"
 
+#include "forms/frmnapiprojektconfig.h"
+#include "forms/frmopensubtitlesconfig.h"
+#include "forms/frmnapisy24config.h"
 
-frmOptions::frmOptions(QWidget * parent, Qt::WindowFlags f) : QDialog(parent, f)
+#include "libqnapi.h"
+
+frmOptions::frmOptions(QWidget * parent, Qt::WindowFlags f)
+    : QDialog(parent, f),
+      subtitleFormatsRegistry(LibQNapi::subtitleFormatsRegistry())
 {
     ui.setupUi(this);
 
@@ -71,7 +77,7 @@ frmOptions::frmOptions(QWidget * parent, Qt::WindowFlags f) : QDialog(parent, f)
 
     showAllEncodings();
 
-    foreach(QString format, GlobalFormatsRegistry().enumerateFormats())
+    foreach(QString format, subtitleFormatsRegistry->enumerateFormats())
     {
         ui.cbSubFormat->addItem(format);
     }
@@ -206,9 +212,18 @@ void frmOptions::pbMoveDownClicked()
 
 void frmOptions::pbEngineConfClicked()
 {
-    QNapi n;
     QString engineName = ui.twEngines->selectedItems().at(0)->text();
-    n.configureEngine(engineName, this);
+
+    if(engineName == "NapiProjekt") {
+        frmNapiProjektConfig config(this);
+        config.exec();
+    } else if(engineName == "OpenSubtitles") {
+        frmOpenSubtitlesConfig config(this);
+        config.exec();
+    } else if(engineName == "Napisy24") {
+        frmNapisy24Config config(this);
+        config.exec();
+    }
 }
 
 void frmOptions::pbEngineInfoClicked()
@@ -232,7 +247,7 @@ void frmOptions::subFormatChanged(int format)
     else
     {
         QString targetFormatName = ui.cbSubFormat->currentText();
-        SubtitleFormat * targetSF = GlobalFormatsRegistry().select(targetFormatName);
+        SubtitleFormat * targetSF = subtitleFormatsRegistry->select(targetFormatName);
         QString targetDefaultExt = targetSF->defaultExtension();
         ui.cbSubExtension->setItemText(0, tr("Domyślne (%1)").arg(targetDefaultExt));
     }
@@ -334,7 +349,7 @@ void frmOptions::writeConfig()
     GlobalConfig().setPpShowAllEncodings(ui.cbShowAllEncodings->isChecked());
     GlobalConfig().setPpRemoveLines(ui.cbRemoveLines->isChecked());
     GlobalConfig().setPpRemoveWords(ui.teRemoveWords->toPlainText().split("\n"));
-    QString targetFormat = ui.cbSubFormat->currentIndex() == 0 ? "" : GlobalFormatsRegistry().enumerateFormats().at(ui.cbSubFormat->currentIndex() - 1);
+    QString targetFormat = ui.cbSubFormat->currentIndex() == 0 ? "" : subtitleFormatsRegistry->enumerateFormats().at(ui.cbSubFormat->currentIndex() - 1);
     GlobalConfig().setPpSubFormat(targetFormat);
     QString targetExt = ui.cbSubExtension->currentIndex() == 0 ? "" : ui.cbSubExtension->currentText();
     GlobalConfig().setPpSubExtension(targetExt);
@@ -400,7 +415,7 @@ void frmOptions::readConfig()
     ui.teRemoveWords->setText(GlobalConfig().ppRemoveWords().join("\n"));
 
     int formatIdx = 1;
-    foreach(QString format, GlobalFormatsRegistry().enumerateFormats())
+    foreach(QString format, subtitleFormatsRegistry->enumerateFormats())
     {
         if(GlobalConfig().ppSubFormat() == format)
         {

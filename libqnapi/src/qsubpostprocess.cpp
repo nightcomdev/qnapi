@@ -1,7 +1,5 @@
 #include "qsubpostprocess.h"
 #include "qnapiconfig.h"
-#include "subconvert/subtitleconverter.h"
-#include "subconvert/subtitleformatsregistry.h"
 #include "libqnapi.h"
 
 #include <QTextCodec>
@@ -9,7 +7,15 @@
 #include <QFile>
 #include <QFileInfo>
 
-void QSubPostProcess::perform()
+QSubPostProcess::QSubPostProcess(QString _movieFilePath,
+                                 QString _subtitleFilePath)
+    : movieFilePath(_movieFilePath),
+      subtitleFilePath(_subtitleFilePath),
+      subtitleConverter(LibQNapi::subtitleConverter())
+{}
+
+
+void QSubPostProcess::perform() const
 {
     if(GlobalConfig().ppRemoveLines())
     {
@@ -34,14 +40,13 @@ void QSubPostProcess::perform()
 
     if(!GlobalConfig().ppSubFormat().isEmpty())
     {
-        SubtitleConverter sc(LibQNapi::movieInfoProvider());
         QString targetFormat = GlobalConfig().ppSubFormat();
-        sc.convertSubtitles(subtitleFilePath, targetFormat, subtitleFilePath, movieFilePath);
+        subtitleConverter->convertSubtitles(subtitleFilePath, targetFormat, subtitleFilePath, movieFilePath);
     }
 }
 
 
-bool QSubPostProcess::ppReplaceDiacriticsWithASCII()
+bool QSubPostProcess::ppReplaceDiacriticsWithASCII() const
 {
     if(!QFileInfo(subtitleFilePath).exists())
         return false;
@@ -72,7 +77,7 @@ bool QSubPostProcess::ppReplaceDiacriticsWithASCII()
     return true;
 }
 
-bool QSubPostProcess::ppChangeSubtitlesEncoding(const QString & from, const QString & to)
+bool QSubPostProcess::ppChangeSubtitlesEncoding(const QString & from, const QString & to) const
 {
     QFile f(subtitleFilePath);
     if(!f.open(QIODevice::ReadOnly))
@@ -103,7 +108,7 @@ bool QSubPostProcess::ppChangeSubtitlesEncoding(const QString & from, const QStr
     return true;
 }
 
-bool QSubPostProcess::ppChangeSubtitlesEncoding(const QString & to)
+bool QSubPostProcess::ppChangeSubtitlesEncoding(const QString & to) const
 {
     if(!QFileInfo(subtitleFilePath).exists())
         return false;
@@ -116,7 +121,7 @@ bool QSubPostProcess::ppChangeSubtitlesEncoding(const QString & to)
     return ppChangeSubtitlesEncoding(from, to);
 }
 
-bool QSubPostProcess::ppRemoveLinesContainingWords(QStringList wordList)
+bool QSubPostProcess::ppRemoveLinesContainingWords(QStringList wordList) const
 {
     if(!QFileInfo(subtitleFilePath).exists())
         return false;

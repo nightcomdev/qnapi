@@ -20,9 +20,6 @@
 #include "engines/qnapiprojektengine.h"
 #include "engines/qnapisy24engine.h"
 #include "engines/qopensubtitlesengine.h"
-#include "forms/frmnapiprojektconfig.h"
-#include "forms/frmopensubtitlesconfig.h"
-#include "forms/frmnapisy24config.h"
 #include <QtAlgorithms>
 
 QNapi::~QNapi()
@@ -299,18 +296,3 @@ QStringList QNapi::listLoadedEngines()
     }
     return list;
 }
-
-void QNapi::configureEngine(QString engine, QWidget * parent) const
-{
-    if(engine == "NapiProjekt") {
-        frmNapiProjektConfig config(parent);
-        config.exec();
-    } else if(engine == "OpenSubtitles") {
-        frmOpenSubtitlesConfig config(parent);
-        config.exec();
-    } else if(engine == "Napisy24") {
-        frmNapisy24Config config(parent);
-        config.exec();
-    }
-}
-

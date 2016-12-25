@@ -15,6 +15,13 @@
 #ifndef __FRMOPTIONS__H__
 #define __FRMOPTIONS__H__
 
+
+#include "ui_frmoptions.h"
+#include "qnapiconfig.h"
+#include "qnapilanguage.h"
+
+#include "subconvert/subtitleformatsregistry.h"
+
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QDir>
@@ -22,12 +29,7 @@
 #include <QList>
 #include <QTextCodec>
 #include <QDesktopWidget>
-
-#include "ui_frmoptions.h"
-#include "qnapiconfig.h"
-
-#include "qnapilanguage.h"
-
+#include <QSharedPointer>
 
 class frmOptions: public QDialog
 {
@@ -63,7 +65,8 @@ Q_OBJECT
     private:
         Ui::frmOptions ui;
         void showAllEncodings();
-        
+
+        QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry;
 };
 
 #endif

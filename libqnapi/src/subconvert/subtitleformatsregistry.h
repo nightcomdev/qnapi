@@ -28,12 +28,10 @@ public:
     SubtitleFormatsRegistry();
     ~SubtitleFormatsRegistry();
 
-    void registerFormat(SubtitleFormat *format);
     QStringList enumerateFormats() const;
     SubtitleFormat* select(const QString & format) const;
 
+    void registerFormat(SubtitleFormat *format);
 };
-
-SubtitleFormatsRegistry & GlobalFormatsRegistry();
 
 #endif // SUBTITLEFORMATSREGISTRY_H

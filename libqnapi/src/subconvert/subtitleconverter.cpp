@@ -13,7 +13,6 @@
 *****************************************************************************/
 
 #include "movieinfo/movieinfoprovider.h"
-#include "subconvert/subtitleformatsregistry.h"
 #include "utils/encodingutils.h"
 #include "libqnapi.h"
 #include "qnapiconfig.h"
@@ -23,22 +22,23 @@
 #include <QFile>
 
 
-SubtitleConverter::SubtitleConverter(QSharedPointer<const MovieInfoProvider> movieInfoProvider)
-    : movieInfoProvider(movieInfoProvider)
-{
-}
+SubtitleConverter::SubtitleConverter(QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry,
+                                     QSharedPointer<const MovieInfoProvider> movieInfoProvider)
+    : subtitleFormatsRegistry(subtitleFormatsRegistry),
+      movieInfoProvider(movieInfoProvider)
+{}
 
-QString SubtitleConverter::detectFormat(const QString &subtitleFile)
+QString SubtitleConverter::detectFormat(const QString &subtitleFile) const
 {
     const QStringList & lines = readFile(subtitleFile, "UTF-8", 15);
     return detectFormat(lines);
 }
 
-QString SubtitleConverter::detectFormat(const QStringList & subtitleLines)
+QString SubtitleConverter::detectFormat(const QStringList & subtitleLines) const
 {
-    foreach(QString format, GlobalFormatsRegistry().enumerateFormats())
+    foreach(QString format, subtitleFormatsRegistry->enumerateFormats())
     {
-        if(GlobalFormatsRegistry().select(format)->detect(subtitleLines))
+        if(subtitleFormatsRegistry->select(format)->detect(subtitleLines))
         {
             return format;
         }
@@ -51,7 +51,7 @@ bool SubtitleConverter::convertSubtitles(QString subtitleFile,
                                          QString targetFileName,
                                          double movieFPS,
                                          double fpsRatio,
-                                         double delayOffset)
+                                         double delayOffset) const
 {
     return convertSubtitles(subtitleFile, targetFormatName, targetFileName, [=]() -> double { return movieFPS; }, fpsRatio, delayOffset);
 }
@@ -59,7 +59,7 @@ bool SubtitleConverter::convertSubtitles(QString subtitleFile,
 bool SubtitleConverter::convertSubtitles(QString subtitleFile,
                                          QString targetFormatName,
                                          QString targetFileName,
-                                         QString movieFile)
+                                         QString movieFile) const
 {
     return convertSubtitles(subtitleFile, targetFormatName, targetFileName, [&]() -> double {
         const Maybe<MovieInfo> mmi = movieInfoProvider->getMovieInfo(movieFile);
@@ -72,7 +72,7 @@ bool SubtitleConverter::convertSubtitles(QString subtitleFile,
                                          QString targetFileName,
                                          std::function<double ()> determineFPS,
                                          double fpsRatio,
-                                         double delayOffset)
+                                         double delayOffset) const
 {
     EncodingUtils eu;
     QString encoding = eu.detectFileEncoding(subtitleFile);
@@ -83,8 +83,8 @@ bool SubtitleConverter::convertSubtitles(QString subtitleFile,
     if(detectedFormat.isEmpty())
         return false;
 
-    SubtitleFormat * inputFormat = GlobalFormatsRegistry().select(detectedFormat);
-    SubtitleFormat * targetFormat = GlobalFormatsRegistry().select(targetFormatName);
+    SubtitleFormat * inputFormat = subtitleFormatsRegistry->select(detectedFormat);
+    SubtitleFormat * targetFormat = subtitleFormatsRegistry->select(targetFormatName);
 
 
     SubFile sf = inputFormat->decode(subtitleLines);
@@ -184,17 +184,17 @@ bool SubtitleConverter::convertSubtitles(QString subtitleFile,
     return writeFile(targetFileName, encoding, targetLines);
 }
 
-long SubtitleConverter::ts2frame(long ts, double frameRate)
+long SubtitleConverter::ts2frame(long ts, double frameRate) const
 {
     return (long)floor(frameRate * ts / 1000.0);
 }
 
-long SubtitleConverter::frame2ts(long frame, double frameRate)
+long SubtitleConverter::frame2ts(long frame, double frameRate) const
 {
     return (long)floor(1000.0 * frame / frameRate);
 }
 
-QStringList SubtitleConverter::readFile(const QString & filename, QString encoding, long atMostLines)
+QStringList SubtitleConverter::readFile(const QString & filename, QString encoding, long atMostLines) const
 {
     QStringList buff;
     long current = 0;
@@ -213,7 +213,7 @@ QStringList SubtitleConverter::readFile(const QString & filename, QString encodi
     return buff;
 }
 
-bool SubtitleConverter::writeFile(const QString & filename, QString encoding, const QStringList & lines)
+bool SubtitleConverter::writeFile(const QString & filename, QString encoding, const QStringList & lines) const
 {
     QFile outputFile(filename);
     if(outputFile.open(QIODevice::WriteOnly | QIODevice::Text))

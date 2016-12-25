@@ -13,7 +13,6 @@
 *****************************************************************************/
 
 #include "frmconvert.h"
-#include "subconvert/subtitleformatsregistry.h"
 #include "movieinfo/movieinfoprovider.h"
 #include "libqnapi.h"
 #include "qnapiconfig.h"
@@ -28,8 +27,9 @@
 
 frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
     : QDialog(parent, f),
-      subConverter(LibQNapi::movieInfoProvider()),
       staticConfig(LibQNapi::staticConfigProvider()),
+      subtitleFormatsRegistry(LibQNapi::subtitleFormatsRegistry()),
+      subConverter(subtitleFormatsRegistry, LibQNapi::movieInfoProvider()),
       targetFileNameSelected(false)
 {
     ui.setupUi(this);
@@ -43,7 +43,7 @@ frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
     ui.lbDetectedFormatValue->setText("");
 
     ui.cbTargetFormat->clear();
-    foreach(QString format, GlobalFormatsRegistry().enumerateFormats())
+    foreach(QString format, subtitleFormatsRegistry->enumerateFormats())
     {
         ui.cbTargetFormat->addItem(format);
     }
@@ -59,7 +59,7 @@ frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
 
     if(GlobalConfig().ppSubFormat().isEmpty())
     {
-        targetFormat = GlobalFormatsRegistry().enumerateFormats().first();
+        targetFormat = subtitleFormatsRegistry->enumerateFormats().first();
     }
     else
     {
@@ -125,7 +125,7 @@ void frmConvert::srcSubFileLoaded(const QString & srcSubFileName)
 
 void frmConvert::targetFormatChanged(int targetFormatIdx)
 {
-    targetFormat = GlobalFormatsRegistry().enumerateFormats().at(targetFormatIdx);
+    targetFormat = subtitleFormatsRegistry->enumerateFormats().at(targetFormatIdx);
     checkFPSNeeded();
 }
 
@@ -136,8 +136,8 @@ void frmConvert::checkFPSNeeded()
     {
         fpsNeeded = false;
     } else {
-        SubtitleFormat * srcSF = GlobalFormatsRegistry().select(srcFormat);
-        SubtitleFormat * targetSF = GlobalFormatsRegistry().select(targetFormat);
+        SubtitleFormat * srcSF = subtitleFormatsRegistry->select(srcFormat);
+        SubtitleFormat * targetSF = subtitleFormatsRegistry->select(targetFormat);
         fpsNeeded = (srcSF->isTimeBased() != targetSF->isTimeBased()) || (ui.cbDelaySubtitles->isChecked() && !targetSF->isTimeBased());
 
         QString targetDefaultExt = targetSF->defaultExtension();
@@ -227,7 +227,7 @@ void frmConvert::generateTargetFileName()
 
         if(ui.cbTargetExtension->currentIndex() == 0)
         {
-            SubtitleFormat * targetSF = GlobalFormatsRegistry().select(targetFormat);
+            SubtitleFormat * targetSF = subtitleFormatsRegistry->select(targetFormat);
             extension = targetSF->defaultExtension();
         } else {
             extension = ui.cbTargetExtension->currentText();
