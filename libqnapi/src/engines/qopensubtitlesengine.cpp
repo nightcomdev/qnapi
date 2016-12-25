@@ -18,7 +18,8 @@
 #include <QUrl>
 #include <QDir>
 
-// konstruktor klasy
+QString QOpenSubtitlesEngine::name = "OpenSubtitles";
+
 QOpenSubtitlesEngine::QOpenSubtitlesEngine(const QString & qnapiVersion)
     : rpc(QUrl(openSubtitlesXmlRpcUrl)),
       qnapiDisplayableVersion(qnapiVersion)
@@ -27,7 +28,6 @@ QOpenSubtitlesEngine::QOpenSubtitlesEngine(const QString & qnapiVersion)
     lang = GlobalConfig().language();
 }
 
-// destruktor klasy
 QOpenSubtitlesEngine::~QOpenSubtitlesEngine()
 {
     cleanup();
@@ -35,19 +35,20 @@ QOpenSubtitlesEngine::~QOpenSubtitlesEngine()
         logout();
 }
 
-// zwraca nazwe modulu
-QString QOpenSubtitlesEngine::engineName()
+QString QOpenSubtitlesEngine::engineName() const
 {
-    return "OpenSubtitles";
+    return QOpenSubtitlesEngine::name;
 }
 
-// zwraca informacje nt. modulu
-QString QOpenSubtitlesEngine::engineInfo()
+QString QOpenSubtitlesEngine::engineInfo() const
 {
     return "Moduł pobierania napisów z bazy <b>www.opensubtitles.org</b>";
 }
 
-// zwraca ikone w formacie XMP
+QUrl QOpenSubtitlesEngine::registrationUrl() const {
+    return QUrl("http://www.opensubtitles.org/newuser");
+}
+
 const char * const * QOpenSubtitlesEngine::enginePixmapData() const
 {
     static const char *icon[]={

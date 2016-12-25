@@ -27,16 +27,12 @@ public:
     QOpenSubtitlesEngine(const QString & qnapiDisplayableVersion);
     ~QOpenSubtitlesEngine();
 
-    // zwraca nazwe modulu
-    QString engineName();
-    // zwraca informacje nt. modulu
-    QString engineInfo();
-    // zwraca ikone silnika pobierania
-    const char * const * enginePixmapData() const;
+    static QString name;
 
-    QUrl registrationUrl() const {
-        return QUrl("http://www.opensubtitles.org/newuser");
-    }
+    QString engineName() const;
+    QString engineInfo() const;
+    QUrl registrationUrl() const;
+    const char * const * enginePixmapData() const;
 
     // oblicza sume kontrolna pliku filmowego
     QString checksum(QString filename = "");

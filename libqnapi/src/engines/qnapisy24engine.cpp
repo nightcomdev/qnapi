@@ -21,6 +21,8 @@
 #include <QUrlQuery>
 #include <QProcess>
 
+QString QNapisy24Engine::name = "Napisy24";
+
 QNapisy24Engine::QNapisy24Engine()
   : staticConfig(LibQNapi::staticConfigProvider())
 {
@@ -32,14 +34,18 @@ QNapisy24Engine::~QNapisy24Engine()
     cleanup();
 }
 
-QString QNapisy24Engine::engineName()
+QString QNapisy24Engine::engineName() const
 {
-    return "Napisy24";
+    return QNapisy24Engine::name;
 }
 
-QString QNapisy24Engine::engineInfo()
+QString QNapisy24Engine::engineInfo() const
 {
     return "Moduł pobierania napisów z bazy <b>www.napisy24.pl</b><br />";
+}
+
+QUrl QNapisy24Engine::registrationUrl() const {
+    return QUrl("http://napisy24.pl/cb-registration/registers");
 }
 
 const char * const * QNapisy24Engine::enginePixmapData() const

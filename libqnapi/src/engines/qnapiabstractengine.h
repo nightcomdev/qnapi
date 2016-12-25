@@ -40,13 +40,13 @@ public:
     QString moviePath();
 
     // powinna zwracac nazwe modulu
-    virtual QString engineName() = 0;
+    virtual QString engineName() const = 0;
     // powinna zwracac informacje nt. modulu (prawa autorskie itp.)
-    virtual QString engineInfo() = 0;
-    // zwraca ikone silnika pobierania
-    virtual const char * const * enginePixmapData() const = 0;
+    virtual QString engineInfo() const = 0;
     // rejestracja uzytkownika
     virtual QUrl registrationUrl() const = 0;
+    // zwraca ikone silnika pobierania
+    virtual const char * const * enginePixmapData() const = 0;
 
     // czysci wewnetrzne listy znalezionych napisow w silniku
     virtual void clearSubtitlesList();

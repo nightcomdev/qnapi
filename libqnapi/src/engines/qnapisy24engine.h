@@ -27,13 +27,13 @@ public:
     QNapisy24Engine();
     ~QNapisy24Engine();
 
-    QString engineName();
-    QString engineInfo();
+    static QString name;
+
+    QString engineName() const;
+    QString engineInfo() const;
+    QUrl registrationUrl() const;
     const char * const * enginePixmapData() const;
 
-    QUrl registrationUrl() const {
-        return QUrl("http://napisy24.pl/cb-registration/registers");
-    }
 
     QString checksum(QString filename = "");
     bool lookForSubtitles(QString lang);

@@ -36,7 +36,25 @@
     #define snprintf _snprintf_s
 #endif
 
-// konstruktor klasy
+namespace QNapiProjektEngineConsts
+{
+    const unsigned long NAPI_10MB = 10485760;
+
+    const QString napiZipPassword = "iBlm8NTigvru0Jr0";
+    const QString napiDownloadUrlTpl= "http://www.napiprojekt.pl/unit_napisy/dl.php"
+                    "?l=%1&f=%2&t=%3&v=other&kolejka=false&nick=%4&pass=%5&napios=%6";
+    const QString napiCheckUserUrlTpl = "http://www.napiprojekt.pl/users_check.php?nick=%1&pswd=%2";
+    const QString napiUploadUrlTpl = "http://www.napiprojekt.pl/unit_napisy/upload.php"
+                    "?m_length=%1&m_resolution=%2x%3&m_fps=%4&m_hash=%5&m_filesize=%6";
+    const QString napiUploadUrlSimpleTpl = "http://www.napiprojekt.pl/unit_napisy/upload.php"
+                    "?m_hash=%5&m_filesize=%6";
+    const QString napiReportBadUrlTpl = "http://www.napiprojekt.pl/unit_napisy/zlenapisyadd.php";
+}
+
+using namespace QNapiProjektEngineConsts;
+
+QString QNapiProjektEngine::name = "NapiProjekt";
+
 QNapiProjektEngine::QNapiProjektEngine()
 {
     p7zipPath = GlobalConfig().p7zipPath();
@@ -44,26 +62,26 @@ QNapiProjektEngine::QNapiProjektEngine()
     pass = GlobalConfig().pass(engineName());
 }
 
-// destruktor klasy
 QNapiProjektEngine::~QNapiProjektEngine()
 {
     cleanup();
 }
 
-
-// zwraca nazwe modulu
-QString QNapiProjektEngine::engineName()
+QString QNapiProjektEngine::engineName() const
 {
-    return "NapiProjekt";
+    return QNapiProjektEngine::name;
 }
 
-// zwraca informacje nt. modulu
-QString QNapiProjektEngine::engineInfo()
+QString QNapiProjektEngine::engineInfo() const
 {
     return "Moduł pobierania napisów z bazy <b>www.napiprojekt.pl</b>";
 }
 
-// zwraca ikone w formacie XMP
+QUrl QNapiProjektEngine::registrationUrl() const
+{
+    return QUrl("http://www.napiprojekt.pl/rejestracja");
+}
+
 const char * const * QNapiProjektEngine::enginePixmapData() const
 {
     static const char * const icon[] = {
@@ -92,7 +110,6 @@ const char * const * QNapiProjektEngine::enginePixmapData() const
     return icon;
 }
 
-// oblicza sume kontrolna dla pliku filmowego (md5 z pierwszych 10MB pliku)
 QString QNapiProjektEngine::checksum(QString filename)
 {
     if(filename.isEmpty())
@@ -127,7 +144,6 @@ QList<QNapiSubtitleInfo> QNapiProjektEngine::listSubtitles()
     return subtitlesList;
 }
 
-// Probuje pobrac napisy do filmu z serwera NAPI
 bool QNapiProjektEngine::download(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);
@@ -176,7 +192,6 @@ Maybe<QString> QNapiProjektEngine::downloadByLangAndChecksum(QString lang, QStri
     return just(tmpPackedFile);
 }
 
-// Probuje rozpakowac napisy do filmu
 bool QNapiProjektEngine::unpack(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);
@@ -207,7 +222,6 @@ void QNapiProjektEngine::cleanup()
         QFile::remove(subtitlesTmp);
 }
 
-// Sprawdza uzytkownika w bazie
 bool QNapiProjektEngine::checkUser(const QString & nick, const QString & pass)
 {
     SyncHTTP http;
@@ -223,7 +237,6 @@ bool QNapiProjektEngine::checkUser(const QString & nick, const QString & pass)
     return false;
 }
 
-// oblicza sume kontrolna dla pliku filmowego (md5 z pierwszych 10MB pliku)
 QString QNapiProjektEngine::checksum(QString filename, bool limit10M)
 {
     QFile file(filename);
@@ -251,7 +264,6 @@ QString QNapiProjektEngine::checksum(QString filename, bool limit10M)
     return checkSum;
 }
 
-// Tajemnicza funkcja f()
 QString QNapiProjektEngine::npFDigest(const QString & input) const
 {
     if(input.size() != 32) return "";
