@@ -13,15 +13,18 @@
 *****************************************************************************/
 
 #include "frmnapiprojektconfig.h"
-#include "../qnapi.h"
+#include "libqnapi.h"
+#include "engines/napiprojektdownloadengine.h"
 
 frmNapiProjektConfig::frmNapiProjektConfig(QWidget *parent, Qt::WindowFlags f)
     : QDialog(parent, f)
 {
     ui.setupUi(this);
-    QNapi q;
-    q.addEngines(q.enumerateEngines());
-    setWindowIcon(QIcon(QPixmap(q.engineByName("NapiProjekt")->enginePixmapData())));
+
+    QIcon napiProjektIcon = QIcon(QPixmap(
+      LibQNapi::subtitleDownloadEngineRegistry()->enginePixmapData(NapiProjektDownloadEngine::name)
+    ));
+    setWindowIcon(napiProjektIcon);
 
     load();
 
@@ -34,18 +37,18 @@ frmNapiProjektConfig::frmNapiProjektConfig(QWidget *parent, Qt::WindowFlags f)
 
 void frmNapiProjektConfig::accept()
 {
-    GlobalConfig().setNick("NapiProjekt", ui.leNick->text());
-    GlobalConfig().setPass("NapiProjekt", ui.lePass->text());
+    GlobalConfig().setNick(NapiProjektDownloadEngine::name, ui.leNick->text());
+    GlobalConfig().setPass(NapiProjektDownloadEngine::name, ui.lePass->text());
     QDialog::accept();
 }
 
 void frmNapiProjektConfig::pbRegisterClicked()
 {
-    ((QNapiApp*)qApp)->showCreateAccount("NapiProjekt");
+    ((QNapiApp*)qApp)->showCreateAccount(NapiProjektDownloadEngine::name);
 }
 
 void frmNapiProjektConfig::load()
 {
-    ui.leNick->setText(GlobalConfig().nick("NapiProjekt"));
-    ui.lePass->setText(GlobalConfig().pass("NapiProjekt"));
+    ui.leNick->setText(GlobalConfig().nick(NapiProjektDownloadEngine::name));
+    ui.lePass->setText(GlobalConfig().pass(NapiProjektDownloadEngine::name));
 }

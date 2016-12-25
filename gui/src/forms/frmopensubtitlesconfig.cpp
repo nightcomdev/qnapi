@@ -13,18 +13,20 @@
 *****************************************************************************/
 
 #include "frmopensubtitlesconfig.h"
-#include "qnapi.h"
 #include "qnapiconfig.h"
 #include "qnapiapp.h"
-
+#include "libqnapi.h"
+#include "engines/opensubtitlesdownloadengine.h"
 
 frmOpenSubtitlesConfig::frmOpenSubtitlesConfig(QWidget *parent, Qt::WindowFlags f)
     : QDialog(parent, f)
 {
     ui.setupUi(this);
-    QNapi q;
-    q.addEngines(q.enumerateEngines());
-    setWindowIcon(QIcon(QPixmap(q.engineByName("OpenSubtitles")->enginePixmapData())));
+
+    QIcon openSubtitlesIcon = QIcon(QPixmap(
+      LibQNapi::subtitleDownloadEngineRegistry()->enginePixmapData(OpenSubtitlesDownloadEngine::name)
+    ));
+    setWindowIcon(openSubtitlesIcon);
 
     load();
 
@@ -37,18 +39,18 @@ frmOpenSubtitlesConfig::frmOpenSubtitlesConfig(QWidget *parent, Qt::WindowFlags 
 
 void frmOpenSubtitlesConfig::accept()
 {
-    GlobalConfig().setNick("OpenSubtitles", ui.leNick->text());
-    GlobalConfig().setPass("OpenSubtitles", ui.lePass->text());
+    GlobalConfig().setNick(OpenSubtitlesDownloadEngine::name, ui.leNick->text());
+    GlobalConfig().setPass(OpenSubtitlesDownloadEngine::name, ui.lePass->text());
     QDialog::accept();
 }
 
 void frmOpenSubtitlesConfig::pbRegisterClicked()
 {
-    ((QNapiApp*)qApp)->showCreateAccount("OpenSubtitles");
+    ((QNapiApp*)qApp)->showCreateAccount(OpenSubtitlesDownloadEngine::name);
 }
 
 void frmOpenSubtitlesConfig::load()
 {
-    ui.leNick->setText(GlobalConfig().nick("OpenSubtitles"));
-    ui.lePass->setText(GlobalConfig().pass("OpenSubtitles"));
+    ui.leNick->setText(GlobalConfig().nick(OpenSubtitlesDownloadEngine::name));
+    ui.lePass->setText(GlobalConfig().pass(OpenSubtitlesDownloadEngine::name));
 }
