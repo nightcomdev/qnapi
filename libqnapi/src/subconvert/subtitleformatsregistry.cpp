@@ -14,29 +14,30 @@
 
 #include "subtitleformatsregistry.h"
 
+#include "subconvert/formats/microdvd.h"
+#include "subconvert/formats/mpl2.h"
+#include "subconvert/formats/subrip.h"
+#include "subconvert/formats/tmplayer.h"
+
 SubtitleFormatsRegistry::SubtitleFormatsRegistry()
-{}
-
-SubtitleFormatsRegistry::~SubtitleFormatsRegistry()
 {
-    foreach(QString formatName, formats.keys())
-    {
-        delete formats[formatName];
-    }
+    registerFormat(new MicroDVDSubtitleFormat);
+    registerFormat(new MPL2SubtitleFormat);
+    registerFormat(new SubRipSubtitleFormat);
+    registerFormat(new TMPlayerSubtitleFormat);
 }
 
-void SubtitleFormatsRegistry::registerFormat(SubtitleFormat *format)
-{
-    formats.insert(format->formatName(), format);
-}
-
-QStringList SubtitleFormatsRegistry::enumerateFormats() const
+QStringList SubtitleFormatsRegistry::listFormatNames() const
 {
     return formats.keys();
 }
 
-SubtitleFormat* SubtitleFormatsRegistry::select(const QString & format) const
+QSharedPointer<const SubtitleFormat> SubtitleFormatsRegistry::select(const QString & format) const
 {
-    return formats.value(format, 0);
+    return formats.value(format, QSharedPointer<SubtitleFormat>(0));
 }
 
+void SubtitleFormatsRegistry::registerFormat(SubtitleFormat *format)
+{
+    formats.insert(format->formatName(), QSharedPointer<SubtitleFormat>(format));
+}

@@ -24,10 +24,13 @@
 #include <config/qnapiconfig.h>
 #include <config/staticconfig.h>
 
+#include <engines/subtitledownloadenginesregistry.h>
+
 class ConfigReader
 {
 public:
-    ConfigReader(const QSharedPointer<const StaticConfig> & staticConfig);
+    ConfigReader(const QSharedPointer<const StaticConfig> & staticConfig,
+                 const QSharedPointer<const SubtitleDownloadEnginesRegistry> enginesRegistry);
 
     const QNapiConfig2 readUserConfig() const;
     const QNapiConfig2 readPortableConfig(const QString & configFilePath) const;
@@ -42,6 +45,7 @@ private:
     const ScanConfig readScanConfig(const QSettings & settings) const;
 
     QSharedPointer<const StaticConfig> staticConfig;
+    QSharedPointer<const SubtitleDownloadEnginesRegistry> enginesRegistry;
 };
 
 #endif // CONFIGREADER_H

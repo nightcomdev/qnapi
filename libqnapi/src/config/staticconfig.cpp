@@ -14,6 +14,7 @@
 
 #include "staticconfig.h"
 
+
 StaticConfig::StaticConfig()
 {}
 
@@ -56,10 +57,3 @@ QString StaticConfig::makeFilter(const QStringList & extensions) const
     return patterns.join(" ");
 }
 
-QStringList StaticConfig::subtitleEngineNames() const
-{
-    static QStringList engineNames = {
-        "NapiProjekt", "OpenSubtitles", "Napisy24"
-    };
-    return engineNames;
-}

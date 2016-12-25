@@ -15,10 +15,6 @@
 #include "libqnapi.h"
 #include "version.h"
 #include "movieinfo/libmediainfomovieinfoprovider.h"
-#include "subconvert/formats/microdvd.h"
-#include "subconvert/formats/mpl2.h"
-#include "subconvert/formats/subrip.h"
-#include "subconvert/formats/tmplayer.h"
 
 LibQNapi::LibQNapi()
 {
@@ -39,40 +35,51 @@ QString LibQNapi::webpageUrl()
     return QString(QNAPI_URL);
 }
 
-QSharedPointer<const StaticConfig> LibQNapi::staticConfigProvider()
+QSharedPointer<const StaticConfig>
+LibQNapi::staticConfigProvider()
 {
-    return QSharedPointer<const StaticConfig>(new StaticConfig());
+    return QSharedPointer<const StaticConfig>(new StaticConfig);
 }
 
-QSharedPointer<const ConfigReader> LibQNapi::configReader()
+QSharedPointer<const ConfigReader>
+LibQNapi::configReader()
 {
-    return QSharedPointer<const ConfigReader>(new ConfigReader(staticConfigProvider()));
+    return QSharedPointer<const ConfigReader>(
+        new ConfigReader(staticConfigProvider(), subtitleDownloadEngineRegistry())
+    );
 }
 
-QSharedPointer<const ConfigWriter> LibQNapi::configWriter()
+QSharedPointer<const ConfigWriter>
+LibQNapi::configWriter()
 {
     QString ver = version();
     return QSharedPointer<const ConfigWriter>(new ConfigWriter(ver));
 }
 
-QSharedPointer<const MovieInfoProvider> LibQNapi::movieInfoProvider()
+QSharedPointer<const SubtitleDownloadEnginesRegistry>
+LibQNapi::subtitleDownloadEngineRegistry()
 {
-    return QSharedPointer<const MovieInfoProvider>(new LibmediainfoMovieInfoProvider());
+    return QSharedPointer<const SubtitleDownloadEnginesRegistry>(
+        new SubtitleDownloadEnginesRegistry(LibQNapi::displayableVersion())
+    );
 }
 
-QSharedPointer<const SubtitleConverter> LibQNapi::subtitleConverter()
+QSharedPointer<const MovieInfoProvider>
+LibQNapi::movieInfoProvider()
+{
+    return QSharedPointer<const MovieInfoProvider>(new LibmediainfoMovieInfoProvider);
+}
+
+QSharedPointer<const SubtitleConverter>
+LibQNapi::subtitleConverter()
 {
     return QSharedPointer<const SubtitleConverter>(
         new SubtitleConverter(LibQNapi::subtitleFormatsRegistry(), LibQNapi::movieInfoProvider())
     );
 }
 
-QSharedPointer<const SubtitleFormatsRegistry> LibQNapi::subtitleFormatsRegistry()
+QSharedPointer<const SubtitleFormatsRegistry>
+LibQNapi::subtitleFormatsRegistry()
 {
-    QSharedPointer<SubtitleFormatsRegistry> registry(new SubtitleFormatsRegistry());
-    registry->registerFormat(new MicroDVDSubtitleFormat);
-    registry->registerFormat(new MPL2SubtitleFormat);
-    registry->registerFormat(new SubRipSubtitleFormat);
-    registry->registerFormat(new TMPlayerSubtitleFormat);
-    return registry;
+    return QSharedPointer<SubtitleFormatsRegistry>(new SubtitleFormatsRegistry);
 }

@@ -43,7 +43,7 @@ frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
     ui.lbDetectedFormatValue->setText("");
 
     ui.cbTargetFormat->clear();
-    foreach(QString format, subtitleFormatsRegistry->enumerateFormats())
+    foreach(QString format, subtitleFormatsRegistry->listFormatNames())
     {
         ui.cbTargetFormat->addItem(format);
     }
@@ -59,7 +59,7 @@ frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
 
     if(GlobalConfig().ppSubFormat().isEmpty())
     {
-        targetFormat = subtitleFormatsRegistry->enumerateFormats().first();
+        targetFormat = subtitleFormatsRegistry->listFormatNames().first();
     }
     else
     {
@@ -125,7 +125,7 @@ void frmConvert::srcSubFileLoaded(const QString & srcSubFileName)
 
 void frmConvert::targetFormatChanged(int targetFormatIdx)
 {
-    targetFormat = subtitleFormatsRegistry->enumerateFormats().at(targetFormatIdx);
+    targetFormat = subtitleFormatsRegistry->listFormatNames().at(targetFormatIdx);
     checkFPSNeeded();
 }
 
@@ -136,8 +136,8 @@ void frmConvert::checkFPSNeeded()
     {
         fpsNeeded = false;
     } else {
-        SubtitleFormat * srcSF = subtitleFormatsRegistry->select(srcFormat);
-        SubtitleFormat * targetSF = subtitleFormatsRegistry->select(targetFormat);
+        QSharedPointer<const SubtitleFormat> srcSF = subtitleFormatsRegistry->select(srcFormat);
+        QSharedPointer<const SubtitleFormat> targetSF = subtitleFormatsRegistry->select(targetFormat);
         fpsNeeded = (srcSF->isTimeBased() != targetSF->isTimeBased()) || (ui.cbDelaySubtitles->isChecked() && !targetSF->isTimeBased());
 
         QString targetDefaultExt = targetSF->defaultExtension();
@@ -227,7 +227,7 @@ void frmConvert::generateTargetFileName()
 
         if(ui.cbTargetExtension->currentIndex() == 0)
         {
-            SubtitleFormat * targetSF = subtitleFormatsRegistry->select(targetFormat);
+            QSharedPointer<const SubtitleFormat> targetSF = subtitleFormatsRegistry->select(targetFormat);
             extension = targetSF->defaultExtension();
         } else {
             extension = ui.cbTargetExtension->currentText();

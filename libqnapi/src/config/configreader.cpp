@@ -15,8 +15,10 @@
 #include "configreader.h"
 #include <QDebug>
 
-ConfigReader::ConfigReader(const QSharedPointer<const StaticConfig> & staticConfig)
-    : staticConfig(staticConfig)
+ConfigReader::ConfigReader(const QSharedPointer<const StaticConfig> & staticConfig,
+                           const QSharedPointer<const SubtitleDownloadEnginesRegistry> enginesRegistry)
+    : staticConfig(staticConfig),
+      enginesRegistry(enginesRegistry)
 {}
 
 
@@ -58,14 +60,14 @@ const GeneralConfig ConfigReader::readGeneralConfig(const QSettings & settings) 
 const QList<QPair<QString, bool>> ConfigReader::readEnabledEngines(const QSettings & settings) const
 {
     QList<QPair<QString, bool>> defaultEnabledEngines;
-    foreach(QString engineName, staticConfig->subtitleEngineNames())
+    foreach(QString engineName, enginesRegistry->listEngineNames())
     {
         defaultEnabledEngines << qMakePair(engineName, true);
     }
 
     QStringList enabledEnginesStr = settings.value("qnapi/engines", QStringList()).toStringList();
 
-    if(enabledEnginesStr.size() != staticConfig->subtitleEngineNames().size()) {
+    if(enabledEnginesStr.size() != enginesRegistry->listEngineNames().size()) {
         return defaultEnabledEngines;
     } else {
         QList<QPair<QString, bool>> enabledEngines;
@@ -85,7 +87,7 @@ const QList<QPair<QString, bool>> ConfigReader::readEnabledEngines(const QSettin
 const QMap<QString, EngineConfig> ConfigReader::readEnginesConfig(const QSettings & settings) const
 {
     QMap<QString, EngineConfig> engineConfigurations;
-    foreach(QString engineName, staticConfig->subtitleEngineNames())
+    foreach(QString engineName, enginesRegistry->listEngineNames())
     {
         engineConfigurations.insert(engineName, readEngineConfig(engineName, settings));
     }

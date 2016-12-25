@@ -28,7 +28,6 @@ public:
     QString movieExtensionsFilter() const;
     QStringList subtitleExtensions() const;
     QString subtitleExtensionsFilter() const;
-    QStringList subtitleEngineNames() const;
 
 private:
 

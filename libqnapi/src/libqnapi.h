@@ -19,6 +19,8 @@
 #include "config/configreader.h"
 #include "config/configwriter.h"
 
+#include "engines/subtitledownloadenginesregistry.h"
+
 #include "movieinfo/movieinfoprovider.h"
 
 #include "subconvert/subtitleconverter.h"
@@ -40,6 +42,8 @@ public:
     static QSharedPointer<const StaticConfig> staticConfigProvider();
     static QSharedPointer<const ConfigReader> configReader();
     static QSharedPointer<const ConfigWriter> configWriter();
+
+    static QSharedPointer<const SubtitleDownloadEnginesRegistry> subtitleDownloadEngineRegistry();
 
     static QSharedPointer<const MovieInfoProvider> movieInfoProvider();
 

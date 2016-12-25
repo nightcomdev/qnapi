@@ -77,7 +77,7 @@ frmOptions::frmOptions(QWidget * parent, Qt::WindowFlags f)
 
     showAllEncodings();
 
-    foreach(QString format, subtitleFormatsRegistry->enumerateFormats())
+    foreach(QString format, subtitleFormatsRegistry->listFormatNames())
     {
         ui.cbSubFormat->addItem(format);
     }
@@ -247,7 +247,7 @@ void frmOptions::subFormatChanged(int format)
     else
     {
         QString targetFormatName = ui.cbSubFormat->currentText();
-        SubtitleFormat * targetSF = subtitleFormatsRegistry->select(targetFormatName);
+        QSharedPointer<const SubtitleFormat> targetSF = subtitleFormatsRegistry->select(targetFormatName);
         QString targetDefaultExt = targetSF->defaultExtension();
         ui.cbSubExtension->setItemText(0, tr("Domyślne (%1)").arg(targetDefaultExt));
     }
@@ -349,7 +349,7 @@ void frmOptions::writeConfig()
     GlobalConfig().setPpShowAllEncodings(ui.cbShowAllEncodings->isChecked());
     GlobalConfig().setPpRemoveLines(ui.cbRemoveLines->isChecked());
     GlobalConfig().setPpRemoveWords(ui.teRemoveWords->toPlainText().split("\n"));
-    QString targetFormat = ui.cbSubFormat->currentIndex() == 0 ? "" : subtitleFormatsRegistry->enumerateFormats().at(ui.cbSubFormat->currentIndex() - 1);
+    QString targetFormat = ui.cbSubFormat->currentIndex() == 0 ? "" : subtitleFormatsRegistry->listFormatNames().at(ui.cbSubFormat->currentIndex() - 1);
     GlobalConfig().setPpSubFormat(targetFormat);
     QString targetExt = ui.cbSubExtension->currentIndex() == 0 ? "" : ui.cbSubExtension->currentText();
     GlobalConfig().setPpSubExtension(targetExt);
@@ -415,7 +415,7 @@ void frmOptions::readConfig()
     ui.teRemoveWords->setText(GlobalConfig().ppRemoveWords().join("\n"));
 
     int formatIdx = 1;
-    foreach(QString format, subtitleFormatsRegistry->enumerateFormats())
+    foreach(QString format, subtitleFormatsRegistry->listFormatNames())
     {
         if(GlobalConfig().ppSubFormat() == format)
         {

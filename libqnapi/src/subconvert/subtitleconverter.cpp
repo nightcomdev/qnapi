@@ -36,7 +36,7 @@ QString SubtitleConverter::detectFormat(const QString &subtitleFile) const
 
 QString SubtitleConverter::detectFormat(const QStringList & subtitleLines) const
 {
-    foreach(QString format, subtitleFormatsRegistry->enumerateFormats())
+    foreach(QString format, subtitleFormatsRegistry->listFormatNames())
     {
         if(subtitleFormatsRegistry->select(format)->detect(subtitleLines))
         {
@@ -83,8 +83,8 @@ bool SubtitleConverter::convertSubtitles(QString subtitleFile,
     if(detectedFormat.isEmpty())
         return false;
 
-    SubtitleFormat * inputFormat = subtitleFormatsRegistry->select(detectedFormat);
-    SubtitleFormat * targetFormat = subtitleFormatsRegistry->select(targetFormatName);
+    QSharedPointer<const SubtitleFormat> inputFormat = subtitleFormatsRegistry->select(detectedFormat);
+    QSharedPointer<const SubtitleFormat> targetFormat = subtitleFormatsRegistry->select(targetFormatName);
 
 
     SubFile sf = inputFormat->decode(subtitleLines);
