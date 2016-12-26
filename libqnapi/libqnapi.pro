@@ -87,7 +87,8 @@ HEADERS += src/libqnapi.h \
     src/engines/napisy24downloadengine.h \
     src/engines/opensubtitlesdownloadengine.h \
     src/engines/subtitledownloadenginesregistry.h \
-    src/utils/p7zipdecoder.h
+    src/utils/p7zipdecoder.h \
+    src/engines/subtitledownloadenginemetadata.h
 
 unix:!macx {
     PKGCONFIG += libmediainfo

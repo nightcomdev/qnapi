@@ -24,7 +24,7 @@ frmOpenSubtitlesConfig::frmOpenSubtitlesConfig(QWidget *parent, Qt::WindowFlags 
     ui.setupUi(this);
 
     QIcon openSubtitlesIcon = QIcon(QPixmap(
-      LibQNapi::subtitleDownloadEngineRegistry()->enginePixmapData(OpenSubtitlesDownloadEngine::name)
+      LibQNapi::subtitleDownloadEngineRegistry()->enginePixmapData(OpenSubtitlesDownloadEngine::metadata.name())
     ));
     setWindowIcon(openSubtitlesIcon);
 
@@ -39,18 +39,18 @@ frmOpenSubtitlesConfig::frmOpenSubtitlesConfig(QWidget *parent, Qt::WindowFlags 
 
 void frmOpenSubtitlesConfig::accept()
 {
-    GlobalConfig().setNick(OpenSubtitlesDownloadEngine::name, ui.leNick->text());
-    GlobalConfig().setPass(OpenSubtitlesDownloadEngine::name, ui.lePass->text());
+    GlobalConfig().setNick(OpenSubtitlesDownloadEngine::metadata.name(), ui.leNick->text());
+    GlobalConfig().setPass(OpenSubtitlesDownloadEngine::metadata.name(), ui.lePass->text());
     QDialog::accept();
 }
 
 void frmOpenSubtitlesConfig::pbRegisterClicked()
 {
-    ((QNapiApp*)qApp)->showCreateAccount(OpenSubtitlesDownloadEngine::name);
+    ((QNapiApp*)qApp)->showCreateAccount(OpenSubtitlesDownloadEngine::metadata.name());
 }
 
 void frmOpenSubtitlesConfig::load()
 {
-    ui.leNick->setText(GlobalConfig().nick(OpenSubtitlesDownloadEngine::name));
-    ui.lePass->setText(GlobalConfig().pass(OpenSubtitlesDownloadEngine::name));
+    ui.leNick->setText(GlobalConfig().nick(OpenSubtitlesDownloadEngine::metadata.name()));
+    ui.lePass->setText(GlobalConfig().pass(OpenSubtitlesDownloadEngine::metadata.name()));
 }

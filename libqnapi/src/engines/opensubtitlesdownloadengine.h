@@ -20,7 +20,6 @@
 #include "utils/syncxmlrpc.h"
 #include "utils/p7zipdecoder.h"
 
-
 class OpenSubtitlesDownloadEngine : public SubtitleDownloadEngine
 {
 public:
@@ -32,12 +31,10 @@ public:
                                 const QString & language);
     ~OpenSubtitlesDownloadEngine();
 
-    static QString name;
+    static SubtitleDownloadEngineMetadata metadata;
     static const char * const pixmapData[];
 
-    QString engineName() const;
-    QString engineInfo() const;
-    QUrl registrationUrl() const;
+    SubtitleDownloadEngineMetadata meta() const;
     const char * const * enginePixmapData() const;
 
     QString checksum(QString filename = "");

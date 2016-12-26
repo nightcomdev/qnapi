@@ -22,7 +22,7 @@ frmNapiProjektConfig::frmNapiProjektConfig(QWidget *parent, Qt::WindowFlags f)
     ui.setupUi(this);
 
     QIcon napiProjektIcon = QIcon(QPixmap(
-      LibQNapi::subtitleDownloadEngineRegistry()->enginePixmapData(NapiProjektDownloadEngine::name)
+      LibQNapi::subtitleDownloadEngineRegistry()->enginePixmapData(NapiProjektDownloadEngine::metadata.name())
     ));
     setWindowIcon(napiProjektIcon);
 
@@ -37,18 +37,18 @@ frmNapiProjektConfig::frmNapiProjektConfig(QWidget *parent, Qt::WindowFlags f)
 
 void frmNapiProjektConfig::accept()
 {
-    GlobalConfig().setNick(NapiProjektDownloadEngine::name, ui.leNick->text());
-    GlobalConfig().setPass(NapiProjektDownloadEngine::name, ui.lePass->text());
+    GlobalConfig().setNick(NapiProjektDownloadEngine::metadata.name(), ui.leNick->text());
+    GlobalConfig().setPass(NapiProjektDownloadEngine::metadata.name(), ui.lePass->text());
     QDialog::accept();
 }
 
 void frmNapiProjektConfig::pbRegisterClicked()
 {
-    ((QNapiApp*)qApp)->showCreateAccount(NapiProjektDownloadEngine::name);
+    ((QNapiApp*)qApp)->showCreateAccount(NapiProjektDownloadEngine::metadata.name());
 }
 
 void frmNapiProjektConfig::load()
 {
-    ui.leNick->setText(GlobalConfig().nick(NapiProjektDownloadEngine::name));
-    ui.lePass->setText(GlobalConfig().pass(NapiProjektDownloadEngine::name));
+    ui.leNick->setText(GlobalConfig().nick(NapiProjektDownloadEngine::metadata.name()));
+    ui.lePass->setText(GlobalConfig().pass(NapiProjektDownloadEngine::metadata.name()));
 }

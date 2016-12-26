@@ -26,6 +26,8 @@
 
 #include "qnapisubtitleinfo.h"
 
+#include "engines/subtitledownloadenginemetadata.h"
+
 class SubtitleDownloadEngine
 {
 public:
@@ -35,9 +37,7 @@ public:
     void setMoviePath(const QString & path);
     QString moviePath();
 
-    virtual QString engineName() const = 0;
-    virtual QString engineInfo() const = 0;
-    virtual QUrl registrationUrl() const = 0;
+    virtual SubtitleDownloadEngineMetadata meta() const = 0;
     virtual const char * const * enginePixmapData() const = 0;
 
     virtual void clearSubtitlesList();

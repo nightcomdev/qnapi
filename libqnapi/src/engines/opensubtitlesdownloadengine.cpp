@@ -15,16 +15,21 @@
 #include "opensubtitlesdownloadengine.h"
 #include "qnapilanguage.h"
 
-#include <QUrl>
 #include <QDir>
-
-QString OpenSubtitlesDownloadEngine::name = "OpenSubtitles";
 
 namespace OpenSubtitlesDownloadEngineConst
 {
     const QString openSubtitlesXmlRpcUrl = "http://api.opensubtitles.org/xml-rpc";
 }
 
+
+SubtitleDownloadEngineMetadata OpenSubtitlesDownloadEngine::metadata =
+    SubtitleDownloadEngineMetadata(
+        "OpenSubtitles",
+        "Moduł pobierania napisów z bazy <b>www.opensubtitles.org</b>",
+        just(QUrl("http://www.opensubtitles.org/newuser")),
+        just(QUrl("http://www.opensubtitles.org/upload"))
+    );
 
 OpenSubtitlesDownloadEngine::OpenSubtitlesDownloadEngine(const QString & tmpPath,
                                                          const EngineConfig & config,
@@ -46,18 +51,9 @@ OpenSubtitlesDownloadEngine::~OpenSubtitlesDownloadEngine()
         logout();
 }
 
-QString OpenSubtitlesDownloadEngine::engineName() const
+SubtitleDownloadEngineMetadata OpenSubtitlesDownloadEngine::meta() const
 {
-    return OpenSubtitlesDownloadEngine::name;
-}
-
-QString OpenSubtitlesDownloadEngine::engineInfo() const
-{
-    return "Moduł pobierania napisów z bazy <b>www.opensubtitles.org</b>";
-}
-
-QUrl OpenSubtitlesDownloadEngine::registrationUrl() const {
-    return QUrl("http://www.opensubtitles.org/newuser");
+    return OpenSubtitlesDownloadEngine::metadata;
 }
 
 const char * const * OpenSubtitlesDownloadEngine::enginePixmapData() const
@@ -145,7 +141,7 @@ bool OpenSubtitlesDownloadEngine::lookForSubtitles(QString lang)
             subtitleName = QFileInfo(movie).completeBaseName();
 
         subtitlesList << QNapiSubtitleInfo(responseMap["ISO639"].toString(),
-                                           engineName(),
+                                           meta().name(),
                                            responseMap["IDSubtitleFile"].toString(),
                                            subtitleName.trimmed(),
                                            responseMap["SubAuthorComment"].toString(),
@@ -156,14 +152,12 @@ bool OpenSubtitlesDownloadEngine::lookForSubtitles(QString lang)
     return (subtitlesList.size() > 0);
 }
 
-// wyniki wyszukiwania
 QList<QNapiSubtitleInfo> OpenSubtitlesDownloadEngine::listSubtitles()
 {
     std::sort(subtitlesList.begin(), subtitlesList.end());
     return subtitlesList;
 }
 
-// Probuje pobrac napisy do filmu z serwera OpenSubtitles
 bool OpenSubtitlesDownloadEngine::download(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);
@@ -213,7 +207,6 @@ bool OpenSubtitlesDownloadEngine::download(QUuid id)
     return (bool)r;
 }
 
-// Probuje dopasowac napisy do filmu
 bool OpenSubtitlesDownloadEngine::unpack(QUuid id)
 {
     Maybe<QNapiSubtitleInfo> ms = resolveById(id);

@@ -11,6 +11,7 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QStringList>
+#include <QUrl>
 
 class SubtitleDownloadEnginesRegistry
 {
@@ -20,6 +21,7 @@ public:
                                     std::function<QSharedPointer<const P7ZipDecoder> (const QString &)> p7zipDecoderFactory);
 
     QStringList listEngineNames() const;
+    SubtitleDownloadEngineMetadata engineMetadata(const QString & engineName) const;
     const char * const * enginePixmapData(const QString & engineName) const;
 
     QSharedPointer<SubtitleDownloadEngine> createEngine(const QString & engineName, const QNapiConfig2 & config) const;

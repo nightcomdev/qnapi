@@ -30,12 +30,10 @@ public:
                               const QSharedPointer<const P7ZipDecoder> & p7zipDecoder);
     ~NapiProjektDownloadEngine();
 
-    static QString name;
+    static SubtitleDownloadEngineMetadata metadata;
     static const char * const pixmapData[];
 
-    QString engineName() const;
-    QString engineInfo() const;
-    QUrl registrationUrl() const;
+    SubtitleDownloadEngineMetadata meta() const;
     const char * const * enginePixmapData() const;
 
     QString checksum(QString filename = "");

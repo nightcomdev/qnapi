@@ -23,7 +23,7 @@ frmNapisy24Config::frmNapisy24Config(QWidget *parent, Qt::WindowFlags f)
     ui.setupUi(this);
 
     QIcon napisy24Icon = QIcon(QPixmap(
-      LibQNapi::subtitleDownloadEngineRegistry()->enginePixmapData(Napisy24DownloadEngine::name)
+      LibQNapi::subtitleDownloadEngineRegistry()->enginePixmapData(Napisy24DownloadEngine::metadata.name())
     ));
     setWindowIcon(napisy24Icon);
 
@@ -39,18 +39,18 @@ frmNapisy24Config::frmNapisy24Config(QWidget *parent, Qt::WindowFlags f)
 
 void frmNapisy24Config::accept()
 {
-    GlobalConfig().setNick(Napisy24DownloadEngine::name, ui.leNick->text());
-    GlobalConfig().setPass(Napisy24DownloadEngine::name, ui.lePass->text());
+    GlobalConfig().setNick(Napisy24DownloadEngine::metadata.name(), ui.leNick->text());
+    GlobalConfig().setPass(Napisy24DownloadEngine::metadata.name(), ui.lePass->text());
     QDialog::accept();
 }
 
 void frmNapisy24Config::pbRegisterClicked()
 {
-    ((QNapiApp*)qApp)->showCreateAccount(Napisy24DownloadEngine::name);
+    ((QNapiApp*)qApp)->showCreateAccount(Napisy24DownloadEngine::metadata.name());
 }
 
 void frmNapisy24Config::load()
 {
-    ui.leNick->setText(GlobalConfig().nick(Napisy24DownloadEngine::name));
-    ui.lePass->setText(GlobalConfig().pass(Napisy24DownloadEngine::name));
+    ui.leNick->setText(GlobalConfig().nick(Napisy24DownloadEngine::metadata.name()));
+    ui.lePass->setText(GlobalConfig().pass(Napisy24DownloadEngine::metadata.name()));
 }

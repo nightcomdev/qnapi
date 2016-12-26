@@ -13,9 +13,12 @@
 *****************************************************************************/
 
 #include "frmsummary.h"
-#include "qnapi.h"
+#include "libqnapi.h"
 
 #include "subdatawidget.h"
+
+#include <QDesktopWidget>
+#include <QListWidget>
 
 frmSummary::frmSummary(QWidget * parent, Qt::WindowFlags f) : QDialog(parent, f)
 {
@@ -32,8 +35,6 @@ void frmSummary::setSummaryList(QList<QNapiSubtitleInfo> list)
 {
     std::sort(list.begin(), list.end());
 
-    QNapi n;
-    n.addEngines(n.enumerateEngines());
 
     QIcon succIcon(":/ui/accept.png"), failIcon(":/ui/exclamation.png");
 
@@ -45,7 +46,6 @@ void frmSummary::setSummaryList(QList<QNapiSubtitleInfo> list)
     {
         bool isGood = s.resolution != SUBTITLE_NONE;
 
-        QSharedPointer<SubtitleDownloadEngine> e = n.engineByName(s.engine);
         QListWidgetItem *listItem = new QListWidgetItem();
 
         ui.lwSummary->addItem(listItem);
@@ -55,7 +55,8 @@ void frmSummary::setSummaryList(QList<QNapiSubtitleInfo> list)
         if(isGood) {
             ++goodCount;
             QString lang_path = QString(":/languages/") + s.lang + ".png";
-            subData->setSubData(succIcon, s.name, QIcon(lang_path), QIcon(QPixmap(e->enginePixmapData())));
+            QIcon engineIcon = QIcon(QPixmap(enginesRegistry->enginePixmapData(s.engine)));
+            subData->setSubData(succIcon, s.name, QIcon(lang_path), engineIcon);
         } else {
             ++badCount;
             subData->setSubData(failIcon, s.name);

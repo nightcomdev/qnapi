@@ -20,7 +20,13 @@
 #include <QUrlQuery>
 #include <QProcess>
 
-QString Napisy24DownloadEngine::name = "Napisy24";
+SubtitleDownloadEngineMetadata Napisy24DownloadEngine::metadata =
+    SubtitleDownloadEngineMetadata(
+        "Napisy24",
+        "Moduł pobierania napisów z bazy <b>www.napisy24.pl</b>",
+        just(QUrl("http://napisy24.pl/cb-registration/registers")),
+        just(QUrl("http://napisy24.pl/dodaj-napisy"))
+    );
 
 Napisy24DownloadEngine::Napisy24DownloadEngine(const QString & tmpPath,
                                                const EngineConfig & config,
@@ -37,18 +43,9 @@ Napisy24DownloadEngine::~Napisy24DownloadEngine()
     cleanup();
 }
 
-QString Napisy24DownloadEngine::engineName() const
+SubtitleDownloadEngineMetadata Napisy24DownloadEngine::meta() const
 {
-    return Napisy24DownloadEngine::name;
-}
-
-QString Napisy24DownloadEngine::engineInfo() const
-{
-    return "Moduł pobierania napisów z bazy <b>www.napisy24.pl</b><br />";
-}
-
-QUrl Napisy24DownloadEngine::registrationUrl() const {
-    return QUrl("http://napisy24.pl/cb-registration/registers");
+    return Napisy24DownloadEngine::metadata;
 }
 
 const char * const * Napisy24DownloadEngine::enginePixmapData() const
@@ -121,7 +118,7 @@ bool Napisy24DownloadEngine::lookForSubtitles(QString lang)
         return false;
 
     subtitlesList << QNapiSubtitleInfo(lang,
-                                       engineName(),
+                                       meta().name(),
                                        tmpPackedFile,
                                        QFileInfo(movie).completeBaseName(),
                                        "",

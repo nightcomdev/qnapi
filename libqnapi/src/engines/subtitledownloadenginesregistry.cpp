@@ -6,6 +6,8 @@
 
 #include "utils/p7zipdecoder.h"
 
+#include <Maybe.h>
+
 #include <QPair>
 
 SubtitleDownloadEnginesRegistry::SubtitleDownloadEnginesRegistry(const QString & qnapiDisplayableVersion,
@@ -20,27 +22,40 @@ SubtitleDownloadEnginesRegistry::SubtitleDownloadEnginesRegistry(const QString &
 QStringList SubtitleDownloadEnginesRegistry::listEngineNames() const
 {
     static QStringList engineNames = {
-        NapiProjektDownloadEngine::name,
-        OpenSubtitlesDownloadEngine::name,
-        Napisy24DownloadEngine::name
+        NapiProjektDownloadEngine::metadata.name(),
+        OpenSubtitlesDownloadEngine::metadata.name(),
+        Napisy24DownloadEngine::metadata.name()
     };
     return engineNames;
 }
 
+SubtitleDownloadEngineMetadata SubtitleDownloadEnginesRegistry::engineMetadata(const QString & engineName) const
+{
+    if(engineName == NapiProjektDownloadEngine::metadata.name())
+        return NapiProjektDownloadEngine::metadata;
+
+    if(engineName == OpenSubtitlesDownloadEngine::metadata.name())
+        return OpenSubtitlesDownloadEngine::metadata;
+
+    if(engineName == Napisy24DownloadEngine::metadata.name())
+        return Napisy24DownloadEngine::metadata;
+
+    return SubtitleDownloadEngineMetadata("", "", nothing(), nothing());
+}
+
 const char * const * SubtitleDownloadEnginesRegistry::enginePixmapData(const QString & engineName) const
 {
-    if(engineName == NapiProjektDownloadEngine::name)
+    if(engineName == NapiProjektDownloadEngine::metadata.name())
         return NapiProjektDownloadEngine::pixmapData;
 
-    if(engineName == OpenSubtitlesDownloadEngine::name)
+    if(engineName == OpenSubtitlesDownloadEngine::metadata.name())
         return OpenSubtitlesDownloadEngine::pixmapData;
 
-    if(engineName == Napisy24DownloadEngine::name)
+    if(engineName == Napisy24DownloadEngine::metadata.name())
         return Napisy24DownloadEngine::pixmapData;
 
     return {};
 }
-
 
 QSharedPointer<SubtitleDownloadEngine>
 SubtitleDownloadEnginesRegistry::createEngine(const QString & engineName, const QNapiConfig2 & config) const
@@ -48,17 +63,17 @@ SubtitleDownloadEnginesRegistry::createEngine(const QString & engineName, const 
     QSharedPointer<const P7ZipDecoder> p7zipDecoder = p7zipDecoderFactory(config.generalConfig().p7zipPath());
     const QString & tmpPath = config.generalConfig().tmpPath();
 
-    if(engineName == NapiProjektDownloadEngine::name)
+    if(engineName == NapiProjektDownloadEngine::metadata.name())
     {
-        const EngineConfig & engineConfig = config.enginesConfig()[NapiProjektDownloadEngine::name];
+        const EngineConfig & engineConfig = config.enginesConfig()[NapiProjektDownloadEngine::metadata.name()];
         return QSharedPointer<SubtitleDownloadEngine>(
             new NapiProjektDownloadEngine(tmpPath, engineConfig, p7zipDecoder)
         );
     }
 
-    if(engineName == OpenSubtitlesDownloadEngine::name)
+    if(engineName == OpenSubtitlesDownloadEngine::metadata.name())
     {
-        const EngineConfig & engineConfig = config.enginesConfig()[OpenSubtitlesDownloadEngine::name];
+        const EngineConfig & engineConfig = config.enginesConfig()[OpenSubtitlesDownloadEngine::metadata.name()];
         const QString & language = config.generalConfig().language();
 
         return QSharedPointer<SubtitleDownloadEngine>(
@@ -66,9 +81,9 @@ SubtitleDownloadEnginesRegistry::createEngine(const QString & engineName, const 
         );
     }
 
-    if(engineName == Napisy24DownloadEngine::name)
+    if(engineName == Napisy24DownloadEngine::metadata.name())
     {
-        const EngineConfig & engineConfig = config.enginesConfig()[Napisy24DownloadEngine::name];
+        const EngineConfig & engineConfig = config.enginesConfig()[Napisy24DownloadEngine::metadata.name()];
 
         return QSharedPointer<SubtitleDownloadEngine>(
             new Napisy24DownloadEngine(tmpPath, engineConfig, p7zipDecoder, subtitleExtensions)

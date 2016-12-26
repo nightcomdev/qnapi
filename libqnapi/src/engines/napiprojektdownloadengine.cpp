@@ -53,7 +53,14 @@ namespace NapiProjektDownloadEngineConsts
 
 using namespace NapiProjektDownloadEngineConsts;
 
-QString NapiProjektDownloadEngine::name = "NapiProjekt";
+SubtitleDownloadEngineMetadata NapiProjektDownloadEngine::metadata =
+    SubtitleDownloadEngineMetadata(
+        "NapiProjekt",
+        "Moduł pobierania napisów z bazy <b>www.napiprojekt.pl</b>",
+        just(QUrl("http://www.napiprojekt.pl/rejestracja")),
+        nothing()
+    );
+
 
 NapiProjektDownloadEngine::NapiProjektDownloadEngine(const QString & tmpPath,
                                                      const EngineConfig & config,
@@ -68,19 +75,9 @@ NapiProjektDownloadEngine::~NapiProjektDownloadEngine()
     cleanup();
 }
 
-QString NapiProjektDownloadEngine::engineName() const
+SubtitleDownloadEngineMetadata NapiProjektDownloadEngine::meta() const
 {
-    return NapiProjektDownloadEngine::name;
-}
-
-QString NapiProjektDownloadEngine::engineInfo() const
-{
-    return "Moduł pobierania napisów z bazy <b>www.napiprojekt.pl</b>";
-}
-
-QUrl NapiProjektDownloadEngine::registrationUrl() const
-{
-    return QUrl("http://www.napiprojekt.pl/rejestracja");
+    return NapiProjektDownloadEngine::metadata;
 }
 
 const char * const * NapiProjektDownloadEngine::enginePixmapData() const
@@ -108,7 +105,7 @@ bool NapiProjektDownloadEngine::lookForSubtitles(QString lang)
     QString tmpPackedFile = tmpPackedFileOpt.value();
 
     subtitlesList << QNapiSubtitleInfo(lang,
-                                       engineName(),
+                                       meta().name(),
                                        tmpPackedFile,
                                        QFileInfo(movie).completeBaseName(),
                                        "",

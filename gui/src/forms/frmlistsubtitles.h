@@ -16,11 +16,13 @@
 #ifndef __FRMLISTSUBTITLES__H__
 #define __FRMLISTSUBTITLES__H__
 
-
-#include <QDialog>
+#include "engines/subtitledownloadenginesregistry.h"
 
 #include "ui_frmlistsubtitles.h"
 #include "qnapisubtitleinfo.h"
+
+#include <QDialog>
+#include <QSharedPointer>
 
 class frmListSubtitles : public QDialog
 {
@@ -40,6 +42,8 @@ Q_OBJECT
 
     private:
         Ui::frmListSubtitles ui;
+
+        QSharedPointer<const SubtitleDownloadEnginesRegistry> enginesRegistry;
         
 };
 

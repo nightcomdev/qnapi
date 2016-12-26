@@ -15,6 +15,10 @@
 #include "frmoptions.h"
 #include "qnapiapp.h"
 
+#include "engines/napiprojektdownloadengine.h"
+#include "engines/opensubtitlesdownloadengine.h"
+#include "engines/napisy24downloadengine.h"
+
 #include "forms/frmnapiprojektconfig.h"
 #include "forms/frmopensubtitlesconfig.h"
 #include "forms/frmnapisy24config.h"
@@ -23,7 +27,8 @@
 
 frmOptions::frmOptions(QWidget * parent, Qt::WindowFlags f)
     : QDialog(parent, f),
-      subtitleFormatsRegistry(LibQNapi::subtitleFormatsRegistry())
+      subtitleFormatsRegistry(LibQNapi::subtitleFormatsRegistry()),
+      enginesRegistry(LibQNapi::subtitleDownloadEngineRegistry())
 {
     ui.setupUi(this);
 
@@ -138,9 +143,6 @@ void frmOptions::selectTmpPath()
 
 void frmOptions::twEnginesSelectionChanged()
 {
-    QNapi n;
-    n.addEngines(n.enumerateEngines());
-
     if(ui.twEngines->selectedItems().size() < 1)
         return; 
 
@@ -214,13 +216,13 @@ void frmOptions::pbEngineConfClicked()
 {
     QString engineName = ui.twEngines->selectedItems().at(0)->text();
 
-    if(engineName == "NapiProjekt") {
+    if(engineName == NapiProjektDownloadEngine::metadata.name()) {
         frmNapiProjektConfig config(this);
         config.exec();
-    } else if(engineName == "OpenSubtitles") {
+    } else if(engineName == OpenSubtitlesDownloadEngine::metadata.name()) {
         frmOpenSubtitlesConfig config(this);
         config.exec();
-    } else if(engineName == "Napisy24") {
+    } else if(engineName == Napisy24DownloadEngine::metadata.name()) {
         frmNapisy24Config config(this);
         config.exec();
     }
@@ -228,14 +230,12 @@ void frmOptions::pbEngineConfClicked()
 
 void frmOptions::pbEngineInfoClicked()
 {
-    QNapi n;
-    n.addEngines(n.enumerateEngines());
     QString engineName = ui.twEngines->selectedItems().at(0)->text();
-    QString engineInfo = n.engineByName(engineName)->engineInfo();
-    
+    QString engineDescription = enginesRegistry->engineMetadata(engineName).description();
+
     QMessageBox::information(this,
                              QString("Informacje o silniku %1").arg(engineName),
-                             engineInfo);
+                             engineDescription);
 }
 
 void frmOptions::subFormatChanged(int format)
@@ -380,9 +380,6 @@ void frmOptions::readConfig()
     ui.cbShowDockIcon->setChecked(GlobalConfig().showDockIcon());
 #endif
 
-    QNapi n;
-    n.addEngines(n.enumerateEngines());
-
     ui.twEngines->clear();
 
     QList<QPair<QString,bool> > engines = GlobalConfig().engines();
@@ -392,7 +389,8 @@ void frmOptions::readConfig()
     for(int i = 0; i < engines.size(); ++i)
     {
         QPair<QString,bool> e = engines.at(i);
-        QTableWidgetItem *item = new QTableWidgetItem(QIcon(QPixmap(n.engineByName(e.first)->enginePixmapData())), e.first);
+        QIcon engineIcon = QIcon(QPixmap(enginesRegistry->enginePixmapData(e.first)));
+        QTableWidgetItem *item = new QTableWidgetItem(engineIcon, e.first);
         item->setCheckState(e.second ? Qt::Checked : Qt::Unchecked);
         ui.twEngines->setItem(i, 0, item);
     }

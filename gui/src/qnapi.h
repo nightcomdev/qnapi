@@ -38,8 +38,6 @@ class QNapi
         static bool checkTmpPath();
         static bool ppEnabled();
 
-        QStringList enumerateEngines();
-        bool addEngine(QString engine);
         bool addEngines(QStringList engines);
 
         void setMoviePath(QString path);
@@ -63,10 +61,11 @@ class QNapi
         void cleanup();
         QString error();
 
-        QSharedPointer<SubtitleDownloadEngine> engineByName(QString name);
-        QStringList listLoadedEngines();
+        QStringList listLoadedEngines() const;
 
     private:
+
+        QSharedPointer<SubtitleDownloadEngine> engineByName(QString name) const;
 
         QString movie;
         QString errorMsg;

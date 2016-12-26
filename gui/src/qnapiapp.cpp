@@ -14,8 +14,12 @@
 
 #include "qnapiapp.h"
 
+#include "libqnapi.h"
+
 QNapiApp::QNapiApp(int & argc, char **argv, bool useGui, const QString & appName)
-    : QSingleApplication(argc, argv, useGui, appName), creationDT(QDateTime::currentDateTime())
+    : QSingleApplication(argc, argv, useGui, appName),
+      creationDT(QDateTime::currentDateTime()),
+      enginesRegistry(LibQNapi::subtitleDownloadEngineRegistry())
 {
     setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 
@@ -270,14 +274,17 @@ void QNapiApp::showConvertDialog()
     f_scan = 0;
 }
 
-void QNapiApp::showCreateAccount(QString engine)
+void QNapiApp::showCreateAccount(const QString & engineName) const
 {
-    QNapi n;
-    n.addEngine(engine);
-    QDesktopServices::openUrl(n.engineByName(engine)->registrationUrl());
+    Maybe<QUrl> maybeRegistrationUrl = enginesRegistry->engineMetadata(engineName).registrationUrl();
+
+    if(maybeRegistrationUrl)
+    {
+        QDesktopServices::openUrl(maybeRegistrationUrl.value());
+    }
 }
 
-void QNapiApp::showOSUploadDialog()
+void QNapiApp::showOSUploadDialog() const
 {
     QDesktopServices::openUrl(QUrl("http://www.opensubtitles.org/upload"));
 }

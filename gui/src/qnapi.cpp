@@ -52,17 +52,6 @@ bool QNapi::ppEnabled()
     return GlobalConfig().ppEnabled();
 }
 
-QStringList QNapi::enumerateEngines()
-{
-    return enginesRegistry->listEngineNames();
-}
-
-bool QNapi::addEngine(QString engine)
-{
-    enginesList << enginesRegistry->createEngine(engine, config);
-    return true;
-}
-
 bool QNapi::addEngines(QStringList engines)
 {
     enginesList << enginesRegistry->createEngines(engines, config);
@@ -247,25 +236,25 @@ QString QNapi::error()
     return errorMsg;
 }
 
-QSharedPointer<SubtitleDownloadEngine> QNapi::engineByName(QString name)
+QStringList QNapi::listLoadedEngines() const
+{
+    QStringList list;
+    foreach(QSharedPointer<SubtitleDownloadEngine> e, enginesList)
+    {
+        list << e->meta().name();
+    }
+    return list;
+}
+
+QSharedPointer<SubtitleDownloadEngine> QNapi::engineByName(QString name) const
 {
     foreach(QSharedPointer<SubtitleDownloadEngine> e, enginesList)
     {
-        if(name == (e->engineName()))
+        if(name == (e->meta().name()))
         {
             return e;
         }
     }
 
     return QSharedPointer<SubtitleDownloadEngine>();
-}
-
-QStringList QNapi::listLoadedEngines()
-{
-    QStringList list;
-    foreach(QSharedPointer<SubtitleDownloadEngine> e, enginesList)
-    {
-        list << e->engineName();
-    }
-    return list;
 }

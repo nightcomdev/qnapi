@@ -20,6 +20,7 @@
 #include "qnapiconfig.h"
 #include "qnapilanguage.h"
 
+#include "engines/subtitledownloadenginesregistry.h"
 #include "subconvert/subtitleformatsregistry.h"
 
 #include <QFileDialog>
@@ -67,6 +68,7 @@ Q_OBJECT
         void showAllEncodings();
 
         QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry;
+        QSharedPointer<const SubtitleDownloadEnginesRegistry> enginesRegistry;
 };
 
 #endif

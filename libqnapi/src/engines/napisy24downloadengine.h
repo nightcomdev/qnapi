@@ -32,14 +32,11 @@ public:
                            const QStringList & subtitleExtensions);
     ~Napisy24DownloadEngine();
 
-    static QString name;
+    static SubtitleDownloadEngineMetadata metadata;
     static const char * const pixmapData[];
 
-    QString engineName() const;
-    QString engineInfo() const;
-    QUrl registrationUrl() const;
+    SubtitleDownloadEngineMetadata meta() const;
     const char * const * enginePixmapData() const;
-
 
     QString checksum(QString filename = "");
     bool lookForSubtitles(QString lang);
