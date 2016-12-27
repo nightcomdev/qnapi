@@ -199,26 +199,22 @@ bool QNapi::unpack(int i)
 
 bool QNapi::matchSubtitles()
 {
-    QNapiConfigOld & config = OldGlobalConfig();
+    if(currentEngine)
+    {
+        QSharedPointer<const SubtitleMatcher> matcher = LibQNapi::subtitleMatcher(config);
+        return matcher->matchSubtitles(currentEngine->subtitlesTmp, currentEngine->movie);
+    }
 
-    SubtitleMatcher subMatcher(config.noBackup(),
-                           config.ppEnabled(),
-                           config.ppSubFormat(),
-                           config.ppSubExtension(),
-                           config.changePermissions(),
-                           config.changePermissionsTo());
-
-    return currentEngine
-             ? subMatcher.matchSubtitles(currentEngine->subtitlesTmp,
-                                         currentEngine->movie)
-             : false;
+    return false;
 }
 
 void QNapi::postProcessSubtitles() const
 {
     if(currentEngine) {
-        SubtitlePostProcessor pp;
-        pp.perform(currentEngine->movie, currentEngine->subtitlesTmp);
+        QSharedPointer<const SubtitlePostProcessor> postProcessor =
+            LibQNapi::subtitlePostProcessor(config.postProcessingConfig());
+
+        postProcessor->perform(currentEngine->movie, currentEngine->subtitlesTmp);
     }
 }
 

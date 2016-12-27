@@ -1,7 +1,7 @@
 #ifndef SUBTITLEPOSTPROCESSOR_H
 #define SUBTITLEPOSTPROCESSOR_H
 
-
+#include "config/postprocessingconfig.h"
 #include "subconvert/subtitleconverter.h"
 #include "utils/encodingutils.h"
 
@@ -12,7 +12,8 @@ class SubtitlePostProcessor
 {
 public:
 
-    SubtitlePostProcessor();
+    SubtitlePostProcessor(const PostProcessingConfig & ppConfig,
+                          const QSharedPointer<const SubtitleConverter> & subtitleConverter);
 
     void perform(const QString & movieFilePath, const QString & subtitleFilePath) const;
 
@@ -23,6 +24,7 @@ private:
     bool ppChangeSubtitlesEncoding(const QString & subtitleFilePath, const QString & to) const;
     bool ppRemoveLinesContainingWords(const QString & subtitleFilePath, QStringList wordList) const;
 
+    const PostProcessingConfig & ppConfig;
     QSharedPointer<const SubtitleConverter> subtitleConverter;
     EncodingUtils encodingUtils;
 };

@@ -73,6 +73,17 @@ void LibQNapi::writeConfig(const QNapiConfig & config)
         LibQNapi::configWriter()->writeUserConfig(config);
 }
 
+bool LibQNapi::isPortableMode()
+{
+    return QFileInfo(portableConfigPath()).exists();
+}
+
+QString LibQNapi::portableConfigPath()
+{
+    QString appExecutableDir = QFileInfo(appExecutablePath).absoluteDir().path();
+    return appExecutableDir + QDir::separator() + "qnapi.ini";
+}
+
 QSharedPointer<const SubtitleDownloadEnginesRegistry>
 LibQNapi::subtitleDownloadEngineRegistry()
 {
@@ -110,17 +121,6 @@ QSharedPointer<const P7ZipDecoder> LibQNapi::p7zipDecoder(const QString & p7zipP
     return QSharedPointer<const P7ZipDecoder>(new P7ZipDecoder(p7zipPath));
 }
 
-bool LibQNapi::isPortableMode()
-{
-    return QFileInfo(portableConfigPath()).exists();
-}
-
-QString LibQNapi::portableConfigPath()
-{
-    QString appExecutableDir = QFileInfo(appExecutablePath).absoluteDir().path();
-    return appExecutableDir + QDir::separator() + "qnapi.ini";
-}
-
 QSharedPointer<const SubtitleMatcher> LibQNapi::subtitleMatcher(const QNapiConfig & config)
 {
     return QSharedPointer<const SubtitleMatcher>(
@@ -130,9 +130,15 @@ QSharedPointer<const SubtitleMatcher> LibQNapi::subtitleMatcher(const QNapiConfi
             config.postProcessingConfig().subFormat(),
             config.postProcessingConfig().subExtension(),
             config.generalConfig().changePermissionsEnabled(),
-            config.generalConfig().changePermissionsTo()
+            config.generalConfig().changePermissionsTo(),
+            LibQNapi::subtitleFormatsRegistry()
         )
     );
 }
 
-
+QSharedPointer<const SubtitlePostProcessor> LibQNapi::subtitlePostProcessor(const PostProcessingConfig & config)
+{
+    return QSharedPointer<const SubtitlePostProcessor>(
+        new SubtitlePostProcessor(config, LibQNapi::subtitleConverter())
+    );
+}

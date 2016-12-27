@@ -12,24 +12,23 @@
 **
 *****************************************************************************/
 
-#include "libqnapi.h"
 #include "subtitlematcher.h"
 #include <QDir>
 
-
 SubtitleMatcher::SubtitleMatcher(bool _noBackup,
-                         bool _isPostProcessingEnabled,
-                         QString _ppSubFormat,
-                         QString _ppSubExtension,
-                         bool _changePermissions,
-                         QString _changePermissionsTo)
+                                 bool _isPostProcessingEnabled,
+                                 QString _ppSubFormat,
+                                 QString _ppSubExtension,
+                                 bool _changePermissions,
+                                 QString _changePermissionsTo,
+                                 const QSharedPointer<const SubtitleFormatsRegistry> & subtitleFormatsRegistry)
     : noBackup(_noBackup),
       isPostProcessingEnabled(_isPostProcessingEnabled),
       ppSubFormat(_ppSubFormat),
       ppSubExtension(_ppSubExtension),
       changePermissions(_changePermissions),
       changePermissionsTo(_changePermissionsTo),
-      subtitleFormatsRegistry(LibQNapi::subtitleFormatsRegistry())
+      subtitleFormatsRegistry(subtitleFormatsRegistry)
 {}
 
 bool SubtitleMatcher::matchSubtitles(QString subtitlesTmpFilePath, QString targetMovieFilePath) const

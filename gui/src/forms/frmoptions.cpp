@@ -13,7 +13,6 @@
 *****************************************************************************/
 
 #include "frmoptions.h"
-#include "qnapiapp.h"
 
 #include "engines/napiprojektdownloadengine.h"
 #include "engines/opensubtitlesdownloadengine.h"
@@ -22,6 +21,8 @@
 #include "forms/frmnapiprojektconfig.h"
 #include "forms/frmopensubtitlesconfig.h"
 #include "forms/frmnapisy24config.h"
+
+#include "qnapiconfigold.h"
 
 #include "libqnapi.h"
 
@@ -322,7 +323,7 @@ void frmOptions::writeConfig()
     OldGlobalConfig().setLanguageBackup(ui.cbLangBackup->itemData(ui.cbLangBackup->currentIndex()).toString());
     OldGlobalConfig().setNoBackup(ui.cbNoBackup->isChecked());
 #ifndef Q_OS_MAC
-    GlobalConfig().setQuietBatch(ui.cbQuietBatch->isChecked());
+    OldGlobalConfig().setQuietBatch(ui.cbQuietBatch->isChecked());
 #endif
 
 #ifdef Q_OS_MAC
@@ -374,7 +375,7 @@ void frmOptions::readConfig()
     ui.cbLangBackup->setCurrentIndex(ui.cbLangBackup->findData(SubtitleLanguage(OldGlobalConfig().languageBackup()).toTwoLetter()));
     ui.cbNoBackup->setChecked(OldGlobalConfig().noBackup());
 #ifndef Q_OS_MAC
-    ui.cbQuietBatch->setChecked(GlobalConfig().quietBatch());
+    ui.cbQuietBatch->setChecked(OldGlobalConfig().quietBatch());
 #endif
 #ifdef Q_OS_MAC
     ui.cbShowDockIcon->setChecked(OldGlobalConfig().showDockIcon());

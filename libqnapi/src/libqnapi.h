@@ -30,6 +30,7 @@
 #include "utils/p7zipdecoder.h"
 
 #include "subtitlematcher.h"
+#include "subtitlepostprocessor.h"
 
 #include <QString>
 #include <QSharedPointer>
@@ -52,6 +53,8 @@ public:
 
     static const QNapiConfig loadConfig();
     static void writeConfig(const QNapiConfig & config);
+    static bool isPortableMode();
+    static QString portableConfigPath();
 
     static QSharedPointer<const SubtitleDownloadEnginesRegistry> subtitleDownloadEngineRegistry();
 
@@ -62,10 +65,8 @@ public:
 
     static QSharedPointer<const P7ZipDecoder> p7zipDecoder(const QString & p7zipPath);
 
-    static bool isPortableMode();
-    static QString portableConfigPath();
-
     static QSharedPointer<const SubtitleMatcher> subtitleMatcher(const QNapiConfig & config);
+    static QSharedPointer<const SubtitlePostProcessor> subtitlePostProcessor(const PostProcessingConfig & config);
 };
 
 #endif // LIBQNAPI_H

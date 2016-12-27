@@ -17,7 +17,6 @@
 
 
 #include "ui_frmoptions.h"
-#include "qnapiconfigold.h"
 #include "subtitlelanguage.h"
 
 #include "engines/subtitledownloadenginesregistry.h"

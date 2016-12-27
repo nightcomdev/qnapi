@@ -1,44 +1,43 @@
 #include "subtitlepostprocessor.h"
-#include "qnapiconfigold.h"
-#include "libqnapi.h"
 
 #include <QTextCodec>
 #include <QTextStream>
 #include <QFile>
 #include <QFileInfo>
 
-SubtitlePostProcessor::SubtitlePostProcessor()
-    : subtitleConverter(LibQNapi::subtitleConverter())
+
+SubtitlePostProcessor::SubtitlePostProcessor(const PostProcessingConfig & ppConfig,
+                                             const QSharedPointer<const SubtitleConverter> & subtitleConverter)
+    : ppConfig(ppConfig),
+      subtitleConverter(subtitleConverter)
 {}
 
 
 void SubtitlePostProcessor::perform(const QString & movieFilePath, const QString & subtitleFilePath) const
 {
-    if(OldGlobalConfig().ppRemoveLines())
+    if(ppConfig.removeWordsEnabled())
     {
-        ppRemoveLinesContainingWords(subtitleFilePath, OldGlobalConfig().ppRemoveWords());
+        ppRemoveLinesContainingWords(subtitleFilePath, ppConfig.removeWords());
     }
 
-    switch (OldGlobalConfig().ppEncodingMethod()) {
-        case OLD_CEM_REPLACE_DIACRITICS:
+    switch (ppConfig.encodingChangeMethod()) {
+        case ECM_REPLACE_DIACRITICS:
             ppReplaceDiacriticsWithASCII(subtitleFilePath);
         break;
-        case OLD_CEM_CHANGE:
-            if (!OldGlobalConfig().ppAutoDetectEncoding() || !ppChangeSubtitlesEncoding(subtitleFilePath, OldGlobalConfig().ppEncodingTo()))
+        case ECM_CHANGE:
+            if(!ppConfig.encodingAutoDetectFrom() || !ppChangeSubtitlesEncoding(subtitleFilePath, ppConfig.encodingTo()))
             {
-                ppChangeSubtitlesEncoding(subtitleFilePath,
-                                          OldGlobalConfig().ppEncodingFrom(),
-                                          OldGlobalConfig().ppEncodingTo());
+                ppChangeSubtitlesEncoding(subtitleFilePath, ppConfig.encodingFrom(), ppConfig.encodingTo());
             }
         break;
-        case OLD_CEM_ORIGINAL:
+        case ECM_ORIGINAL:
             // Nie ruszaj pobranych napisów!
         break;
     }
 
-    if(!OldGlobalConfig().ppSubFormat().isEmpty())
+    if(!ppConfig.subFormat().isEmpty())
     {
-        QString targetFormat = OldGlobalConfig().ppSubFormat();
+        QString targetFormat = ppConfig.subFormat();
         subtitleConverter->convertSubtitles(subtitleFilePath, targetFormat, subtitleFilePath, movieFilePath);
     }
 }
@@ -129,7 +128,7 @@ bool SubtitlePostProcessor::ppRemoveLinesContainingWords(const QString & subtitl
     QString fromCodec = encodingUtils.detectFileEncoding(subtitleFilePath);
 
     if(fromCodec.isEmpty())
-        fromCodec = OldGlobalConfig().ppEncodingFrom();
+        fromCodec = ppConfig.encodingFrom();
 
     QFile f(subtitleFilePath);
     if(!f.open(QIODevice::ReadOnly | QIODevice::Text))

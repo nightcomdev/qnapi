@@ -111,6 +111,7 @@ const PostProcessingConfig ConfigReader::readPostProcessingConfig(const QSetting
                                 settings.value("qnapi/sub_format", "srt").toString(),
                                 settings.value("qnapi/sub_ext", "").toString(),
                                 settings.value("qnapi/skip_convert_ads", false).toBool(),
+                                settings.value("qnapi/remove_lines", false).toBool(),
                                 settings.value("qnapi/remove_words", QStringList() << "movie info" << "synchro").toStringList());
 }
 

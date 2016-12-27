@@ -24,11 +24,12 @@ class SubtitleMatcher
 {
 public:
     SubtitleMatcher(bool _noBackup,
-                bool _isPostProcessingEnabled,
-                QString _ppSubFormat,
-                QString _ppSubExtension,
-                bool _changePermissions,
-                QString _changePermissionsTo);
+                    bool _isPostProcessingEnabled,
+                    QString _ppSubFormat,
+                    QString _ppSubExtension,
+                    bool _changePermissions,
+                    QString _changePermissionsTo,
+                    const QSharedPointer<const SubtitleFormatsRegistry> &subtitleFormatsRegistry);
 
     bool matchSubtitles(QString subtitlesTmpFilePath, QString targetMovieFilePath) const;
 
@@ -47,6 +48,7 @@ private:
     QString ppSubExtension;
     bool changePermissions;
     QString changePermissionsTo;
+
     QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry;
 
 };
