@@ -23,10 +23,10 @@
 
 #include "qnapi.h"
 #include "qnapithread.h"
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include "qnapiopendialog.h"
 #include "frmlistsubtitles.h"
-#include "qnapisubtitleinfo.h"
+#include "subtitleinfo.h"
 
 class GetThread : public QNapiThread
 {
@@ -44,7 +44,7 @@ Q_OBJECT
         void actionChange(const QString & newAction);
         void progressChange(int current, int all, float stageProgress);
         void criticalError(const QString & message);
-        void selectSubtitles(QString fileName, QNapiSubtitleInfoList subtitles);
+        void selectSubtitles(QString fileName, SubtitleInfoList subtitles);
 
     private slots:
         void setCriticalMessage(const QString & msg)
@@ -62,7 +62,7 @@ Q_OBJECT
         void run();
 
         QStringList queue, engines;
-        QList<QNapiSubtitleInfo> subStatusList;
+        QList<SubtitleInfo> subStatusList;
         QString lang, langBackup;
         bool langBackupPassed;
         int napiSuccess, napiFail;
@@ -97,7 +97,7 @@ class frmProgress: public QWidget
         void enqueueFiles(const QStringList &fileList);
         bool download();
         void updateProgress(int current, int all, float stageProgress);
-        void selectSubtitles(QString fileName, QNapiSubtitleInfoList subtitles);
+        void selectSubtitles(QString fileName, SubtitleInfoList subtitles);
         void downloadFinished();
 
     private:

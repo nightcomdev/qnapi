@@ -21,7 +21,7 @@
 #include <QLibraryInfo>
 #include <QLocale>
 #include "libqnapi.h"
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include "qnapiapp.h"
 #include "qnapicli.h"
 #include <signal.h>
@@ -41,9 +41,9 @@ int main(int argc, char **argv)
     regSignal();
 
     QFileInfo appExe(argv[0]);
-    GlobalConfig().load(appExe.absoluteDir().path());
+    OldGlobalConfig().load(appExe.absoluteDir().path());
 
-    bool quietBatch = GlobalConfig().quietBatch();
+    bool quietBatch = OldGlobalConfig().quietBatch();
     bool useGui = !isCliCall && !(quietBatch && !pathList.isEmpty());
 
     if(useGui)
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
             return 0;
         }
         
-        if(GlobalConfig().firstRun())
+        if(OldGlobalConfig().firstRun())
         {
             if(QMessageBox::question(0, QObject::tr("Pierwsze uruchomienie"),
                     QObject::tr("To jest pierwsze uruchomienie programu QNapi. Czy chcesz go "
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
                     ++i;
                     if(i < argc)
                     {
-                        batchLang = QNapiLanguage(argv[i]).toTwoLetter();
+                        batchLang = SubtitleLanguage(argv[i]).toTwoLetter();
                         if(batchLang.isEmpty())
                             invalidLang = true;
                     } else invalidLang = true;
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
                     ++i;
                     if(i < argc)
                     {
-                        batchLangBackup = QNapiLanguage(argv[i]).toTwoLetter();
+                        batchLangBackup = SubtitleLanguage(argv[i]).toTwoLetter();
                         batchLangBackupPassed = true;
                     }
                     break;
@@ -220,7 +220,7 @@ void sigHandler(int sig)
 
     qDebug() << "\nQNapi: usuwanie plików tymczasowych...";
 
-    QString tmpPath = GlobalConfig().tmpPath();
+    QString tmpPath = OldGlobalConfig().tmpPath();
 
     QStringList filters;
     filters << "QNapi-*-rc";

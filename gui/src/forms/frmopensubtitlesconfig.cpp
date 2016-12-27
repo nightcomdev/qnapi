@@ -13,7 +13,7 @@
 *****************************************************************************/
 
 #include "frmopensubtitlesconfig.h"
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include "qnapiapp.h"
 #include "libqnapi.h"
 #include "engines/opensubtitlesdownloadengine.h"
@@ -39,8 +39,8 @@ frmOpenSubtitlesConfig::frmOpenSubtitlesConfig(QWidget *parent, Qt::WindowFlags 
 
 void frmOpenSubtitlesConfig::accept()
 {
-    GlobalConfig().setNick(OpenSubtitlesDownloadEngine::metadata.name(), ui.leNick->text());
-    GlobalConfig().setPass(OpenSubtitlesDownloadEngine::metadata.name(), ui.lePass->text());
+    OldGlobalConfig().setNick(OpenSubtitlesDownloadEngine::metadata.name(), ui.leNick->text());
+    OldGlobalConfig().setPass(OpenSubtitlesDownloadEngine::metadata.name(), ui.lePass->text());
     QDialog::accept();
 }
 
@@ -51,6 +51,6 @@ void frmOpenSubtitlesConfig::pbRegisterClicked()
 
 void frmOpenSubtitlesConfig::load()
 {
-    ui.leNick->setText(GlobalConfig().nick(OpenSubtitlesDownloadEngine::metadata.name()));
-    ui.lePass->setText(GlobalConfig().pass(OpenSubtitlesDownloadEngine::metadata.name()));
+    ui.leNick->setText(OldGlobalConfig().nick(OpenSubtitlesDownloadEngine::metadata.name()));
+    ui.lePass->setText(OldGlobalConfig().pass(OpenSubtitlesDownloadEngine::metadata.name()));
 }

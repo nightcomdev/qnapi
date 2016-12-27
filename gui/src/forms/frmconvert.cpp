@@ -15,7 +15,7 @@
 #include "frmconvert.h"
 #include "movieinfo/movieinfoprovider.h"
 #include "libqnapi.h"
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include "qnapiopendialog.h"
 
 #include <QDesktopWidget>
@@ -57,19 +57,19 @@ frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
     connect(ui.cbDelaySubtitles, SIGNAL(toggled(bool)), this, SLOT(subDelayToggled()));
     connect(ui.pbConvert, SIGNAL(clicked()), this, SLOT(convertClicked()));
 
-    if(GlobalConfig().ppSubFormat().isEmpty())
+    if(OldGlobalConfig().ppSubFormat().isEmpty())
     {
         targetFormat = subtitleFormatsRegistry->listFormatNames().first();
     }
     else
     {
-        targetFormat = GlobalConfig().ppSubFormat();
+        targetFormat = OldGlobalConfig().ppSubFormat();
         ui.cbTargetFormat->setCurrentText(targetFormat);
     }
 
-    if(!GlobalConfig().ppSubExtension().isEmpty())
+    if(!OldGlobalConfig().ppSubExtension().isEmpty())
     {
-        ui.cbTargetExtension->setCurrentText(GlobalConfig().ppSubExtension());
+        ui.cbTargetExtension->setCurrentText(OldGlobalConfig().ppSubExtension());
     }
 }
 

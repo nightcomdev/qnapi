@@ -13,11 +13,11 @@
 *****************************************************************************/
 
 #include "libqnapi.h"
-#include "qsubmatcher.h"
+#include "subtitlematcher.h"
 #include <QDir>
 
 
-QSubMatcher::QSubMatcher(bool _noBackup,
+SubtitleMatcher::SubtitleMatcher(bool _noBackup,
                          bool _isPostProcessingEnabled,
                          QString _ppSubFormat,
                          QString _ppSubExtension,
@@ -32,7 +32,7 @@ QSubMatcher::QSubMatcher(bool _noBackup,
       subtitleFormatsRegistry(LibQNapi::subtitleFormatsRegistry())
 {}
 
-bool QSubMatcher::matchSubtitles(QString subtitlesTmpFilePath, QString targetMovieFilePath) const
+bool SubtitleMatcher::matchSubtitles(QString subtitlesTmpFilePath, QString targetMovieFilePath) const
 {
     QFileInfo subtitlesTmpFileInfo(subtitlesTmpFilePath);
 
@@ -66,7 +66,7 @@ bool QSubMatcher::matchSubtitles(QString subtitlesTmpFilePath, QString targetMov
     return result;
 }
 
-QString QSubMatcher::selectTargetExtension(QFileInfo subtitlesTmpFileInfo) const
+QString SubtitleMatcher::selectTargetExtension(QFileInfo subtitlesTmpFileInfo) const
 {
     QString targetExtension = subtitlesTmpFileInfo.suffix();
 
@@ -85,19 +85,19 @@ QString QSubMatcher::selectTargetExtension(QFileInfo subtitlesTmpFileInfo) const
     return targetExtension;
 }
 
-QString QSubMatcher::constructSubtitlePath(QString targetMovieFilePath, QString targetExtension, QString baseSuffix) const
+QString SubtitleMatcher::constructSubtitlePath(QString targetMovieFilePath, QString targetExtension, QString baseSuffix) const
 {
     QFileInfo targetMovieFileInfo(targetMovieFilePath);
     return targetMovieFileInfo.path() + QDir::separator() + targetMovieFileInfo.completeBaseName() + baseSuffix + "." + targetExtension;
 }
 
-bool QSubMatcher::isWritablePath(QString path) const
+bool SubtitleMatcher::isWritablePath(QString path) const
 {
     QFileInfo pathFileInfo(path);
     return QFileInfo(pathFileInfo.absolutePath()).isWritable();
 }
 
-void QSubMatcher::removeOrCopy(QString targetMoviefilePath, QString targetSubtitlesFilePath) const
+void SubtitleMatcher::removeOrCopy(QString targetMoviefilePath, QString targetSubtitlesFilePath) const
 {
     if(QFile::exists(targetSubtitlesFilePath))
     {
@@ -116,7 +116,7 @@ void QSubMatcher::removeOrCopy(QString targetMoviefilePath, QString targetSubtit
     }
 }
 
-bool QSubMatcher::dryCopy(QString srcFilePath, QString dstFilePath) const
+bool SubtitleMatcher::dryCopy(QString srcFilePath, QString dstFilePath) const
 {
     QFile dstFile(dstFilePath), srcFile(srcFilePath);
     bool result = false;
@@ -135,7 +135,7 @@ bool QSubMatcher::dryCopy(QString srcFilePath, QString dstFilePath) const
     return result;
 }
 
-void QSubMatcher::fixFilePermissions(QString targetSubtitlesFilePath, QString changePermissionsTo) const
+void SubtitleMatcher::fixFilePermissions(QString targetSubtitlesFilePath, QString changePermissionsTo) const
 {
     bool validPermissions;
     int permInt = changePermissionsTo.toInt(&validPermissions, 8);

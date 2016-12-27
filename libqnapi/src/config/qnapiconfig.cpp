@@ -15,7 +15,7 @@
 #include "config/qnapiconfig.h"
 #include <QTextStream>
 
-QString QNapiConfig2::toString() const {
+QString QNapiConfig::toString() const {
 
     QString enabledEnginesStr, enginesCfgStr;
 

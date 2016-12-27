@@ -37,8 +37,8 @@ frmNapiProjektConfig::frmNapiProjektConfig(QWidget *parent, Qt::WindowFlags f)
 
 void frmNapiProjektConfig::accept()
 {
-    GlobalConfig().setNick(NapiProjektDownloadEngine::metadata.name(), ui.leNick->text());
-    GlobalConfig().setPass(NapiProjektDownloadEngine::metadata.name(), ui.lePass->text());
+    OldGlobalConfig().setNick(NapiProjektDownloadEngine::metadata.name(), ui.leNick->text());
+    OldGlobalConfig().setPass(NapiProjektDownloadEngine::metadata.name(), ui.lePass->text());
     QDialog::accept();
 }
 
@@ -49,6 +49,6 @@ void frmNapiProjektConfig::pbRegisterClicked()
 
 void frmNapiProjektConfig::load()
 {
-    ui.leNick->setText(GlobalConfig().nick(NapiProjektDownloadEngine::metadata.name()));
-    ui.lePass->setText(GlobalConfig().pass(NapiProjektDownloadEngine::metadata.name()));
+    ui.leNick->setText(OldGlobalConfig().nick(NapiProjektDownloadEngine::metadata.name()));
+    ui.lePass->setText(OldGlobalConfig().pass(NapiProjektDownloadEngine::metadata.name()));
 }

@@ -12,16 +12,16 @@
 **
 *****************************************************************************/
 
-#include "qnapilanguage.h"
+#include "subtitlelanguage.h"
 
-QNapiLanguage::QNapiLanguage(QString source) : QObject(0)
+SubtitleLanguage::SubtitleLanguage(QString source)
 {
     fill_tables();
 
     setLanguage(source);
 }
 
-void QNapiLanguage::setLanguage(QString source)
+void SubtitleLanguage::setLanguage(QString source)
 {
     idx = -1;
 
@@ -39,7 +39,7 @@ void QNapiLanguage::setLanguage(QString source)
     }   
 }
 
-QString QNapiLanguage::toTwoLetter()
+QString SubtitleLanguage::toTwoLetter()
 {
     if(idx > -1)
     {
@@ -48,7 +48,7 @@ QString QNapiLanguage::toTwoLetter()
     return "";
 }
 
-QString QNapiLanguage::toTriLetter()
+QString SubtitleLanguage::toTriLetter()
 {
     if(idx > -1)
     {
@@ -57,7 +57,7 @@ QString QNapiLanguage::toTriLetter()
     return "";
 }
 
-QString QNapiLanguage::toFullName()
+QString SubtitleLanguage::toFullName()
 {
     if(idx > -1)
     {
@@ -66,158 +66,158 @@ QString QNapiLanguage::toFullName()
     return "";
 }
     
-QStringList QNapiLanguage::listLanguages()
+QStringList SubtitleLanguage::listLanguages()
 {
     return names;
 }
 
-void QNapiLanguage::fill_tables()
+void SubtitleLanguage::fill_tables()
 {
     codes2l << "sq";
     codes3l << "alb";
-    names << tr("Albański");
+    names << "Albański";
 
     codes2l << "en";
     codes3l << "eng";
-    names << tr("Angielski");
+    names << "Angielski";
 
     codes2l << "ar";
     codes3l << "ara";
-    names << tr("Arabski");
+    names << "Arabski";
 
     codes2l << "bg";
     codes3l << "bul";
-    names << tr("Bułgarski");
+    names << "Bułgarski";
 
     codes2l << "zh";
     codes3l << "chi";
-    names << tr("Chiński");
+    names << "Chiński";
 
     codes2l << "hr";
     codes3l << "hrv";
-    names << tr("Chorwacki");
+    names << "Chorwacki";
 
     codes2l << "cs";
     codes3l << "cze";
-    names << tr("Czeski");
+    names << "Czeski";
 
     codes2l << "da";
     codes3l << "dan";
-    names << tr("Duński");
+    names << "Duński";
 
     codes2l << "et";
     codes3l << "est";
-    names << tr("Estoński");
+    names << "Estoński";
 
     codes2l << "fi";
     codes3l << "fin";
-    names << tr("Fiński");
+    names << "Fiński";
 
     codes2l << "fr";
     codes3l << "fre";
-    names << tr("Francuski");
+    names << "Francuski";
 
     codes2l << "gl";
     codes3l << "glg";
-    names << tr("Galicyjski");
+    names << "Galicyjski";
 
     codes2l << "el";
     codes3l << "ell";
-    names << tr("Grecki");
+    names << "Grecki";
 
     codes2l << "he";
     codes3l << "heb";
-    names << tr("Hebrajski");
+    names << "Hebrajski";
 
     codes2l << "es";
     codes3l << "spa";
-    names << tr("Hiszpanski");
+    names << "Hiszpanski";
 
     codes2l << "nl";
     codes3l << "dut";
-    names << tr("Holenderski");
+    names << "Holenderski";
 
     codes2l << "id";
     codes3l << "ind";
-    names << tr("Indonezyjski");
+    names << "Indonezyjski";
 
     codes2l << "ja";
     codes3l << "jpn";
-    names << tr("Japoński");
+    names << "Japoński";
 
     codes2l << "ko";
     codes3l << "kor";
-    names << tr("Koreański");
+    names << "Koreański";
 
     codes2l << "mk";
     codes3l << "mac";
-    names << tr("Macedoński");
+    names << "Macedoński";
 
     codes2l << "de";
     codes3l << "ger";
-    names << tr("Niemiecki");
+    names << "Niemiecki";
 
     codes2l << "no";
     codes3l << "nor";
-    names << tr("Norweski");
+    names << "Norweski";
 
     codes2l << "oc";
     codes3l << "oci";
-    names << tr("Oksytański");
+    names << "Oksytański";
 
     codes2l << "fa";
     codes3l << "per";
-    names << tr("Perski (farsi)");
+    names << "Perski (farsi)";
 
     codes2l << "pl";
     codes3l << "pol";
-    names << tr("Polski");
+    names << "Polski";
 
     codes2l << "pt";
     codes3l << "por";
-    names << tr("Portugalski");
+    names << "Portugalski";
 
     codes2l << "pb";
     codes3l << "pob";
-    names << tr("Portugalski-BR");
+    names << "Portugalski-BR";
 
     codes2l << "ru";
     codes3l << "rus";
-    names << tr("Rosyjski");
+    names << "Rosyjski";
 
     codes2l << "ro";
     codes3l << "rum";
-    names << tr("Rumuński");
+    names << "Rumuński";
 
     codes2l << "sr";
     codes3l << "scc";
-    names << tr("Serbski");
+    names << "Serbski";
 
     codes2l << "sl";
     codes3l << "slv";
-    names << tr("Słoweński");
+    names << "Słoweński";
 
     codes2l << "sv";
     codes3l << "swe";
-    names << tr("Szwedzki");
+    names << "Szwedzki";
 
     codes2l << "sk";
     codes3l << "slo";
-    names << tr("Słowacki");
+    names << "Słowacki";
 
     codes2l << "tr";
     codes3l << "tur";
-    names << tr("Turecki");
+    names << "Turecki";
 
     codes2l << "vi";
     codes3l << "vie";
-    names << tr("Wietnamski");
+    names << "Wietnamski";
 
     codes2l << "hu";
     codes3l << "hun";
-    names << tr("Węgierski");
+    names << "Węgierski";
 
     codes2l << "it";
     codes3l << "ita";
-    names << tr("Włoski");
+    names << "Włoski";
 }

@@ -18,7 +18,7 @@
 #include "config/configreader.h"
 #include "engines/subtitledownloadengine.h"
 #include "engines/subtitledownloadenginesregistry.h"
-#include "qnapisubtitleinfo.h"
+#include "subtitleinfo.h"
 
 #include <QList>
 #include <QSharedPointer>
@@ -48,15 +48,15 @@ class QNapi
         void checksum();
         bool lookForSubtitles(QString lang, QString engine = "");
         bool lookForSubtitles(QStringList languages, QString engine = "");
-        QList<QNapiSubtitleInfo> listSubtitles();
+        QList<SubtitleInfo> listSubtitles();
 
         bool needToShowList();
         int bestIdx();
 
         bool download(int i);
         bool unpack(int i);
-        bool match();
-        void pp();
+        bool matchSubtitles();
+        void postProcessSubtitles() const;
 
         void cleanup();
         QString error();
@@ -70,14 +70,14 @@ class QNapi
         QString movie;
         QString errorMsg;
         QList<QSharedPointer<SubtitleDownloadEngine>> enginesList;
-        QList<QNapiSubtitleInfo> subtitlesList;
+        QList<SubtitleInfo> subtitlesList;
         QSharedPointer<SubtitleDownloadEngine> currentEngine;
         
         // najlepszy indeks napisow
         int theBestIdx;
 
         const QSharedPointer<const SubtitleDownloadEnginesRegistry> enginesRegistry;
-        const QNapiConfig2 config;
+        const QNapiConfig config;
 };
 
 

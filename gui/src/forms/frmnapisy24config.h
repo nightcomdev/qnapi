@@ -18,7 +18,7 @@
 #include <QDialog>
 #include "ui_frmnapisy24config.h"
 
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include "qnapiapp.h"
 
 class frmNapisy24Config : public QDialog

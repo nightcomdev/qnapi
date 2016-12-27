@@ -13,7 +13,7 @@
 *****************************************************************************/
 
 #include "libqnapi.h"
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include <QCoreApplication>
 #include <QSet>
 #include <QFileInfo>
@@ -21,18 +21,18 @@
 #include <QProcess>
 #include <QRegExp>
 
-QNapiConfig::QNapiConfig(const QString & qnapiVersion,
+QNapiConfigOld::QNapiConfigOld(const QString & qnapiVersion,
                          const QSharedPointer<const StaticConfig> & staticConfig)
     : qnapiVersion(qnapiVersion),
       staticConfig(staticConfig)
 {
 }
 
-QNapiConfig::~QNapiConfig()
+QNapiConfigOld::~QNapiConfigOld()
 {
 }
 
-void QNapiConfig::load(QString appDirPath)
+void QNapiConfigOld::load(QString appDirPath)
 {
     if(settings) delete settings;
 
@@ -52,40 +52,40 @@ void QNapiConfig::load(QString appDirPath)
 
 }
 
-void QNapiConfig::save()
+void QNapiConfigOld::save()
 {
     settings->setValue("qnapi/version", qnapiVersion);
     settings->setValue("qnapi/firstrun", false);
     settings->sync();
 }
 
-void QNapiConfig::performMigrations()
+void QNapiConfigOld::performMigrations()
 {
     if(!version().isEmpty() && version() <= "0.2.0") {
         // between 0.2.0 and 0.2.1 there was semantic change within search_policy
         // config item; SP_SEARCH_ALL and SP_BREAK_IF_FOUND were swapped
 
-        if(searchPolicy() == SP_SEARCH_ALL)
-            setSearchPolicy(SP_BREAK_IF_FOUND);
-        else if(searchPolicy() == SP_BREAK_IF_FOUND)
-            setSearchPolicy(SP_SEARCH_ALL);
+        if(searchPolicy() == OLD_SP_SEARCH_ALL)
+            setSearchPolicy(OLD_SP_BREAK_IF_FOUND);
+        else if(searchPolicy() == OLD_SP_BREAK_IF_FOUND)
+            setSearchPolicy(OLD_SP_SEARCH_ALL);
 
         save();
     }
 }
 
 
-bool QNapiConfig::firstRun()
+bool QNapiConfigOld::firstRun()
 {
     return settings->value("qnapi/firstrun", true).toBool();
 }
 
-QString QNapiConfig::version()
+QString QNapiConfigOld::version()
 {
     return settings->value("qnapi/version", "").toString();
 }
 
-QString QNapiConfig::p7zipPath()
+QString QNapiConfigOld::p7zipPath()
 {
     // Odczytujemy z konfiguracji
     QString p7z_path = settings->value("qnapi/7z_path", "").toString();
@@ -137,12 +137,12 @@ QString QNapiConfig::p7zipPath()
     return "7z";
 }
 
-void QNapiConfig::setP7zipPath(const QString & path)
+void QNapiConfigOld::setP7zipPath(const QString & path)
 {
     settings->setValue("qnapi/7z_path", path);
 }
 
-QString QNapiConfig::tmpPath()
+QString QNapiConfigOld::tmpPath()
 {
     QString tmpPath = settings->value("qnapi/tmp_path", QDir::tempPath()).toString();
     if(!QFileInfo(tmpPath).exists() || !QFileInfo(tmpPath).isWritable()) {
@@ -153,12 +153,12 @@ QString QNapiConfig::tmpPath()
     return tmpPath;
 }
 
-void QNapiConfig::setTmpPath(const QString & path)
+void QNapiConfigOld::setTmpPath(const QString & path)
 {
     settings->setValue("qnapi/tmp_path", path);
 }
 
-QString QNapiConfig::nick(const QString & engine)
+QString QNapiConfigOld::nick(const QString & engine)
 {
     QString nick = settings->value(engine + "/nick", "").toString();
 
@@ -177,12 +177,12 @@ QString QNapiConfig::nick(const QString & engine)
     return nick;
 }
 
-void QNapiConfig::setNick(const QString & engine, const QString & nick)
+void QNapiConfigOld::setNick(const QString & engine, const QString & nick)
 {
     settings->setValue(engine + "/nick", nick);
 }
 
-QString QNapiConfig::pass(const QString & engine)
+QString QNapiConfigOld::pass(const QString & engine)
 {
     QString pass = settings->value(engine + "/pass", "").toString();
 
@@ -200,42 +200,42 @@ QString QNapiConfig::pass(const QString & engine)
     return pass;
 }
 
-void QNapiConfig::setPass(const QString & engine, const QString & pass)
+void QNapiConfigOld::setPass(const QString & engine, const QString & pass)
 {
     settings->setValue(engine + "/pass", pass);
 }
 
-QString QNapiConfig::language()
+QString QNapiConfigOld::language()
 {
     return settings->value("qnapi/language", "pl").toString();
 }
 
-void QNapiConfig::setLanguage(const QString & language)
+void QNapiConfigOld::setLanguage(const QString & language)
 {
     settings->setValue("qnapi/language", language);
 }
 
-QString QNapiConfig::languageBackup()
+QString QNapiConfigOld::languageBackup()
 {
     return settings->value("qnapi/language_backup", "en").toString();
 }
 
-void QNapiConfig::setLanguageBackup(const QString & language)
+void QNapiConfigOld::setLanguageBackup(const QString & language)
 {
     settings->setValue("qnapi/language_backup", language);
 }
 
-bool QNapiConfig::noBackup()
+bool QNapiConfigOld::noBackup()
 {
     return settings->value("qnapi/no_backup", false).toBool();
 }
 
-void QNapiConfig::setNoBackup(bool noBackup)
+void QNapiConfigOld::setNoBackup(bool noBackup)
 {
     settings->setValue("qnapi/no_backup", noBackup);
 }
 
-bool QNapiConfig::quietBatch()
+bool QNapiConfigOld::quietBatch()
 {
 #ifdef Q_OS_MAC
     return false;
@@ -244,7 +244,7 @@ bool QNapiConfig::quietBatch()
 #endif
 }
 
-void QNapiConfig::setQuietBatch(bool quietBatch)
+void QNapiConfigOld::setQuietBatch(bool quietBatch)
 {
 #ifndef Q_OS_MAC
     settings->setValue("qnapi/quiet_batch", quietBatch);
@@ -254,7 +254,7 @@ void QNapiConfig::setQuietBatch(bool quietBatch)
 }
 
 #ifdef Q_OS_MAC
-bool QNapiConfig::showDockIcon()
+bool QNapiConfigOld::showDockIcon()
 {
     const bool show_default = true;
     
@@ -328,7 +328,7 @@ bool QNapiConfig::showDockIcon()
     
 }
 
-void QNapiConfig::setShowDockIcon(bool show)
+void QNapiConfigOld::setShowDockIcon(bool show)
 {
     QString infoPlistPath = QFileInfo(QCoreApplication::applicationDirPath() + "/../Info.plist").canonicalFilePath();
     
@@ -405,7 +405,7 @@ void QNapiConfig::setShowDockIcon(bool show)
 
 #endif
 
-QList<QPair<QString, bool> > QNapiConfig::engines()
+QList<QPair<QString, bool> > QNapiConfigOld::engines()
 {
     QList<QVariant> inList = settings->value("qnapi/engines").toList();
     QList<QPair<QString, bool> > map;
@@ -435,7 +435,7 @@ QList<QPair<QString, bool> > QNapiConfig::engines()
     return map;
 }
 
-QStringList QNapiConfig::enginesList()
+QStringList QNapiConfigOld::enginesList()
 {
     QList<QPair<QString, bool> > map = engines();
     QStringList list;
@@ -454,7 +454,7 @@ QStringList QNapiConfig::enginesList()
     return list;
 }
 
-void QNapiConfig::setEngines(QList<QPair<QString, bool> > engines)
+void QNapiConfigOld::setEngines(QList<QPair<QString, bool> > engines)
 {
     QList<QVariant> outList;
     for(int i = 0; i < engines.size(); ++i)
@@ -469,136 +469,136 @@ void QNapiConfig::setEngines(QList<QPair<QString, bool> > engines)
     settings->setValue("qnapi/engines", outList);
 }
 
-SearchPolicy QNapiConfig::searchPolicy()
+OldSearchPolicy QNapiConfigOld::searchPolicy()
 {
-    return (SearchPolicy) settings->value("qnapi/search_policy", 0).toInt();
+    return (OldSearchPolicy) settings->value("qnapi/search_policy", 0).toInt();
 }
 
-void QNapiConfig::setSearchPolicy(SearchPolicy policy)
+void QNapiConfigOld::setSearchPolicy(OldSearchPolicy policy)
 {
     settings->setValue("qnapi/search_policy", policy);
 }
 
-DownloadPolicy QNapiConfig::downloadPolicy()
+OldDownloadPolicy QNapiConfigOld::downloadPolicy()
 {
-    return (DownloadPolicy) settings->value("qnapi/download_policy", 1).toInt();
+    return (OldDownloadPolicy) settings->value("qnapi/download_policy", 1).toInt();
 }
 
-void QNapiConfig::setDownloadPolicy(DownloadPolicy policy)
+void QNapiConfigOld::setDownloadPolicy(OldDownloadPolicy policy)
 {
     settings->setValue("qnapi/download_policy", policy);
 }
 
-bool QNapiConfig::ppEnabled()
+bool QNapiConfigOld::ppEnabled()
 {
     return settings->value("qnapi/post_processing", false).toBool();
 }
 
-void QNapiConfig::setPpEnabled(bool enable)
+void QNapiConfigOld::setPpEnabled(bool enable)
 {
     settings->setValue("qnapi/post_processing", enable);
 }
 
-ChangeEncodingMethod QNapiConfig::ppEncodingMethod() {
+OldChangeEncodingMethod QNapiConfigOld::ppEncodingMethod() {
     if(settings->contains("qnapi/change_encoding")) {
         bool encodingEnabled = settings->value("qnapi/change_encoding", false).toBool();
         settings->remove("qnapi/change_encoding");
 
-        ChangeEncodingMethod method = encodingEnabled ? CEM_CHANGE : CEM_ORIGINAL;
+        OldChangeEncodingMethod method = encodingEnabled ? OLD_CEM_CHANGE : OLD_CEM_ORIGINAL;
 
         setPpEncodingMethod(method);
         return method;
     }
 
-    return (ChangeEncodingMethod) settings->value("qnapi/encoding_method", 0).toInt();
+    return (OldChangeEncodingMethod) settings->value("qnapi/encoding_method", 0).toInt();
 }
 
 
-void QNapiConfig::setPpEncodingMethod(ChangeEncodingMethod method) {
+void QNapiConfigOld::setPpEncodingMethod(OldChangeEncodingMethod method) {
     settings->setValue("qnapi/encoding_method", method);
 }
 
-bool QNapiConfig::ppAutoDetectEncoding()
+bool QNapiConfigOld::ppAutoDetectEncoding()
 {
     return settings->value("qnapi/auto_detect_encoding", true).toBool();
 }
 
-void QNapiConfig::setPpAutoDetectEncoding(bool change)
+void QNapiConfigOld::setPpAutoDetectEncoding(bool change)
 {
     settings->setValue("qnapi/auto_detect_encoding", change);
 }
 
-QString QNapiConfig::ppEncodingFrom()
+QString QNapiConfigOld::ppEncodingFrom()
 {
     return settings->value("qnapi/enc_from", "windows-1250").toString();
 }
 
-void QNapiConfig::setPpEncodingFrom(const QString & encoding)
+void QNapiConfigOld::setPpEncodingFrom(const QString & encoding)
 {
     settings->setValue("qnapi/enc_from", encoding);
 }
 
-QString QNapiConfig::ppEncodingTo()
+QString QNapiConfigOld::ppEncodingTo()
 {
     return settings->value("qnapi/enc_to", "UTF-8").toString();
 }
 
-void QNapiConfig::setPpEncodingTo(const QString & encoding)
+void QNapiConfigOld::setPpEncodingTo(const QString & encoding)
 {
     settings->setValue("qnapi/enc_to", encoding);
 }
 
-bool QNapiConfig::ppShowAllEncodings()
+bool QNapiConfigOld::ppShowAllEncodings()
 {
     return settings->value("qnapi/show_all_encodings", false).toBool();
 }
 
-void QNapiConfig::setPpShowAllEncodings(bool show)
+void QNapiConfigOld::setPpShowAllEncodings(bool show)
 {
     settings->setValue("qnapi/show_all_encodings", show);
 }
 
-bool QNapiConfig::ppRemoveLines()
+bool QNapiConfigOld::ppRemoveLines()
 {
     return settings->value("qnapi/remove_lines", false).toBool();
 }
 
-void QNapiConfig::setPpRemoveLines(bool remove)
+void QNapiConfigOld::setPpRemoveLines(bool remove)
 {
     settings->setValue("qnapi/remove_lines", remove);
 }
 
-QString QNapiConfig::ppSubFormat()
+QString QNapiConfigOld::ppSubFormat()
 {
     return settings->value("qnapi/sub_format", "").toString();
 }
 
-void QNapiConfig::setPpSubFormat(const QString & subFormat)
+void QNapiConfigOld::setPpSubFormat(const QString & subFormat)
 {
     settings->setValue("qnapi/sub_format", subFormat);
 }
 
-QString QNapiConfig::ppSubExtension()
+QString QNapiConfigOld::ppSubExtension()
 {
     return settings->value("qnapi/sub_ext", "").toString();
 }
 
-void QNapiConfig::setPpSubExtension(const QString & subExtension)
+void QNapiConfigOld::setPpSubExtension(const QString & subExtension)
 {
     settings->setValue("qnapi/sub_ext", subExtension);
 }
 
-bool QNapiConfig::ppSkipConvertAds()
+bool QNapiConfigOld::ppSkipConvertAds()
 {
     return settings->value("qnapi/skip_convert_ads", false).toBool();
 }
 
-void QNapiConfig::setPpSkipConvertAds(bool skip)
+void QNapiConfigOld::setPpSkipConvertAds(bool skip)
 {
     settings->setValue("qnapi/skip_convert_ads", skip);
 }
 
-QStringList QNapiConfig::ppRemoveWords()
+QStringList QNapiConfigOld::ppRemoveWords()
 {
     QStringList defaultRemoveWords;
     defaultRemoveWords << "movie info" << "synchro ";
@@ -606,22 +606,22 @@ QStringList QNapiConfig::ppRemoveWords()
     return settings->value("qnapi/remove_words", defaultRemoveWords).toStringList();
 }
 
-void QNapiConfig::setPpRemoveWords(const QStringList & words)
+void QNapiConfigOld::setPpRemoveWords(const QStringList & words)
 {
     settings->setValue("qnapi/remove_words", words);
 }
 
-bool QNapiConfig::changePermissions()
+bool QNapiConfigOld::changePermissions()
 {
     return settings->value("qnapi/change_permissions", false).toBool();
 }
 
-void QNapiConfig::setChangePermissions(bool change)
+void QNapiConfigOld::setChangePermissions(bool change)
 {
     settings->setValue("qnapi/change_permissions", change);
 }
 
-QString QNapiConfig::changePermissionsTo()
+QString QNapiConfigOld::changePermissionsTo()
 {
     bool ok;
     int perm = settings->value("qnapi/permissions", 644).toInt(&ok);
@@ -633,7 +633,7 @@ QString QNapiConfig::changePermissionsTo()
     return str;
 }
 
-void QNapiConfig::setChangePermissionsTo(const QString & permissions)
+void QNapiConfigOld::setChangePermissionsTo(const QString & permissions)
 {
     bool ok;
     int perm = permissions.toInt(&ok);
@@ -646,18 +646,18 @@ void QNapiConfig::setChangePermissionsTo(const QString & permissions)
     }
 }
 
-QString QNapiConfig::previousDialogPath()
+QString QNapiConfigOld::previousDialogPath()
 {
     QString path = settings->value("qnapi/prev_dialog_path", "").toString();
     return (QDir(path).exists() ? path : QDir::homePath());
 }
 
-void QNapiConfig::setPreviousDialogPath(const QString & path)
+void QNapiConfigOld::setPreviousDialogPath(const QString & path)
 {
     settings->setValue("qnapi/prev_dialog_path", path);
 }
 
-QStringList QNapiConfig::scanFilters()
+QStringList QNapiConfigOld::scanFilters()
 {
     QStringList defaultScanFilters;
 
@@ -666,44 +666,44 @@ QStringList QNapiConfig::scanFilters()
     return settings->value("scan/filters", defaultScanFilters).toStringList();
 }
 
-void QNapiConfig::setScanFilters(const QStringList & filters)
+void QNapiConfigOld::setScanFilters(const QStringList & filters)
 {
     settings->setValue("scan/filters", filters);
 }
 
-QString QNapiConfig::scanSkipFilters()
+QString QNapiConfigOld::scanSkipFilters()
 {
     return settings->value("scan/skip_filters", "PL dubbing").toString();
 }
 
-void QNapiConfig::setScanSkipFilters(const QString & filters)
+void QNapiConfigOld::setScanSkipFilters(const QString & filters)
 {
     settings->setValue("scan/skip_filters", filters);
 }
 
-bool QNapiConfig::scanSkipIfSubtitlesExists()
+bool QNapiConfigOld::scanSkipIfSubtitlesExists()
 {
     return settings->value("scan/skip_if_subtitles_exists", false).toBool();
 }
 
-void QNapiConfig::setScanSkipIfSubtitlesExists(bool skip)
+void QNapiConfigOld::setScanSkipIfSubtitlesExists(bool skip)
 {
     settings->setValue("scan/skip_if_subtitles_exists", skip);
 }
 
-QString QNapiConfig::lastScanDir()
+QString QNapiConfigOld::lastScanDir()
 {
     return settings->value("scan/last_scan_dir", "").toString();
 }
 
-void QNapiConfig::setLastScanDir(const QString & dir)
+void QNapiConfigOld::setLastScanDir(const QString & dir)
 {
     settings->setValue("scan/last_scan_dir", dir);
 }
 
-QNapiConfig & GlobalConfig()
+QNapiConfigOld & OldGlobalConfig()
 {
-    static QNapiConfig cfg(LibQNapi::version(),
+    static QNapiConfigOld cfg(LibQNapi::version(),
                            LibQNapi::staticConfig());
     return cfg;
 }

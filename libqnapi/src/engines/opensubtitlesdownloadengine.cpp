@@ -13,7 +13,7 @@
 *****************************************************************************/
 
 #include "opensubtitlesdownloadengine.h"
-#include "qnapilanguage.h"
+#include "subtitlelanguage.h"
 
 #include <QDir>
 
@@ -89,7 +89,7 @@ bool OpenSubtitlesDownloadEngine::lookForSubtitles(QString lang)
     if(!isLogged() && !login()) return false;
 
     QVariantMap paramsMap;
-    paramsMap["sublanguageid"] = QNapiLanguage(lang).toTriLetter();
+    paramsMap["sublanguageid"] = SubtitleLanguage(lang).toTriLetter();
     paramsMap["moviehash"] = checkSum;
     paramsMap["moviebytesize"] = (int) fileSize;
 
@@ -118,7 +118,7 @@ bool OpenSubtitlesDownloadEngine::lookForSubtitles(QString lang)
         if((checkSum != responseMap["MovieHash"]) && (fileSize != responseMap["MovieByteSize"]))
             continue;
 
-        QNapiSubtitleResolution r = SUBTITLE_UNKNOWN;
+        SubtitleResolution r = SUBTITLE_UNKNOWN;
 
         if(responseMap["SubBad"].toString() != "0")
         {
@@ -140,7 +140,7 @@ bool OpenSubtitlesDownloadEngine::lookForSubtitles(QString lang)
         if(subtitleName.isEmpty())
             subtitleName = QFileInfo(movie).completeBaseName();
 
-        subtitlesList << QNapiSubtitleInfo(responseMap["ISO639"].toString(),
+        subtitlesList << SubtitleInfo(responseMap["ISO639"].toString(),
                                            meta().name(),
                                            responseMap["IDSubtitleFile"].toString(),
                                            subtitleName.trimmed(),
@@ -152,7 +152,7 @@ bool OpenSubtitlesDownloadEngine::lookForSubtitles(QString lang)
     return (subtitlesList.size() > 0);
 }
 
-QList<QNapiSubtitleInfo> OpenSubtitlesDownloadEngine::listSubtitles()
+QList<SubtitleInfo> OpenSubtitlesDownloadEngine::listSubtitles()
 {
     std::sort(subtitlesList.begin(), subtitlesList.end());
     return subtitlesList;
@@ -160,12 +160,12 @@ QList<QNapiSubtitleInfo> OpenSubtitlesDownloadEngine::listSubtitles()
 
 bool OpenSubtitlesDownloadEngine::download(QUuid id)
 {
-    Maybe<QNapiSubtitleInfo> ms = resolveById(id);
+    Maybe<SubtitleInfo> ms = resolveById(id);
 
     if(!ms)
         return false;
 
-    QNapiSubtitleInfo s = ms.value();
+    SubtitleInfo s = ms.value();
 
     QVariantList paramsList;
     QVariantList requestList;
@@ -209,7 +209,7 @@ bool OpenSubtitlesDownloadEngine::download(QUuid id)
 
 bool OpenSubtitlesDownloadEngine::unpack(QUuid id)
 {
-    Maybe<QNapiSubtitleInfo> ms = resolveById(id);
+    Maybe<SubtitleInfo> ms = resolveById(id);
     if(!ms) return false;
 
     if(!QFile::exists(movie)) return false;

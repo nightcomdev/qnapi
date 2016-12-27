@@ -33,15 +33,9 @@ SOURCES += src/libqnapi.cpp \
     src/utils/encodingutils.cpp \
     src/utils/synchttp.cpp \
     src/utils/syncxmlrpc.cpp \
-    src/qnapiconfig.cpp \
-    src/qnapilanguage.cpp \
-    src/qsubpostprocess.cpp \
-    src/qnapisubtitleinfo.cpp \
-    src/qsubmatcher.cpp \
     src/config/staticconfig.cpp \
     src/config/configreader.cpp \
     src/config/configwriter.cpp \
-    src/config/qnapiconfig2.cpp \
     src/config/generalconfig.cpp \
     src/config/scanconfig.cpp \
     src/config/postprocessingconfig.cpp \
@@ -50,7 +44,13 @@ SOURCES += src/libqnapi.cpp \
     src/engines/napisy24downloadengine.cpp \
     src/engines/opensubtitlesdownloadengine.cpp \
     src/engines/subtitledownloadenginesregistry.cpp \
-    src/utils/p7zipdecoder.cpp
+    src/utils/p7zipdecoder.cpp \
+    src/qnapiconfigold.cpp \
+    src/config/qnapiconfig.cpp \
+    src/subtitlematcher.cpp \
+    src/subtitlepostprocessor.cpp \
+    src/subtitlelanguage.cpp \
+    src/subtitleinfo.cpp
 
 
 HEADERS += src/libqnapi.h \
@@ -69,11 +69,6 @@ HEADERS += src/libqnapi.h \
     src/utils/encodingutils.h \
     src/utils/synchttp.h \
     src/utils/syncxmlrpc.h \
-    src/qnapiconfig.h \
-    src/qnapilanguage.h \
-    src/qnapisubtitleinfo.h \
-    src/qsubpostprocess.h \
-    src/qsubmatcher.h \
     src/config/staticconfig.h \
     src/config/qnapiconfig.h \
     src/config/generalconfig.h \
@@ -88,7 +83,12 @@ HEADERS += src/libqnapi.h \
     src/engines/opensubtitlesdownloadengine.h \
     src/engines/subtitledownloadenginesregistry.h \
     src/utils/p7zipdecoder.h \
-    src/engines/subtitledownloadenginemetadata.h
+    src/engines/subtitledownloadenginemetadata.h \
+    src/qnapiconfigold.h \
+    src/subtitlematcher.h \
+    src/subtitlepostprocessor.h \
+    src/subtitlelanguage.h \
+    src/subtitleinfo.h
 
 unix:!macx {
     PKGCONFIG += libmediainfo

@@ -16,10 +16,10 @@
 #define __FRMSUMMARY__H__
 
 #include "engines/subtitledownloadenginesregistry.h"
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 
 #include "ui_frmsummary.h"
-#include "qnapisubtitleinfo.h"
+#include "subtitleinfo.h"
 
 #include <QList>
 #include <QWidget>
@@ -32,7 +32,7 @@ Q_OBJECT
         frmSummary(QWidget *parent = 0, Qt::WindowFlags f = 0);
         ~frmSummary() {}
 
-        void setSummaryList(QList<QNapiSubtitleInfo> list);
+        void setSummaryList(QList<SubtitleInfo> list);
 
     private:
         Ui::frmSummary ui;

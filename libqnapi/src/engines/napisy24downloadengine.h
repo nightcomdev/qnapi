@@ -40,7 +40,7 @@ public:
 
     QString checksum(QString filename = "");
     bool lookForSubtitles(QString lang);
-    QList<QNapiSubtitleInfo> listSubtitles();
+    QList<SubtitleInfo> listSubtitles();
     bool download(QUuid id);
     bool unpack(QUuid id);
     void cleanup();

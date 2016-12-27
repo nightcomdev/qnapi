@@ -12,18 +12,18 @@
 **
 *****************************************************************************/
 
-#ifndef QSUBMATCHER_H
-#define QSUBMATCHER_H
+#ifndef SUBTITLE_MATCHER_H
+#define SUBTITLE_MATCHER_H
 
 #include "subconvert/subtitleformatsregistry.h"
 
 #include <QFileInfo>
 #include <QSharedPointer>
 
-class QSubMatcher
+class SubtitleMatcher
 {
 public:
-    QSubMatcher(bool _noBackup,
+    SubtitleMatcher(bool _noBackup,
                 bool _isPostProcessingEnabled,
                 QString _ppSubFormat,
                 QString _ppSubExtension,
@@ -51,4 +51,4 @@ private:
 
 };
 
-#endif // QSUBMATCHER_H
+#endif // SUBTITLE_MATCHER_H

@@ -39,8 +39,8 @@ frmNapisy24Config::frmNapisy24Config(QWidget *parent, Qt::WindowFlags f)
 
 void frmNapisy24Config::accept()
 {
-    GlobalConfig().setNick(Napisy24DownloadEngine::metadata.name(), ui.leNick->text());
-    GlobalConfig().setPass(Napisy24DownloadEngine::metadata.name(), ui.lePass->text());
+    OldGlobalConfig().setNick(Napisy24DownloadEngine::metadata.name(), ui.leNick->text());
+    OldGlobalConfig().setPass(Napisy24DownloadEngine::metadata.name(), ui.lePass->text());
     QDialog::accept();
 }
 
@@ -51,6 +51,6 @@ void frmNapisy24Config::pbRegisterClicked()
 
 void frmNapisy24Config::load()
 {
-    ui.leNick->setText(GlobalConfig().nick(Napisy24DownloadEngine::metadata.name()));
-    ui.lePass->setText(GlobalConfig().pass(Napisy24DownloadEngine::metadata.name()));
+    ui.leNick->setText(OldGlobalConfig().nick(Napisy24DownloadEngine::metadata.name()));
+    ui.lePass->setText(OldGlobalConfig().pass(Napisy24DownloadEngine::metadata.name()));
 }

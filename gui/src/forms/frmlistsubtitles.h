@@ -19,7 +19,7 @@
 #include "engines/subtitledownloadenginesregistry.h"
 
 #include "ui_frmlistsubtitles.h"
-#include "qnapisubtitleinfo.h"
+#include "subtitleinfo.h"
 
 #include <QDialog>
 #include <QSharedPointer>
@@ -36,7 +36,7 @@ Q_OBJECT
     public slots:
 
         void setFileName(const QString & name);
-        void setSubtitlesList(QList<QNapiSubtitleInfo> list);
+        void setSubtitlesList(QList<SubtitleInfo> list);
         int getSelectedIndex();
         void accept();
 

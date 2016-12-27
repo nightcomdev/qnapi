@@ -27,7 +27,7 @@
 frmProgress::frmProgress(QWidget * parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
-    qRegisterMetaType<QNapiSubtitleInfoList>("QNapiSubtitleInfoList");
+    qRegisterMetaType<SubtitleInfoList>("QNapiSubtitleInfoList");
 
     ui.setupUi(this);
 
@@ -42,8 +42,8 @@ frmProgress::frmProgress(QWidget * parent, Qt::WindowFlags f)
             ui.lbAction, SLOT(setText(const QString &)));
     connect(&getThread, SIGNAL(progressChange(int, int, float)),
             this, SLOT(updateProgress(int, int, float)));
-    connect(&getThread, SIGNAL(selectSubtitles(QString, QNapiSubtitleInfoList)),
-            this, SLOT(selectSubtitles(QString, QNapiSubtitleInfoList)));
+    connect(&getThread, SIGNAL(selectSubtitles(QString, SubtitleInfoList)),
+            this, SLOT(selectSubtitles(QString, SubtitleInfoList)));
     connect(this, SIGNAL(subtitlesSelected(int)),
             &getThread, SLOT(subtitlesSelected(int)));
     connect(&getThread, SIGNAL(finished()),
@@ -149,7 +149,7 @@ void frmProgress::updateProgress(int current, int all, float stageProgress)
     m.unlock();
 }
 
-void frmProgress::selectSubtitles(QString fileName, QNapiSubtitleInfoList subtitles)
+void frmProgress::selectSubtitles(QString fileName, SubtitleInfoList subtitles)
 {
     frmSelect.setFileName(fileName);
     frmSelect.setSubtitlesList(subtitles);
@@ -273,7 +273,7 @@ void GetThread::run()
     {
         napi->addEngines(engines);
     }
-    else if(!napi->addEngines(GlobalConfig().enginesList()))
+    else if(!napi->addEngines(OldGlobalConfig().enginesList()))
     {
         emit criticalError(tr("Błąd: ") + napi->error());
         delete napi;
@@ -282,8 +282,8 @@ void GetThread::run()
 
     emit progressChange(0, queue.size(), 0.0f);
 
-    QString language = !lang.isEmpty() ? lang : GlobalConfig().language();
-    QString languageBackup = langBackupPassed ? langBackup : GlobalConfig().languageBackup();
+    QString language = !lang.isEmpty() ? lang : OldGlobalConfig().language();
+    QString languageBackup = langBackupPassed ? langBackup : OldGlobalConfig().languageBackup();
 
     for(int i = 0; i < queue.size(); i++)
     {
@@ -314,10 +314,10 @@ void GetThread::run()
         ABORT_POINT
 
         bool found = false;
-        SearchPolicy sp = GlobalConfig().searchPolicy();        
+        OldSearchPolicy sp = OldGlobalConfig().searchPolicy();        
 
 
-        if(sp == SP_SEARCH_ALL_WITH_BACKUP_LANG)
+        if(sp == OLD_SP_SEARCH_ALL_WITH_BACKUP_LANG)
         {
             foreach(QString e, napi->listLoadedEngines())
             {
@@ -341,7 +341,7 @@ void GetThread::run()
                 emit actionChange(tr("Szukanie napisów [%1] (%2)...").arg(language, e));
                 found = napi->lookForSubtitles(language, e) || found;
 
-                if(sp == SP_BREAK_IF_FOUND && found){
+                if(sp == OLD_SP_BREAK_IF_FOUND && found){
                     break;
                 }
 
@@ -355,7 +355,7 @@ void GetThread::run()
                     emit actionChange(tr("Szukanie napisów w języku zapasowym [%1] (%2)...").arg(languageBackup, e));
                     found = napi->lookForSubtitles(languageBackup, e) || found;
 
-                    if(sp == SP_BREAK_IF_FOUND && found)
+                    if(sp == OLD_SP_BREAK_IF_FOUND && found)
                         break;
 
                     ABORT_POINT
@@ -366,7 +366,7 @@ void GetThread::run()
         if(!found)
         {
             ++napiFail;
-            subStatusList << QNapiSubtitleInfo::fromFailed(queue[i]);
+            subStatusList << SubtitleInfo::fromFailed(queue[i]);
             continue;
         }
 
@@ -390,7 +390,7 @@ void GetThread::run()
         if(selIdx == -1)
         {
             ++napiFail;
-            subStatusList << QNapiSubtitleInfo::fromFailed(queue[i]);
+            subStatusList << SubtitleInfo::fromFailed(queue[i]);
             continue;
         }
 
@@ -402,7 +402,7 @@ void GetThread::run()
             ABORT_POINT
 
             ++napiFail;
-            subStatusList << QNapiSubtitleInfo::fromFailed(queue[i]);
+            subStatusList << SubtitleInfo::fromFailed(queue[i]);
             continue;
         }
 
@@ -414,7 +414,7 @@ void GetThread::run()
         if(!napi->unpack(selIdx))
         {
             ++napiFail;
-            subStatusList << QNapiSubtitleInfo::fromFailed(queue[i]);
+            subStatusList << SubtitleInfo::fromFailed(queue[i]);
             continue;
         }
 
@@ -422,18 +422,18 @@ void GetThread::run()
         {
             emit progressChange(i, queue.size(), 0.8f);
             emit actionChange(tr("Przetwarzanie napisów..."));
-            napi->pp();
+            napi->postProcessSubtitles();
         }
 
         emit progressChange(i, queue.size(), 0.9);
         emit actionChange(tr("Dopasowywanie napisów..."));
 
-        if(!napi->match())
+        if(!napi->matchSubtitles())
         {
             ABORT_POINT
 
             ++napiFail;
-            subStatusList << QNapiSubtitleInfo::fromFailed(queue[i]);
+            subStatusList << SubtitleInfo::fromFailed(queue[i]);
 
             emit criticalError(tr("Nie udało się dopasować napisów!!"));
             return;

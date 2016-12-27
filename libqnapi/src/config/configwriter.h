@@ -27,9 +27,9 @@ class ConfigWriter
 public:
     ConfigWriter(const QString & qnapiVersion);
 
-    void writeUserConfig(const QNapiConfig2 & config) const;
-    void writePortableConfig(const QString & configFilePath, const QNapiConfig2 & config) const;
-    void writeConfig(const QNapiConfig2 & config, QSettings & settings) const;
+    void writeUserConfig(const QNapiConfig & config) const;
+    void writePortableConfig(const QString & configFilePath, const QNapiConfig & config) const;
+    void writeConfig(const QNapiConfig & config, QSettings & settings) const;
 
 private:
     void writeGeneralConfig(const GeneralConfig & generalConfig, QSettings & settings) const;

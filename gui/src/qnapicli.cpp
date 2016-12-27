@@ -14,7 +14,7 @@
 
 #include "qnapicli.h"
 #include "libqnapi.h"
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 
 bool QNapiCli::isCliCall(int argc, char **argv)
 {
@@ -107,7 +107,7 @@ bool QNapiCli::analyze()
 
             p = args[i];
 
-            lang = QNapiLanguage(p).toTwoLetter();
+            lang = SubtitleLanguage(p).toTwoLetter();
             if(lang.isEmpty())
             {
                 printCli(QString("Niepoprawny kod jezykowy: %1").arg(p));
@@ -122,7 +122,7 @@ bool QNapiCli::analyze()
 
             p = args[i];
 
-            langBackup = QNapiLanguage(p).toTwoLetter();
+            langBackup = SubtitleLanguage(p).toTwoLetter();
             langBackupPassed = true;
         }
         else if((p == "--show-list") || (p == "-s"))
@@ -140,7 +140,7 @@ bool QNapiCli::analyze()
         }
     }
 
-    bool quietBatch = GlobalConfig().quietBatch();
+    bool quietBatch = OldGlobalConfig().quietBatch();
     if(quietBatch && !movieList.isEmpty())
     {
         mode = CM_QUIET;
@@ -196,17 +196,17 @@ int QNapiCli::exec()
     }
 
     
-    if(!napi.addEngines(GlobalConfig().enginesList()))
+    if(!napi.addEngines(OldGlobalConfig().enginesList()))
     {
         printCli(QString("Blad: ") + napi.error());
         return EC_UNSUPPORTED_ENGINE;
     }
 
     if(lang.isEmpty())
-        lang = GlobalConfig().language();
+        lang = OldGlobalConfig().language();
 
     if(!langBackupPassed)
-        langBackup = GlobalConfig().languageBackup();
+        langBackup = OldGlobalConfig().languageBackup();
 
     foreach(QString movie, movieList)
     {
@@ -226,9 +226,9 @@ int QNapiCli::exec()
         napi.checksum();
 
         bool found = false;
-        SearchPolicy sp = GlobalConfig().searchPolicy();
+        OldSearchPolicy sp = OldGlobalConfig().searchPolicy();
 
-        if(sp == SP_SEARCH_ALL_WITH_BACKUP_LANG)
+        if(sp == OLD_SP_SEARCH_ALL_WITH_BACKUP_LANG)
         {
             foreach(QString e, napi.listLoadedEngines())
             {
@@ -245,7 +245,7 @@ int QNapiCli::exec()
                 printCli(QString(QString("   Szukanie napisow [%1] (%2)...").arg(lang, e)));
                 found = napi.lookForSubtitles(lang, e) || found;
 
-                if(sp == SP_BREAK_IF_FOUND && found)
+                if(sp == OLD_SP_BREAK_IF_FOUND && found)
                     break;
             }
 
@@ -255,7 +255,7 @@ int QNapiCli::exec()
                     printCli(QString(QString("   Szukanie napisow w jezyku zapasowym [%1] (%2)...").arg(langBackup, e)));
                     found = napi.lookForSubtitles(langBackup, e) || found;
 
-                    if(sp == SP_BREAK_IF_FOUND && found)
+                    if(sp == OLD_SP_BREAK_IF_FOUND && found)
                         break;
                 }
             }
@@ -288,10 +288,10 @@ int QNapiCli::exec()
 
             int i = 1;
 
-            QList<QNapiSubtitleInfo> list = napi.listSubtitles();
+            QList<SubtitleInfo> list = napi.listSubtitles();
 
 
-            foreach(QNapiSubtitleInfo s, list)
+            foreach(SubtitleInfo s, list)
             {
                 QString resolution = "";
 
@@ -355,11 +355,11 @@ int QNapiCli::exec()
         if(napi.ppEnabled())
         {
             printCli(QString(QString("   Przetwarzanie pobranych napisow...")));
-            napi.pp();
+            napi.postProcessSubtitles();
         }
 
         printCli(QString(QString("   Dopasowywanie napisow...")));
-        if(!napi.match())
+        if(!napi.matchSubtitles())
         {
             printCli(QString(QString("   Nie udalo sie dopasowac napisow!")));
             return EC_COULD_NOT_MATCH;
@@ -401,7 +401,7 @@ void QNapiCli::printHelpLanguages()
     printCli(QString("Oto lista rozpoznawanych przez QNapi jezykow i odpowiadajacym"));
     printCli(QString("im dwuliterowych kodow:\n"));
 
-    QNapiLanguage L, LB;
+    SubtitleLanguage L, LB;
     QStringList langs = L.listLanguages();
 
     foreach(QString lang, langs)
@@ -410,8 +410,8 @@ void QNapiCli::printHelpLanguages()
         printCli(QString(" %1 - %2").arg(L.toTwoLetter()).arg(lang));
     }
 
-    L.setLanguage(GlobalConfig().language());
-    LB.setLanguage(GlobalConfig().languageBackup());
+    L.setLanguage(OldGlobalConfig().language());
+    LB.setLanguage(OldGlobalConfig().languageBackup());
 
     printCli(QString("\nAktualnie ustawiony domyslny jezyk napisow: %1 (%2)")
                 .arg(L.toFullName()).arg(L.toTwoLetter()));

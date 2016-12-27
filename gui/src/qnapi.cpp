@@ -14,9 +14,9 @@
 
 #include "libqnapi.h"
 #include "qnapi.h"
-#include "qnapiconfig.h"
-#include "qsubmatcher.h"
-#include "qsubpostprocess.h"
+#include "qnapiconfigold.h"
+#include "subtitlematcher.h"
+#include "subtitlepostprocessor.h"
 
 #include "config/configreader.h"
 
@@ -38,18 +38,18 @@ QNapi::~QNapi()
 
 bool QNapi::checkP7ZipPath()
 {
-    return QFileInfo(GlobalConfig().p7zipPath()).isExecutable();
+    return QFileInfo(OldGlobalConfig().p7zipPath()).isExecutable();
 }
 
 bool QNapi::checkTmpPath()
 {
-    QFileInfo f(GlobalConfig().tmpPath());
+    QFileInfo f(OldGlobalConfig().tmpPath());
     return f.isDir() && f.isWritable();
 }
 
 bool QNapi::ppEnabled()
 {
-    return GlobalConfig().ppEnabled();
+    return OldGlobalConfig().ppEnabled();
 }
 
 bool QNapi::addEngines(QStringList engines)
@@ -122,18 +122,18 @@ bool QNapi::lookForSubtitles(QString lang, QString engine)
     return result;
 }
 
-QList<QNapiSubtitleInfo> QNapi::listSubtitles()
+QList<SubtitleInfo> QNapi::listSubtitles()
 {
     subtitlesList.clear();
 
     foreach(QSharedPointer<SubtitleDownloadEngine> e, enginesList)
     {
-        QList<QNapiSubtitleInfo> list =  e->listSubtitles();
+        QList<SubtitleInfo> list =  e->listSubtitles();
         subtitlesList << list;
     }
 
-    QString mainLang = GlobalConfig().language();
-    QString backupLang = GlobalConfig().languageBackup();
+    QString mainLang = OldGlobalConfig().language();
+    QString backupLang = OldGlobalConfig().languageBackup();
 
     auto langRank = [&](QString lang) {
         if(lang == mainLang) return 0;
@@ -142,7 +142,7 @@ QList<QNapiSubtitleInfo> QNapi::listSubtitles()
     };
 
     qStableSort(subtitlesList.begin(), subtitlesList.end(),
-                [&](const QNapiSubtitleInfo & si1, const QNapiSubtitleInfo & si2) {
+                [&](const SubtitleInfo & si1, const SubtitleInfo & si2) {
        return langRank(si1.lang) < langRank(si2.lang);
     });
 
@@ -155,7 +155,7 @@ bool QNapi::needToShowList()
 
     int i = 0;
     bool foundBestIdx = false;
-    foreach(QNapiSubtitleInfo s, listSubtitles())
+    foreach(SubtitleInfo s, listSubtitles())
     {
         if(s.resolution == SUBTITLE_GOOD)
         {
@@ -166,9 +166,9 @@ bool QNapi::needToShowList()
         ++i;
     }
 
-    if(GlobalConfig().downloadPolicy() == DP_ALWAYS_SHOW_LIST)  
+    if(OldGlobalConfig().downloadPolicy() == OLD_DP_ALWAYS_SHOW_LIST)  
         return true;
-    if(GlobalConfig().downloadPolicy() == DP_NEVER_SHOW_LIST)   
+    if(OldGlobalConfig().downloadPolicy() == OLD_DP_NEVER_SHOW_LIST)   
         return false;
 
     if(listSubtitles().size() <= 1)
@@ -184,7 +184,7 @@ int QNapi::bestIdx()
 
 bool QNapi::download(int i)
 {
-    QNapiSubtitleInfo s = subtitlesList[i];
+    SubtitleInfo s = subtitlesList[i];
     currentEngine = engineByName(s.engine);
     if(!currentEngine) return false;
     return currentEngine->download(s.id);
@@ -197,11 +197,11 @@ bool QNapi::unpack(int i)
             : false;
 }
 
-bool QNapi::match()
+bool QNapi::matchSubtitles()
 {
-    QNapiConfig & config = GlobalConfig();
+    QNapiConfigOld & config = OldGlobalConfig();
 
-    QSubMatcher subMatcher(config.noBackup(),
+    SubtitleMatcher subMatcher(config.noBackup(),
                            config.ppEnabled(),
                            config.ppSubFormat(),
                            config.ppSubExtension(),
@@ -214,12 +214,11 @@ bool QNapi::match()
              : false;
 }
 
-void QNapi::pp()
+void QNapi::postProcessSubtitles() const
 {
     if(currentEngine) {
-        QSubPostProcess pp(currentEngine->movie,
-                           currentEngine->subtitlesTmp);
-        pp.perform();
+        SubtitlePostProcessor pp;
+        pp.perform(currentEngine->movie, currentEngine->subtitlesTmp);
     }
 }
 

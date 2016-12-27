@@ -17,18 +17,18 @@
 
 #include <QString>
 
-enum SearchPolicy2
+enum SearchPolicy
 {
-    SP_BREAK_IF_FOUND_2 = 0,
-    SP_SEARCH_ALL_2 = 1,
-    SP_SEARCH_ALL_WITH_BACKUP_LANG_2 = 2
+    SP_BREAK_IF_FOUND = 0,
+    SP_SEARCH_ALL = 1,
+    SP_SEARCH_ALL_WITH_BACKUP_LANG = 2
 };
 
-enum DownloadPolicy2
+enum DownloadPolicy
 {
-    DP_ALWAYS_SHOW_LIST_2 = 0,
-    DP_SHOW_LIST_IF_NEEDED_2 = 1,
-    DP_NEVER_SHOW_LIST_2  = 2
+    DP_ALWAYS_SHOW_LIST = 0,
+    DP_SHOW_LIST_IF_NEEDED = 1,
+    DP_NEVER_SHOW_LIST  = 2
 };
 
 
@@ -40,8 +40,8 @@ private:
     QString backupLanguage_;
     bool noBackup_;
     bool quietBatch_;
-    SearchPolicy2 searchPolicy_;
-    DownloadPolicy2 downloadPolicy_;
+    SearchPolicy searchPolicy_;
+    DownloadPolicy downloadPolicy_;
     bool changePermissionsEnabled_;
     QString changePermissionsTo_;
 
@@ -52,8 +52,8 @@ public:
                   const QString & backupLanguage,
                   const bool & noBackup,
                   const bool & quietBatch,
-                  const SearchPolicy2 & searchPolicy,
-                  const DownloadPolicy2 & downloadPolicy,
+                  const SearchPolicy & searchPolicy,
+                  const DownloadPolicy & downloadPolicy,
                   const bool & changePermissionsEnabled,
                   const QString & changePermissionsTo)
         : p7zipPath_(p7zipPath),
@@ -74,8 +74,8 @@ public:
     QString backupLanguage() const { return backupLanguage_; }
     bool noBackup() const { return noBackup_; }
     bool quietBatch() const { return quietBatch_; }
-    SearchPolicy2 searchPolicy() const { return searchPolicy_; }
-    DownloadPolicy2 downloadPolicy() const { return downloadPolicy_; }
+    SearchPolicy searchPolicy() const { return searchPolicy_; }
+    DownloadPolicy downloadPolicy() const { return downloadPolicy_; }
     bool changePermissionsEnabled() const { return changePermissionsEnabled_; }
     QString changePermissionsTo() const { return changePermissionsTo_; }
 
@@ -97,10 +97,10 @@ public:
     const GeneralConfig setQuietBatch(const bool & quietBatch) const {
         return GeneralConfig(p7zipPath_, tmpPath_, language_, backupLanguage_, noBackup_, quietBatch, searchPolicy_, downloadPolicy_, changePermissionsEnabled_, changePermissionsTo_);
     }
-    const GeneralConfig setSearchPolicy(const SearchPolicy2 & searchPolicy) const {
+    const GeneralConfig setSearchPolicy(const SearchPolicy & searchPolicy) const {
         return GeneralConfig(p7zipPath_, tmpPath_, language_, backupLanguage_, noBackup_, quietBatch_, searchPolicy, downloadPolicy_, changePermissionsEnabled_, changePermissionsTo_);
     }
-    const GeneralConfig setDownloadPolicy(const DownloadPolicy2 & downloadPolicy) const {
+    const GeneralConfig setDownloadPolicy(const DownloadPolicy & downloadPolicy) const {
         return GeneralConfig(p7zipPath_, tmpPath_, language_, backupLanguage_, noBackup_, quietBatch_, searchPolicy_, downloadPolicy, changePermissionsEnabled_, changePermissionsTo_);
     }
     const GeneralConfig setChangePermissionsEnabled(const bool & changePermissionsEnabled) const {

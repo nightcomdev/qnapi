@@ -14,7 +14,7 @@
 
 #include "napiprojektdownloadengine.h"
 #include "utils/synchttp.h"
-#include "qnapilanguage.h"
+#include "subtitlelanguage.h"
 
 #include <cmath>
 
@@ -104,7 +104,7 @@ bool NapiProjektDownloadEngine::lookForSubtitles(QString lang)
 
     QString tmpPackedFile = tmpPackedFileOpt.value();
 
-    subtitlesList << QNapiSubtitleInfo(lang,
+    subtitlesList << SubtitleInfo(lang,
                                        meta().name(),
                                        tmpPackedFile,
                                        QFileInfo(movie).completeBaseName(),
@@ -114,14 +114,14 @@ bool NapiProjektDownloadEngine::lookForSubtitles(QString lang)
     return true;
 }
 
-QList<QNapiSubtitleInfo> NapiProjektDownloadEngine::listSubtitles()
+QList<SubtitleInfo> NapiProjektDownloadEngine::listSubtitles()
 {
     return subtitlesList;
 }
 
 bool NapiProjektDownloadEngine::download(QUuid id)
 {
-    Maybe<QNapiSubtitleInfo> ms = resolveById(id);
+    Maybe<SubtitleInfo> ms = resolveById(id);
 
     return ms && QFile::exists(ms.value().sourceLocation);
 }
@@ -169,7 +169,7 @@ Maybe<QString> NapiProjektDownloadEngine::downloadByLangAndChecksum(QString lang
 
 bool NapiProjektDownloadEngine::unpack(QUuid id)
 {
-    Maybe<QNapiSubtitleInfo> ms = resolveById(id);
+    Maybe<SubtitleInfo> ms = resolveById(id);
     if(!ms) return false;
 
     if(!QFile::exists(movie)) return false;
@@ -265,7 +265,7 @@ QString NapiProjektDownloadEngine::npFDigest(const QString & input) const
 
 QString NapiProjektDownloadEngine::npLangWrapper(QString lang) const
 {
-    lang = QNapiLanguage(lang).toTwoLetter().toUpper();
+    lang = SubtitleLanguage(lang).toTwoLetter().toUpper();
 
     if(lang == "EN")
         lang = "ENG";

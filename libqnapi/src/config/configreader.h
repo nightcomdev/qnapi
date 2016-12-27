@@ -32,9 +32,9 @@ public:
     ConfigReader(const QSharedPointer<const StaticConfig> & staticConfig,
                  const QSharedPointer<const SubtitleDownloadEnginesRegistry> enginesRegistry);
 
-    const QNapiConfig2 readUserConfig() const;
-    const QNapiConfig2 readPortableConfig(const QString & configFilePath) const;
-    const QNapiConfig2 readConfig(const QSettings & settings) const;
+    const QNapiConfig readUserConfig() const;
+    const QNapiConfig readPortableConfig(const QString & configFilePath) const;
+    const QNapiConfig readConfig(const QSettings & settings) const;
 
 private:
     const GeneralConfig readGeneralConfig(const QSettings & settings) const;

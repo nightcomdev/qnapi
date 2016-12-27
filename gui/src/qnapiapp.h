@@ -17,7 +17,7 @@
 
 #include "engines/subtitledownloadenginesregistry.h"
 
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include "qnapiopendialog.h"
 
 #include "forms/frmprogress.h"

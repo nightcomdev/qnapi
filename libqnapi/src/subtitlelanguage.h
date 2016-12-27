@@ -12,19 +12,17 @@
 **
 *****************************************************************************/
 
-#ifndef __QNAPILANGUAGE__H__
-#define __QNAPILANGUAGE__H__
+#ifndef SUBTITLELANGUAGE_H
+#define SUBTITLELANGUAGE_H
 
 #include <QObject>
 #include <QStringList>
 
-class QNapiLanguage : public QObject
+class SubtitleLanguage
 {
-Q_OBJECT
-
 public:
 
-    QNapiLanguage(QString source = "");
+    SubtitleLanguage(QString source = "");
 
     void setLanguage(QString source);
 

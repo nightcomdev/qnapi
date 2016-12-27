@@ -183,7 +183,7 @@ bool QNapiApp::showOpenDialog(QString engine)
     {
         openDialog = new QNapiOpenDialog(0,
                             tr("Wybierz jeden lub więcej plików z filmami"),
-                            GlobalConfig().previousDialogPath(),
+                            OldGlobalConfig().previousDialogPath(),
                             QNapiOpenDialog::Movies);
     }
     else if(openDialog)
@@ -204,8 +204,8 @@ bool QNapiApp::showOpenDialog(QString engine)
         if(!fileList.isEmpty())
         {
             QString dialogPath = QFileInfo(fileList[0]).absolutePath();
-            GlobalConfig().setPreviousDialogPath(dialogPath);
-            GlobalConfig().save();
+            OldGlobalConfig().setPreviousDialogPath(dialogPath);
+            OldGlobalConfig().save();
         }
     }
 

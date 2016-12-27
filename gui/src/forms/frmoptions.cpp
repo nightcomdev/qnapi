@@ -51,9 +51,9 @@ frmOptions::frmOptions(QWidget * parent, Qt::WindowFlags f)
 
     QString tlcode;
     ui.cbLangBackup->addItem("Brak", QVariant(""));
-    foreach(QString lang, QNapiLanguage("").listLanguages())
+    foreach(QString lang, SubtitleLanguage("").listLanguages())
     {
-        tlcode = QNapiLanguage(lang).toTwoLetter();
+        tlcode = SubtitleLanguage(lang).toTwoLetter();
         ui.cbLang->addItem(QIcon(QString(":/languages/%1.png").arg(tlcode)),lang,QVariant(tlcode));
         ui.cbLangBackup->addItem(QIcon(QString(":/languages/%1.png").arg(tlcode)),lang,QVariant(tlcode));
     }
@@ -255,8 +255,8 @@ void frmOptions::subFormatChanged(int format)
 
 void frmOptions::encodingMethodChanged(int method)
 {
-    ChangeEncodingMethod cemMethod = (ChangeEncodingMethod) method;
-    bool enableEncodingSettings = cemMethod == CEM_CHANGE;
+    OldChangeEncodingMethod cemMethod = (OldChangeEncodingMethod) method;
+    bool enableEncodingSettings = cemMethod == OLD_CEM_CHANGE;
     ui.cbEncFrom->setEnabled(enableEncodingSettings);
     ui.lbConvert->setEnabled(enableEncodingSettings);
     ui.lbConvertFrom->setEnabled(enableEncodingSettings);
@@ -268,7 +268,7 @@ void frmOptions::encodingMethodChanged(int method)
 
 void frmOptions::autoDetectEncodingClicked()
 {
-    bool checkedCE = (ChangeEncodingMethod) ui.cbEncodingMethod->currentIndex() == CEM_CHANGE;
+    bool checkedCE = (OldChangeEncodingMethod) ui.cbEncodingMethod->currentIndex() == OLD_CEM_CHANGE;
     bool checkedADE = ui.cbAutoDetectEncoding->isChecked();
     ui.cbEncFrom->setEnabled(checkedCE && !checkedADE);
     ui.lbConvertFrom->setEnabled(checkedCE && !checkedADE);
@@ -316,17 +316,17 @@ void frmOptions::showAllEncodings()
 
 void frmOptions::writeConfig()
 {
-    GlobalConfig().setP7zipPath(ui.le7zPath->text());
-    GlobalConfig().setTmpPath(ui.leTmpPath->text());
-    GlobalConfig().setLanguage(ui.cbLang->itemData(ui.cbLang->currentIndex()).toString());
-    GlobalConfig().setLanguageBackup(ui.cbLangBackup->itemData(ui.cbLangBackup->currentIndex()).toString());
-    GlobalConfig().setNoBackup(ui.cbNoBackup->isChecked());
+    OldGlobalConfig().setP7zipPath(ui.le7zPath->text());
+    OldGlobalConfig().setTmpPath(ui.leTmpPath->text());
+    OldGlobalConfig().setLanguage(ui.cbLang->itemData(ui.cbLang->currentIndex()).toString());
+    OldGlobalConfig().setLanguageBackup(ui.cbLangBackup->itemData(ui.cbLangBackup->currentIndex()).toString());
+    OldGlobalConfig().setNoBackup(ui.cbNoBackup->isChecked());
 #ifndef Q_OS_MAC
     GlobalConfig().setQuietBatch(ui.cbQuietBatch->isChecked());
 #endif
 
 #ifdef Q_OS_MAC
-    GlobalConfig().setShowDockIcon(ui.cbShowDockIcon->isChecked());
+    OldGlobalConfig().setShowDockIcon(ui.cbShowDockIcon->isChecked());
 #endif
 
     QList<QPair<QString, bool> > engines;
@@ -336,53 +336,53 @@ void frmOptions::writeConfig()
                             (ui.twEngines->item(i, 0)->checkState() == Qt::Checked));
     }
 
-    GlobalConfig().setEngines(engines);
+    OldGlobalConfig().setEngines(engines);
     
-    GlobalConfig().setSearchPolicy((SearchPolicy) ui.cbSearchPolicy->currentIndex());
-    GlobalConfig().setDownloadPolicy((DownloadPolicy) ui.cbDownloadPolicy->currentIndex());
+    OldGlobalConfig().setSearchPolicy((OldSearchPolicy) ui.cbSearchPolicy->currentIndex());
+    OldGlobalConfig().setDownloadPolicy((OldDownloadPolicy) ui.cbDownloadPolicy->currentIndex());
 
-    GlobalConfig().setPpEnabled(ui.gbPpEnable->isChecked());
-    GlobalConfig().setPpEncodingMethod((ChangeEncodingMethod) ui.cbEncodingMethod->currentIndex());
-    GlobalConfig().setPpAutoDetectEncoding(ui.cbAutoDetectEncoding->isChecked());
-    GlobalConfig().setPpEncodingFrom(ui.cbEncFrom->currentText());
-    GlobalConfig().setPpEncodingTo(ui.cbEncTo->currentText());
-    GlobalConfig().setPpShowAllEncodings(ui.cbShowAllEncodings->isChecked());
-    GlobalConfig().setPpRemoveLines(ui.cbRemoveLines->isChecked());
-    GlobalConfig().setPpRemoveWords(ui.teRemoveWords->toPlainText().split("\n"));
+    OldGlobalConfig().setPpEnabled(ui.gbPpEnable->isChecked());
+    OldGlobalConfig().setPpEncodingMethod((OldChangeEncodingMethod) ui.cbEncodingMethod->currentIndex());
+    OldGlobalConfig().setPpAutoDetectEncoding(ui.cbAutoDetectEncoding->isChecked());
+    OldGlobalConfig().setPpEncodingFrom(ui.cbEncFrom->currentText());
+    OldGlobalConfig().setPpEncodingTo(ui.cbEncTo->currentText());
+    OldGlobalConfig().setPpShowAllEncodings(ui.cbShowAllEncodings->isChecked());
+    OldGlobalConfig().setPpRemoveLines(ui.cbRemoveLines->isChecked());
+    OldGlobalConfig().setPpRemoveWords(ui.teRemoveWords->toPlainText().split("\n"));
     QString targetFormat = ui.cbSubFormat->currentIndex() == 0 ? "" : subtitleFormatsRegistry->listFormatNames().at(ui.cbSubFormat->currentIndex() - 1);
-    GlobalConfig().setPpSubFormat(targetFormat);
+    OldGlobalConfig().setPpSubFormat(targetFormat);
     QString targetExt = ui.cbSubExtension->currentIndex() == 0 ? "" : ui.cbSubExtension->currentText();
-    GlobalConfig().setPpSubExtension(targetExt);
-    GlobalConfig().setPpSkipConvertAds(ui.cbSkipConvertAds->isChecked());
-    GlobalConfig().setChangePermissions(ui.cbChangePermissions->isChecked());
+    OldGlobalConfig().setPpSubExtension(targetExt);
+    OldGlobalConfig().setPpSkipConvertAds(ui.cbSkipConvertAds->isChecked());
+    OldGlobalConfig().setChangePermissions(ui.cbChangePermissions->isChecked());
 
     QString permissions = QString("%1%2%3").arg(ui.sbUPerm->value())
                                            .arg(ui.sbGPerm->value())
                                            .arg(ui.sbOPerm->value());
-    GlobalConfig().setChangePermissionsTo(permissions);
+    OldGlobalConfig().setChangePermissionsTo(permissions);
 
-    GlobalConfig().save();
+    OldGlobalConfig().save();
 }
 
 void frmOptions::readConfig()
 {
-    GlobalConfig().load(QCoreApplication::applicationDirPath());
+    OldGlobalConfig().load(QCoreApplication::applicationDirPath());
 
-    ui.le7zPath->setText(GlobalConfig().p7zipPath());
-    ui.leTmpPath->setText(GlobalConfig().tmpPath());
-    ui.cbLang->setCurrentIndex(ui.cbLang->findData(QNapiLanguage(GlobalConfig().language()).toTwoLetter()));
-    ui.cbLangBackup->setCurrentIndex(ui.cbLangBackup->findData(QNapiLanguage(GlobalConfig().languageBackup()).toTwoLetter()));
-    ui.cbNoBackup->setChecked(GlobalConfig().noBackup());
+    ui.le7zPath->setText(OldGlobalConfig().p7zipPath());
+    ui.leTmpPath->setText(OldGlobalConfig().tmpPath());
+    ui.cbLang->setCurrentIndex(ui.cbLang->findData(SubtitleLanguage(OldGlobalConfig().language()).toTwoLetter()));
+    ui.cbLangBackup->setCurrentIndex(ui.cbLangBackup->findData(SubtitleLanguage(OldGlobalConfig().languageBackup()).toTwoLetter()));
+    ui.cbNoBackup->setChecked(OldGlobalConfig().noBackup());
 #ifndef Q_OS_MAC
     ui.cbQuietBatch->setChecked(GlobalConfig().quietBatch());
 #endif
 #ifdef Q_OS_MAC
-    ui.cbShowDockIcon->setChecked(GlobalConfig().showDockIcon());
+    ui.cbShowDockIcon->setChecked(OldGlobalConfig().showDockIcon());
 #endif
 
     ui.twEngines->clear();
 
-    QList<QPair<QString,bool> > engines = GlobalConfig().engines();
+    QList<QPair<QString,bool> > engines = OldGlobalConfig().engines();
     ui.twEngines->setColumnCount(1);
     ui.twEngines->setRowCount(engines.size());
 
@@ -401,32 +401,32 @@ void frmOptions::readConfig()
     ui.twEngines->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     ui.twEngines->setColumnWidth(0, 300);
 
-    ui.cbSearchPolicy->setCurrentIndex(GlobalConfig().searchPolicy());
-    ui.cbDownloadPolicy->setCurrentIndex(GlobalConfig().downloadPolicy());
+    ui.cbSearchPolicy->setCurrentIndex(OldGlobalConfig().searchPolicy());
+    ui.cbDownloadPolicy->setCurrentIndex(OldGlobalConfig().downloadPolicy());
 
-    ui.cbEncodingMethod->setCurrentIndex(GlobalConfig().ppEncodingMethod());
-    ui.cbAutoDetectEncoding->setChecked(GlobalConfig().ppAutoDetectEncoding());
-    ui.cbEncFrom->setCurrentIndex(ui.cbEncFrom->findText(GlobalConfig().ppEncodingFrom()));
-    ui.cbEncTo->setCurrentIndex(ui.cbEncTo->findText(GlobalConfig().ppEncodingTo()));
-    ui.cbShowAllEncodings->setChecked(GlobalConfig().ppShowAllEncodings());
-    ui.cbRemoveLines->setChecked(GlobalConfig().ppRemoveLines());
-    ui.teRemoveWords->setText(GlobalConfig().ppRemoveWords().join("\n"));
+    ui.cbEncodingMethod->setCurrentIndex(OldGlobalConfig().ppEncodingMethod());
+    ui.cbAutoDetectEncoding->setChecked(OldGlobalConfig().ppAutoDetectEncoding());
+    ui.cbEncFrom->setCurrentIndex(ui.cbEncFrom->findText(OldGlobalConfig().ppEncodingFrom()));
+    ui.cbEncTo->setCurrentIndex(ui.cbEncTo->findText(OldGlobalConfig().ppEncodingTo()));
+    ui.cbShowAllEncodings->setChecked(OldGlobalConfig().ppShowAllEncodings());
+    ui.cbRemoveLines->setChecked(OldGlobalConfig().ppRemoveLines());
+    ui.teRemoveWords->setText(OldGlobalConfig().ppRemoveWords().join("\n"));
 
     int formatIdx = 1;
     foreach(QString format, subtitleFormatsRegistry->listFormatNames())
     {
-        if(GlobalConfig().ppSubFormat() == format)
+        if(OldGlobalConfig().ppSubFormat() == format)
         {
             ui.cbSubFormat->setCurrentIndex(formatIdx);
         }
         ++formatIdx;
     }
 
-    ui.cbSubExtension->setCurrentText(GlobalConfig().ppSubExtension());
-    ui.cbSkipConvertAds->setChecked(GlobalConfig().ppSkipConvertAds());
+    ui.cbSubExtension->setCurrentText(OldGlobalConfig().ppSubExtension());
+    ui.cbSkipConvertAds->setChecked(OldGlobalConfig().ppSkipConvertAds());
 
-    ui.cbChangePermissions->setChecked(GlobalConfig().changePermissions());
-    QString permissions = GlobalConfig().changePermissionsTo();
+    ui.cbChangePermissions->setChecked(OldGlobalConfig().changePermissions());
+    QString permissions = OldGlobalConfig().changePermissionsTo();
     unsigned short o, g, u;
     o = permissions.at(0).toLatin1() - '0';
     g = permissions.at(1).toLatin1() - '0';
@@ -435,50 +435,50 @@ void frmOptions::readConfig()
     ui.sbGPerm->setValue((g <= 7) ? g : 4);
     ui.sbOPerm->setValue((u <= 7) ? u : 4);
 
-    encodingMethodChanged((int) GlobalConfig().ppEncodingMethod());
+    encodingMethodChanged((int) OldGlobalConfig().ppEncodingMethod());
     showAllEncodingsClicked();
 
-    ui.gbPpEnable->setChecked(GlobalConfig().ppEnabled());
+    ui.gbPpEnable->setChecked(OldGlobalConfig().ppEnabled());
 }
 
 void frmOptions::restoreDefaults()
 {
-    GlobalConfig().setP7zipPath("");
-    GlobalConfig().setTmpPath(QDir::tempPath());
-    GlobalConfig().setLanguage("pl");
-    GlobalConfig().setLanguageBackup("en");
-    GlobalConfig().setNoBackup(false);
-    GlobalConfig().setQuietBatch(false);
-    GlobalConfig().setChangePermissions(false);
-    GlobalConfig().setChangePermissionsTo("644");
+    OldGlobalConfig().setP7zipPath("");
+    OldGlobalConfig().setTmpPath(QDir::tempPath());
+    OldGlobalConfig().setLanguage("pl");
+    OldGlobalConfig().setLanguageBackup("en");
+    OldGlobalConfig().setNoBackup(false);
+    OldGlobalConfig().setQuietBatch(false);
+    OldGlobalConfig().setChangePermissions(false);
+    OldGlobalConfig().setChangePermissionsTo("644");
 
 #ifdef Q_OS_MAC
-    GlobalConfig().setShowDockIcon(true);
+    OldGlobalConfig().setShowDockIcon(true);
 #endif
 
     QList<QPair<QString, bool> > engines;
     engines << QPair<QString, bool>("NapiProjekt", true)
             << QPair<QString, bool>("OpenSubtitles", true)
             << QPair<QString, bool>("Napisy24", true);
-    GlobalConfig().setEngines(engines);
-    GlobalConfig().setSearchPolicy(SP_SEARCH_ALL);
-    GlobalConfig().setDownloadPolicy(DP_SHOW_LIST_IF_NEEDED);
+    OldGlobalConfig().setEngines(engines);
+    OldGlobalConfig().setSearchPolicy(OLD_SP_SEARCH_ALL);
+    OldGlobalConfig().setDownloadPolicy(OLD_DP_SHOW_LIST_IF_NEEDED);
 
-    GlobalConfig().setPpEnabled(false);
-    GlobalConfig().setPpEncodingMethod(CEM_ORIGINAL);
-    GlobalConfig().setPpAutoDetectEncoding(true);
-    GlobalConfig().setPpEncodingFrom("windows-1250");
-    GlobalConfig().setPpEncodingTo("UTF-8");
-    GlobalConfig().setPpShowAllEncodings(false);
-    GlobalConfig().setPpRemoveLines(false);
+    OldGlobalConfig().setPpEnabled(false);
+    OldGlobalConfig().setPpEncodingMethod(OLD_CEM_ORIGINAL);
+    OldGlobalConfig().setPpAutoDetectEncoding(true);
+    OldGlobalConfig().setPpEncodingFrom("windows-1250");
+    OldGlobalConfig().setPpEncodingTo("UTF-8");
+    OldGlobalConfig().setPpShowAllEncodings(false);
+    OldGlobalConfig().setPpRemoveLines(false);
     QStringList words;
     words << "movie info" << "synchro";
-    GlobalConfig().setPpRemoveWords(words);
-    GlobalConfig().setPpSubFormat("");
-    GlobalConfig().setPpSubExtension("");
-    GlobalConfig().setPpSkipConvertAds(false);
+    OldGlobalConfig().setPpRemoveWords(words);
+    OldGlobalConfig().setPpSubFormat("");
+    OldGlobalConfig().setPpSubExtension("");
+    OldGlobalConfig().setPpSkipConvertAds(false);
 
-    GlobalConfig().save();
+    OldGlobalConfig().save();
 
     readConfig();
 }

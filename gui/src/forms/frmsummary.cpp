@@ -31,7 +31,7 @@ frmSummary::frmSummary(QWidget * parent, Qt::WindowFlags f) : QDialog(parent, f)
     move(position.topLeft());
 }
 
-void frmSummary::setSummaryList(QList<QNapiSubtitleInfo> list)
+void frmSummary::setSummaryList(QList<SubtitleInfo> list)
 {
     std::sort(list.begin(), list.end());
 
@@ -42,7 +42,7 @@ void frmSummary::setSummaryList(QList<QNapiSubtitleInfo> list)
     ui.lwSummary->setFocusPolicy(Qt::NoFocus);
 
     int i = 0, goodCount = 0, badCount = 0;
-    foreach(QNapiSubtitleInfo s, list)
+    foreach(SubtitleInfo s, list)
     {
         bool isGood = s.resolution != SUBTITLE_NONE;
 

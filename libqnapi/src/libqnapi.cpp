@@ -57,7 +57,7 @@ LibQNapi::configWriter()
     return QSharedPointer<const ConfigWriter>(new ConfigWriter(ver));
 }
 
-const QNapiConfig2 LibQNapi::loadConfig()
+const QNapiConfig LibQNapi::loadConfig()
 {
     if(LibQNapi::isPortableMode())
         return LibQNapi::configReader()->readPortableConfig(LibQNapi::portableConfigPath());
@@ -65,7 +65,7 @@ const QNapiConfig2 LibQNapi::loadConfig()
         return LibQNapi::configReader()->readUserConfig();
 }
 
-void LibQNapi::writeConfig(const QNapiConfig2 & config)
+void LibQNapi::writeConfig(const QNapiConfig & config)
 {
     if(LibQNapi::isPortableMode())
         LibQNapi::configWriter()->writePortableConfig(LibQNapi::portableConfigPath(), config);
@@ -119,6 +119,20 @@ QString LibQNapi::portableConfigPath()
 {
     QString appExecutableDir = QFileInfo(appExecutablePath).absoluteDir().path();
     return appExecutableDir + QDir::separator() + "qnapi.ini";
+}
+
+QSharedPointer<const SubtitleMatcher> LibQNapi::subtitleMatcher(const QNapiConfig & config)
+{
+    return QSharedPointer<const SubtitleMatcher>(
+        new SubtitleMatcher(
+            config.generalConfig().noBackup(),
+            config.postProcessingConfig().enabled(),
+            config.postProcessingConfig().subFormat(),
+            config.postProcessingConfig().subExtension(),
+            config.generalConfig().changePermissionsEnabled(),
+            config.generalConfig().changePermissionsTo()
+        )
+    );
 }
 
 

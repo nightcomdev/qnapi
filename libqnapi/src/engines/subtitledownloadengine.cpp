@@ -33,7 +33,7 @@ QString SubtitleDownloadEngine::moviePath()
 
 void SubtitleDownloadEngine::clearSubtitlesList()
 {
-    foreach(QNapiSubtitleInfo s, subtitlesList)
+    foreach(SubtitleInfo s, subtitlesList)
     {
         if(QFile::exists(s.sourceLocation))
             QFile::remove(s.sourceLocation);
@@ -41,9 +41,9 @@ void SubtitleDownloadEngine::clearSubtitlesList()
     subtitlesList.clear();
 }
 
-Maybe<QNapiSubtitleInfo> SubtitleDownloadEngine::resolveById(QUuid id)
+Maybe<SubtitleInfo> SubtitleDownloadEngine::resolveById(QUuid id)
 {
-    foreach(QNapiSubtitleInfo s, subtitlesList)
+    foreach(SubtitleInfo s, subtitlesList)
     {
         if(s.id == id)
             return just(s);
@@ -51,7 +51,7 @@ Maybe<QNapiSubtitleInfo> SubtitleDownloadEngine::resolveById(QUuid id)
     return nothing();
 }
 
-void SubtitleDownloadEngine::updateSubtitleInfo(const QNapiSubtitleInfo & si)
+void SubtitleDownloadEngine::updateSubtitleInfo(const SubtitleInfo & si)
 {
     for(int i = 0; i < subtitlesList.size(); ++i)
     {

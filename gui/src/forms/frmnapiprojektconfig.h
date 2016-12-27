@@ -18,7 +18,7 @@
 #include <QDialog>
 #include "ui_frmnapiprojektconfig.h"
 
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include "qnapiapp.h"
 
 class frmNapiProjektConfig : public QDialog

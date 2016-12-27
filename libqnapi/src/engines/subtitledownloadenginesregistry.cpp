@@ -58,7 +58,7 @@ const char * const * SubtitleDownloadEnginesRegistry::enginePixmapData(const QSt
 }
 
 QSharedPointer<SubtitleDownloadEngine>
-SubtitleDownloadEnginesRegistry::createEngine(const QString & engineName, const QNapiConfig2 & config) const
+SubtitleDownloadEnginesRegistry::createEngine(const QString & engineName, const QNapiConfig & config) const
 {
     QSharedPointer<const P7ZipDecoder> p7zipDecoder = p7zipDecoderFactory(config.generalConfig().p7zipPath());
     const QString & tmpPath = config.generalConfig().tmpPath();
@@ -94,7 +94,7 @@ SubtitleDownloadEnginesRegistry::createEngine(const QString & engineName, const 
 }
 
 QList<QSharedPointer<SubtitleDownloadEngine>>
-SubtitleDownloadEnginesRegistry::createEngines(const QStringList & engineNames, const QNapiConfig2 & config) const
+SubtitleDownloadEnginesRegistry::createEngines(const QStringList & engineNames, const QNapiConfig & config) const
 {
     QList<QSharedPointer<SubtitleDownloadEngine>> engines;
     foreach(QString engineName, engineNames)
@@ -106,7 +106,7 @@ SubtitleDownloadEnginesRegistry::createEngines(const QStringList & engineNames, 
 
 
 QList<QSharedPointer<SubtitleDownloadEngine>>
-SubtitleDownloadEnginesRegistry::createEnabledEngines(const QNapiConfig2 & config) const
+SubtitleDownloadEnginesRegistry::createEnabledEngines(const QNapiConfig & config) const
 {
     QStringList engineNames;
     typedef QPair<QString, bool> EngineEnableCfg;

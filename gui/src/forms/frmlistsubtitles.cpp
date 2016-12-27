@@ -40,12 +40,12 @@ void frmListSubtitles::setFileName(const QString & name)
     );
 }
 
-void frmListSubtitles::setSubtitlesList(QList<QNapiSubtitleInfo> list)
+void frmListSubtitles::setSubtitlesList(QList<SubtitleInfo> list)
 {
     ui.twSubtitles->clear();
 
     int i = 0, goodCount = 0, badCount = 0;
-    foreach(QNapiSubtitleInfo s, list)
+    foreach(SubtitleInfo s, list)
     {
         bool highlight = (s.resolution != SUBTITLE_UNKNOWN);
 

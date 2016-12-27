@@ -12,8 +12,8 @@
 **
 *****************************************************************************/
 
-#ifndef __QNAPICONFIG__H__
-#define __QNAPICONFIG__H__
+#ifndef QNAPICONFIG_OLD_H
+#define QNAPICONFIG_OLD_H
 
 #include "config/staticconfig.h"
 
@@ -28,28 +28,28 @@
 #include <QtXml>
 #endif
 
-enum SearchPolicy
+enum OldSearchPolicy
 {
-    SP_BREAK_IF_FOUND = 0,
-    SP_SEARCH_ALL = 1,
-    SP_SEARCH_ALL_WITH_BACKUP_LANG = 2
+    OLD_SP_BREAK_IF_FOUND = 0,
+    OLD_SP_SEARCH_ALL = 1,
+    OLD_SP_SEARCH_ALL_WITH_BACKUP_LANG = 2
 };
 
-enum DownloadPolicy
+enum OldDownloadPolicy
 {
-    DP_ALWAYS_SHOW_LIST = 0,
-    DP_SHOW_LIST_IF_NEEDED = 1,
-    DP_NEVER_SHOW_LIST  = 2
+    OLD_DP_ALWAYS_SHOW_LIST = 0,
+    OLD_DP_SHOW_LIST_IF_NEEDED = 1,
+    OLD_DP_NEVER_SHOW_LIST  = 2
 };
 
-enum ChangeEncodingMethod
+enum OldChangeEncodingMethod
 {
-    CEM_ORIGINAL = 0,
-    CEM_CHANGE = 1,
-    CEM_REPLACE_DIACRITICS = 2
+    OLD_CEM_ORIGINAL = 0,
+    OLD_CEM_CHANGE = 1,
+    OLD_CEM_REPLACE_DIACRITICS = 2
 };
 
-class QNapiConfig
+class QNapiConfigOld
 {
     public:
         void load(QString appDirPath);
@@ -93,17 +93,17 @@ class QNapiConfig
         QStringList enginesList();
         void setEngines(QList<QPair<QString, bool> > engines);
 
-        SearchPolicy searchPolicy();
-        void setSearchPolicy(SearchPolicy policy);
+        OldSearchPolicy searchPolicy();
+        void setSearchPolicy(OldSearchPolicy policy);
         
-        DownloadPolicy downloadPolicy();
-        void setDownloadPolicy(DownloadPolicy policy);
+        OldDownloadPolicy downloadPolicy();
+        void setDownloadPolicy(OldDownloadPolicy policy);
 
         bool ppEnabled();
         void setPpEnabled(bool enable);
 
-        ChangeEncodingMethod ppEncodingMethod();
-        void setPpEncodingMethod(ChangeEncodingMethod method);
+        OldChangeEncodingMethod ppEncodingMethod();
+        void setPpEncodingMethod(OldChangeEncodingMethod method);
         
         bool ppAutoDetectEncoding();
         void setPpAutoDetectEncoding(bool change);
@@ -154,19 +154,19 @@ class QNapiConfig
         void setLastScanDir(const QString & dir);
 
     private:
-        QNapiConfig(const QString & qnapiVersion,
+        QNapiConfigOld(const QString & qnapiVersion,
                     const QSharedPointer<const StaticConfig> & staticConfig);
-        QNapiConfig(const QNapiConfig &);
-        ~QNapiConfig();
+        QNapiConfigOld(const QNapiConfigOld &);
+        ~QNapiConfigOld();
 
         QSettings *settings;
         bool isPortableMode;
         QString qnapiVersion;
         QSharedPointer<const StaticConfig> staticConfig;
 
-    friend QNapiConfig& GlobalConfig();
+    friend QNapiConfigOld& OldGlobalConfig();
 };
 
-QNapiConfig & GlobalConfig();
+QNapiConfigOld & OldGlobalConfig();
 
 #endif

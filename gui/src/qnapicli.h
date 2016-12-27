@@ -21,7 +21,7 @@
 #include <QFileInfo>
 #include <iostream>
 #include "qnapi.h"
-#include "qnapilanguage.h"
+#include "subtitlelanguage.h"
 
 class QNapiCli : public QCoreApplication
 {

@@ -117,7 +117,7 @@ bool Napisy24DownloadEngine::lookForSubtitles(QString lang)
     if (!r)
         return false;
 
-    subtitlesList << QNapiSubtitleInfo(lang,
+    subtitlesList << SubtitleInfo(lang,
                                        meta().name(),
                                        tmpPackedFile,
                                        QFileInfo(movie).completeBaseName(),
@@ -128,21 +128,21 @@ bool Napisy24DownloadEngine::lookForSubtitles(QString lang)
     return true;
 }
 
-QList<QNapiSubtitleInfo> Napisy24DownloadEngine::listSubtitles()
+QList<SubtitleInfo> Napisy24DownloadEngine::listSubtitles()
 {
     return subtitlesList;
 }
 
 bool Napisy24DownloadEngine::download(QUuid id)
 {
-    Maybe<QNapiSubtitleInfo> ms = resolveById(id);
+    Maybe<SubtitleInfo> ms = resolveById(id);
 
     return ms && QFile::exists(ms.value().sourceLocation);
 }
 
 bool Napisy24DownloadEngine::unpack(QUuid id)
 {
-    Maybe<QNapiSubtitleInfo> ms = resolveById(id);
+    Maybe<SubtitleInfo> ms = resolveById(id);
     if(!ms) return false;
 
     if(!QFile::exists(movie)) return false;

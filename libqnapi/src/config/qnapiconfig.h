@@ -22,7 +22,7 @@
 #include <config/postprocessingconfig.h>
 #include <config/scanconfig.h>
 
-class QNapiConfig2 {
+class QNapiConfig {
 private:
     bool firstrun_;
     QString version_;
@@ -33,7 +33,7 @@ private:
     ScanConfig scanConfig_;
 
 public:
-    QNapiConfig2(const bool & firstrun,
+    QNapiConfig(const bool & firstrun,
                 const QString & version,
                 const GeneralConfig & generalConfig,
                 const QList<QPair<QString, bool>> & enabledEngines,
@@ -57,26 +57,26 @@ public:
     PostProcessingConfig postProcessingConfig() const { return postProcessingConfig_; }
     ScanConfig scanConfig() const { return scanConfig_; }
 
-    const QNapiConfig2 setFirstrun(const bool & firstrun) const {
-        return QNapiConfig2(firstrun, version_, generalConfig_, enabledEngines_, enginesConfig_, postProcessingConfig_, scanConfig_);
+    const QNapiConfig setFirstrun(const bool & firstrun) const {
+        return QNapiConfig(firstrun, version_, generalConfig_, enabledEngines_, enginesConfig_, postProcessingConfig_, scanConfig_);
     }
-    const QNapiConfig2 setVersion(const QString & version) const {
-        return QNapiConfig2(firstrun_, version, generalConfig_, enabledEngines_, enginesConfig_, postProcessingConfig_, scanConfig_);
+    const QNapiConfig setVersion(const QString & version) const {
+        return QNapiConfig(firstrun_, version, generalConfig_, enabledEngines_, enginesConfig_, postProcessingConfig_, scanConfig_);
     }
-    const QNapiConfig2 setGeneralConfig(const GeneralConfig & generalConfig) const {
-        return QNapiConfig2(firstrun_, version_, generalConfig, enabledEngines_, enginesConfig_, postProcessingConfig_, scanConfig_);
+    const QNapiConfig setGeneralConfig(const GeneralConfig & generalConfig) const {
+        return QNapiConfig(firstrun_, version_, generalConfig, enabledEngines_, enginesConfig_, postProcessingConfig_, scanConfig_);
     }
-    const QNapiConfig2 setEnabledEngines(const QList<QPair<QString, bool>> & enabledEngines) const {
-        return QNapiConfig2(firstrun_, version_, generalConfig_, enabledEngines, enginesConfig_, postProcessingConfig_, scanConfig_);
+    const QNapiConfig setEnabledEngines(const QList<QPair<QString, bool>> & enabledEngines) const {
+        return QNapiConfig(firstrun_, version_, generalConfig_, enabledEngines, enginesConfig_, postProcessingConfig_, scanConfig_);
     }
-    const QNapiConfig2 setEnginesConfig(const QMap<QString, EngineConfig> & enginesConfig) const {
-        return QNapiConfig2(firstrun_, version_, generalConfig_, enabledEngines_, enginesConfig, postProcessingConfig_, scanConfig_);
+    const QNapiConfig setEnginesConfig(const QMap<QString, EngineConfig> & enginesConfig) const {
+        return QNapiConfig(firstrun_, version_, generalConfig_, enabledEngines_, enginesConfig, postProcessingConfig_, scanConfig_);
     }
-    const QNapiConfig2 setPostProcessingConfig(const PostProcessingConfig & postProcessingConfig) const {
-        return QNapiConfig2(firstrun_, version_, generalConfig_, enabledEngines_, enginesConfig_, postProcessingConfig, scanConfig_);
+    const QNapiConfig setPostProcessingConfig(const PostProcessingConfig & postProcessingConfig) const {
+        return QNapiConfig(firstrun_, version_, generalConfig_, enabledEngines_, enginesConfig_, postProcessingConfig, scanConfig_);
     }
-    const QNapiConfig2 setScanConfig(const ScanConfig & scanConfig) const {
-        return QNapiConfig2(firstrun_, version_, generalConfig_, enabledEngines_, enginesConfig_, postProcessingConfig_, scanConfig);
+    const QNapiConfig setScanConfig(const ScanConfig & scanConfig) const {
+        return QNapiConfig(firstrun_, version_, generalConfig_, enabledEngines_, enginesConfig_, postProcessingConfig_, scanConfig);
     }
 
     QString toString() const;

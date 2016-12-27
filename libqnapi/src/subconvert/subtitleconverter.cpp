@@ -15,7 +15,7 @@
 #include "movieinfo/movieinfoprovider.h"
 #include "utils/encodingutils.h"
 #include "libqnapi.h"
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include "subtitleconverter.h"
 #include <cmath>
 #include <QTextStream>
@@ -150,7 +150,7 @@ bool SubtitleConverter::convertSubtitles(QString subtitleFile,
         }
     }
 
-    if(!GlobalConfig().ppSkipConvertAds() && !sf.entries.isEmpty())
+    if(!OldGlobalConfig().ppSkipConvertAds() && !sf.entries.isEmpty())
     {
         SubToken stQNapi;
         stQNapi.type = STT_WORD;

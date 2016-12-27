@@ -24,7 +24,7 @@
 
 #include <Maybe.h>
 
-#include "qnapisubtitleinfo.h"
+#include "subtitleinfo.h"
 
 #include "engines/subtitledownloadenginemetadata.h"
 
@@ -43,7 +43,7 @@ public:
     virtual void clearSubtitlesList();
     virtual QString checksum(QString filename = "") = 0;
     virtual bool lookForSubtitles(QString lang) = 0;
-    virtual QList<QNapiSubtitleInfo> listSubtitles() = 0;
+    virtual QList<SubtitleInfo> listSubtitles() = 0;
     virtual bool download(QUuid id) = 0;
     virtual bool unpack(QUuid id) = 0;
     virtual void cleanup() = 0;
@@ -52,7 +52,7 @@ protected:
 
     QString tmpPath;
 
-    QList<QNapiSubtitleInfo> subtitlesList;
+    QList<SubtitleInfo> subtitlesList;
     QString movie;
     QString subtitles;
     QString subtitlesTmp;
@@ -60,8 +60,8 @@ protected:
 
     SubtitleDownloadEngine(const QString & tmpPath);
 
-    Maybe<QNapiSubtitleInfo> resolveById(QUuid id);
-    void updateSubtitleInfo(const QNapiSubtitleInfo & si);
+    Maybe<SubtitleInfo> resolveById(QUuid id);
+    void updateSubtitleInfo(const SubtitleInfo & si);
 
     QString generateTmpFileName() const;
     QString generateTmpPath() const;

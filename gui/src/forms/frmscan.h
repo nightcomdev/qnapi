@@ -20,7 +20,7 @@
 #include "config/staticconfig.h"
 
 #include "qnapithread.h"
-#include "qnapiconfig.h"
+#include "qnapiconfigold.h"
 #include "qnapiopendialog.h"
 
 #include "frmsummary.h"

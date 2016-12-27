@@ -20,19 +20,19 @@ ConfigWriter::ConfigWriter(const QString & qnapiVersion)
 {
 }
 
-void ConfigWriter::writeUserConfig(const QNapiConfig2 & config) const
+void ConfigWriter::writeUserConfig(const QNapiConfig & config) const
 {
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "qnapi");
     writeConfig(config, settings);
 }
 
-void ConfigWriter::writePortableConfig(const QString & configFilePath, const QNapiConfig2 & config) const
+void ConfigWriter::writePortableConfig(const QString & configFilePath, const QNapiConfig & config) const
 {
     QSettings settings(configFilePath, QSettings::IniFormat);
     writeConfig(config, settings);
 }
 
-void ConfigWriter::writeConfig(const QNapiConfig2 & config, QSettings & settings) const
+void ConfigWriter::writeConfig(const QNapiConfig & config, QSettings & settings) const
 {
     settings.setValue("qnapi/firstrun", false);
     settings.setValue("qnapi/version", qnapiVersion);

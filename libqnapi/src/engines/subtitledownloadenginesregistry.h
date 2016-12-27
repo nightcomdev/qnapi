@@ -24,9 +24,9 @@ public:
     SubtitleDownloadEngineMetadata engineMetadata(const QString & engineName) const;
     const char * const * enginePixmapData(const QString & engineName) const;
 
-    QSharedPointer<SubtitleDownloadEngine> createEngine(const QString & engineName, const QNapiConfig2 & config) const;
-    QList<QSharedPointer<SubtitleDownloadEngine>> createEngines(const QStringList & engineNames, const QNapiConfig2 & config) const;
-    QList<QSharedPointer<SubtitleDownloadEngine>> createEnabledEngines(const QNapiConfig2 & config) const;
+    QSharedPointer<SubtitleDownloadEngine> createEngine(const QString & engineName, const QNapiConfig & config) const;
+    QList<QSharedPointer<SubtitleDownloadEngine>> createEngines(const QStringList & engineNames, const QNapiConfig & config) const;
+    QList<QSharedPointer<SubtitleDownloadEngine>> createEnabledEngines(const QNapiConfig & config) const;
 
 private:
     const QString qnapiDisplayableVersion;

@@ -22,19 +22,19 @@ ConfigReader::ConfigReader(const QSharedPointer<const StaticConfig> & staticConf
 {}
 
 
-const QNapiConfig2 ConfigReader::readUserConfig() const
+const QNapiConfig ConfigReader::readUserConfig() const
 {
     return readConfig(QSettings(QSettings::IniFormat, QSettings::UserScope, "qnapi"));
 }
 
-const QNapiConfig2 ConfigReader::readPortableConfig(const QString & configFilePath) const
+const QNapiConfig ConfigReader::readPortableConfig(const QString & configFilePath) const
 {
     return readConfig(QSettings(configFilePath, QSettings::IniFormat));
 }
 
-const QNapiConfig2 ConfigReader::readConfig(const QSettings & settings) const
+const QNapiConfig ConfigReader::readConfig(const QSettings & settings) const
 {
-    return QNapiConfig2(settings.value("qnapi/firstrun", true).toBool(),
+    return QNapiConfig(settings.value("qnapi/firstrun", true).toBool(),
                        settings.value("qnapi/version", "").toString(),
                        readGeneralConfig(settings),
                        readEnabledEngines(settings),
@@ -51,8 +51,8 @@ const GeneralConfig ConfigReader::readGeneralConfig(const QSettings & settings) 
                          settings.value("qnapi/language_backup", "en").toString(),
                          settings.value("qnapi/no_backup", false).toBool(),
                          settings.value("qnapi/quiet_batch", false).toBool(),
-                         (SearchPolicy2) settings.value("qnapi/search_policy", SP_BREAK_IF_FOUND_2).toInt(),
-                         (DownloadPolicy2) settings.value("qnapi/download_policy", DP_SHOW_LIST_IF_NEEDED_2).toInt(),
+                         (SearchPolicy) settings.value("qnapi/search_policy", SP_BREAK_IF_FOUND).toInt(),
+                         (DownloadPolicy) settings.value("qnapi/download_policy", DP_SHOW_LIST_IF_NEEDED).toInt(),
                          settings.value("qnapi/change_permissions", false).toBool(),
                          settings.value("qnapi/permissions", "644").toString());
 }

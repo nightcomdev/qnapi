@@ -32,10 +32,10 @@ frmScan::frmScan(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
     connect(ui.pbInvertSelection, SIGNAL(clicked()), this, SLOT(pbInvertSelectionClicked()));
     connect(ui.lwMovies, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(lwMoviesClicked(QListWidgetItem*)));
 
-    if(QFileInfo(GlobalConfig().lastScanDir()).isDir())
-        ui.leDirectory->setText(GlobalConfig().lastScanDir());
+    if(QFileInfo(OldGlobalConfig().lastScanDir()).isDir())
+        ui.leDirectory->setText(OldGlobalConfig().lastScanDir());
 
-    QList<QString> scanFilters = GlobalConfig().scanFilters();
+    QList<QString> scanFilters = OldGlobalConfig().scanFilters();
     ui.cbFilters->clear();
 
     for(int i = 0; i < scanFilters.size(); i++)
@@ -43,8 +43,8 @@ frmScan::frmScan(QWidget *parent, Qt::WindowFlags f) : QDialog(parent, f)
         ui.cbFilters->addItem(scanFilters[i]);
     }
 
-    ui.leSkipFilters->setText(GlobalConfig().scanSkipFilters());
-    ui.cbSkipIfSubtitlesExists->setChecked(GlobalConfig().scanSkipIfSubtitlesExists());
+    ui.leSkipFilters->setText(OldGlobalConfig().scanSkipFilters());
+    ui.cbSkipIfSubtitlesExists->setChecked(OldGlobalConfig().scanSkipIfSubtitlesExists());
 
     iconFilm = QIcon(":/ui/film.png");
 
@@ -61,11 +61,11 @@ frmScan::~frmScan()
         scanFilters << ui.cbFilters->itemText(i);
     }
 
-    GlobalConfig().setLastScanDir(ui.leDirectory->text());
-    GlobalConfig().setScanFilters(scanFilters);
-    GlobalConfig().setScanSkipFilters(ui.leSkipFilters->text());
-    GlobalConfig().setScanSkipIfSubtitlesExists(ui.cbSkipIfSubtitlesExists->isChecked());
-    GlobalConfig().save();
+    OldGlobalConfig().setLastScanDir(ui.leDirectory->text());
+    OldGlobalConfig().setScanFilters(scanFilters);
+    OldGlobalConfig().setScanSkipFilters(ui.leSkipFilters->text());
+    OldGlobalConfig().setScanSkipIfSubtitlesExists(ui.cbSkipIfSubtitlesExists->isChecked());
+    OldGlobalConfig().save();
 }
 
 void frmScan::setInitDir(const QString & dir)
@@ -96,7 +96,7 @@ void frmScan::keyPressEvent(QKeyEvent * event)
 void frmScan::selectDirectory()
 {
     QString dir = QFileInfo(ui.leDirectory->text()).path();
-    dir = QDir().exists(dir) ? dir : GlobalConfig().lastScanDir();
+    dir = QDir().exists(dir) ? dir : OldGlobalConfig().lastScanDir();
 
     QNapiOpenDialog openDialog(this, tr("Wskaż katalog do skanowania"),
                                 dir, QNapiOpenDialog::None);

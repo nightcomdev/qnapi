@@ -15,9 +15,10 @@
 #ifndef LIBQNAPI_H
 #define LIBQNAPI_H
 
-#include "config/staticconfig.h"
 #include "config/configreader.h"
 #include "config/configwriter.h"
+#include "config/staticconfig.h"
+#include "config/qnapiconfig.h"
 
 #include "engines/subtitledownloadenginesregistry.h"
 
@@ -27,6 +28,8 @@
 #include "subconvert/subtitleformatsregistry.h"
 
 #include "utils/p7zipdecoder.h"
+
+#include "subtitlematcher.h"
 
 #include <QString>
 #include <QSharedPointer>
@@ -47,8 +50,8 @@ public:
     static QSharedPointer<const ConfigReader> configReader();
     static QSharedPointer<const ConfigWriter> configWriter();
 
-    static const QNapiConfig2 loadConfig();
-    static void writeConfig(const QNapiConfig2 & config);
+    static const QNapiConfig loadConfig();
+    static void writeConfig(const QNapiConfig & config);
 
     static QSharedPointer<const SubtitleDownloadEnginesRegistry> subtitleDownloadEngineRegistry();
 
@@ -61,6 +64,8 @@ public:
 
     static bool isPortableMode();
     static QString portableConfigPath();
+
+    static QSharedPointer<const SubtitleMatcher> subtitleMatcher(const QNapiConfig & config);
 };
 
 #endif // LIBQNAPI_H
