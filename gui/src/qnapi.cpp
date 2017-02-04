@@ -14,22 +14,23 @@
 
 #include "libqnapi.h"
 #include "qnapi.h"
-#include "qnapiconfigold.h"
 #include "subtitlematcher.h"
 #include "subtitlepostprocessor.h"
 
 #include "config/configreader.h"
 
-#include "engines/napiprojektdownloadengine.h"
-#include "engines/napisy24downloadengine.h"
-#include "engines/opensubtitlesdownloadengine.h"
 #include <QtAlgorithms>
 
-QNapi::QNapi()
+QNapi::QNapi(const QNapiConfig & config,
+             const Maybe<QString> & specificEngine)
     : enginesRegistry(LibQNapi::subtitleDownloadEngineRegistry()),
-      config(LibQNapi::loadConfig())
+      config(config)
 {
-    enginesList << enginesRegistry->createEnabledEngines(config);
+    if(specificEngine) {
+        enginesList << enginesRegistry->createEngine(specificEngine.value(), config);
+    } else {
+        enginesList << enginesRegistry->createEnabledEngines(config);
+    }
 }
 
 
@@ -40,18 +41,18 @@ QNapi::~QNapi()
 
 bool QNapi::checkP7ZipPath()
 {
-    return QFileInfo(OldGlobalConfig().p7zipPath()).isExecutable();
+    return QFileInfo(config.generalConfig().p7zipPath()).isExecutable();
 }
 
 bool QNapi::checkTmpPath()
 {
-    QFileInfo f(OldGlobalConfig().tmpPath());
+    QFileInfo f(config.generalConfig().tmpPath());
     return f.isDir() && f.isWritable();
 }
 
 bool QNapi::ppEnabled()
 {
-    return OldGlobalConfig().ppEnabled();
+    return config.postProcessingConfig().enabled();
 }
 
 void QNapi::setMoviePath(QString path)
@@ -91,7 +92,6 @@ bool QNapi::lookForSubtitles(QString lang, QString engine)
 {
     bool result = false;
 
-
     if(engine.isEmpty())
     {
         foreach(QSharedPointer<SubtitleDownloadEngine> e, enginesList)
@@ -124,12 +124,12 @@ QList<SubtitleInfo> QNapi::listSubtitles()
 
     foreach(QSharedPointer<SubtitleDownloadEngine> e, enginesList)
     {
-        QList<SubtitleInfo> list =  e->listSubtitles();
+        QList<SubtitleInfo> list = e->listSubtitles();
         subtitlesList << list;
     }
 
-    QString mainLang = OldGlobalConfig().language();
-    QString backupLang = OldGlobalConfig().languageBackup();
+    QString mainLang = config.generalConfig().language();
+    QString backupLang = config.generalConfig().backupLanguage();
 
     auto langRank = [&](QString lang) {
         if(lang == mainLang) return 0;
@@ -162,9 +162,9 @@ bool QNapi::needToShowList()
         ++i;
     }
 
-    if(OldGlobalConfig().downloadPolicy() == OLD_DP_ALWAYS_SHOW_LIST)  
+    if(config.generalConfig().downloadPolicy() == DP_ALWAYS_SHOW_LIST)
         return true;
-    if(OldGlobalConfig().downloadPolicy() == OLD_DP_NEVER_SHOW_LIST)   
+    if(config.generalConfig().downloadPolicy() == DP_NEVER_SHOW_LIST)
         return false;
 
     if(listSubtitles().size() <= 1)
@@ -241,7 +241,7 @@ QSharedPointer<SubtitleDownloadEngine> QNapi::engineByName(QString name) const
 {
     foreach(QSharedPointer<SubtitleDownloadEngine> e, enginesList)
     {
-        if(name == (e->meta().name()))
+        if(name == e->meta().name())
         {
             return e;
         }

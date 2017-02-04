@@ -26,7 +26,6 @@
 #include "qnapicli.h"
 #include <signal.h>
 
-bool shouldUseGui(const GeneralConfig & genConfig, bool isCliCall, QStringList parsedFilePaths);
 QStringList parseArgs(int argc, char **argv);
 void regSignal();
 void sigHandler(int);

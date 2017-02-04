@@ -78,7 +78,7 @@ frmProgress * QNapiApp::progress()
 {
     if(!f_progress)
     {
-        f_progress = new frmProgress();
+        f_progress = new frmProgress(LibQNapi::loadConfig());
         if(!f_progress) abort();
         connect(this, SIGNAL(request(QString)),
                 f_progress, SLOT(receiveRequest(QString)));
@@ -216,9 +216,11 @@ bool QNapiApp::showOpenDialog(QString engine)
     {
         if(!engine.isEmpty())
         {
-            QStringList e;
-            e << engine;
-            progress()->setEngines(e);
+            progress()->setSpecificEngine(engine);
+        }
+        else
+        {
+            progress()->clearSpecificEngine();
         }
 
         progress()->enqueueFiles(fileList);

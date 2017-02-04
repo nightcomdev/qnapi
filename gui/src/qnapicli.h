@@ -31,7 +31,7 @@ public:
     QNapiCli(int argc, char **argv, const QNapiConfig & config);
 
     static bool isCliCall(int argc, char **argv);
-    virtual int exec();
+    int exec();
 
 private:
 

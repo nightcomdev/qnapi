@@ -19,6 +19,7 @@
 QNapiCli::QNapiCli(int argc, char **argv, const QNapiConfig & config) :
     QCoreApplication(argc, argv),
     config(config),
+    napi(config),
     mode(CM_UNSET),
     showPolicy(SLP_USE_CONFIG),
     langBackupPassed(false)
@@ -190,13 +191,13 @@ int QNapiCli::exec()
         return EC_OK;
     }
 
-    if(!QNapi::checkP7ZipPath())
+    if(!napi.checkP7ZipPath())
     {
         printCli("Sciezka do programu p7zip jest nieprawidlowa! Sprawdz swoje ustawienia.");
         return EC_P7ZIP_UNAVAILABLE;
     }
 
-    if(!QNapi::checkTmpPath())
+    if(!napi.checkTmpPath())
     {
         printCli("Nie można pisac do katalogu tymczasowego! Sprawdz swoje ustawienia.");
         return EC_CANNOT_WRITE_TMP_DIR;

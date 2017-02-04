@@ -15,7 +15,7 @@
 #ifndef __QNAPI__H__
 #define __QNAPI__H__
 
-#include "config/configreader.h"
+#include "config/qnapiconfig.h"
 #include "engines/subtitledownloadengine.h"
 #include "engines/subtitledownloadenginesregistry.h"
 #include "subtitleinfo.h"
@@ -24,19 +24,20 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QStringList>
+#include <Maybe.h>
 
 
-// globalny menedzer pobierania napisow
 class QNapi
 {
     public:
 
-        QNapi();
+        QNapi(const QNapiConfig & config,
+              const Maybe<QString> & specificEngine = nothing());
         ~QNapi();
 
-        static bool checkP7ZipPath();
-        static bool checkTmpPath();
-        static bool ppEnabled();
+        bool checkP7ZipPath();
+        bool checkTmpPath();
+        bool ppEnabled();
 
         void setMoviePath(QString path);
         QString moviePath();

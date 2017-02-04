@@ -21,19 +21,23 @@
 
 #include "frmsummary.h"
 
+#include "config/qnapiconfig.h"
+
 #include "qnapi.h"
 #include "qnapithread.h"
 #include "qnapiconfigold.h"
 #include "qnapiopendialog.h"
 #include "frmlistsubtitles.h"
 #include "subtitleinfo.h"
+#include <Maybe.h>
 
 class GetThread : public QNapiThread
 {
 Q_OBJECT
 
     public:
-        GetThread() : langBackupPassed(false)
+        GetThread(const QNapiConfig & config)
+            : config(config), langBackupPassed(false)
         {
             connect(this, SIGNAL(criticalError(const QString &)),
                     this, SLOT(setCriticalMessage(const QString &)));            
@@ -55,13 +59,16 @@ Q_OBJECT
 
     public:
 
-        void setEngines(QStringList enginesList) { engines = enginesList; }
+        void setSpecificEngine(Maybe<QString> engine) { specificEngine = engine; }
+
         void setLanguages(QString language, QString languageBackup, bool languageBackupPassed){
             lang = language; langBackup = languageBackup; langBackupPassed = languageBackupPassed;
         }
         void run();
 
-        QStringList queue, engines;
+        const QNapiConfig config;
+        QStringList queue;
+        Maybe<QString> specificEngine;
         QList<SubtitleInfo> subStatusList;
         QString lang, langBackup;
         bool langBackupPassed;
@@ -76,12 +83,11 @@ class frmProgress: public QWidget
     Q_OBJECT
 
     public:
-        frmProgress(QWidget *parent = 0, Qt::WindowFlags f = 0);
+        frmProgress(const QNapiConfig & config, QWidget *parent = 0, Qt::WindowFlags f = 0);
 
-        void setEngines(QStringList enginesList)
-        {
-            getThread.setEngines(enginesList);
-        }
+        void clearSpecificEngine() { getThread.setSpecificEngine(nothing()); }
+        void setSpecificEngine(QString engine) { getThread.setSpecificEngine(just(engine)); }
+
         void setBatchMode(bool value) { batchMode = value; }
         void setBatchLanguages(QString lang, QString langBackup, bool langBackupPassed) {
             getThread.setLanguages(lang, langBackup, langBackupPassed);
@@ -106,7 +112,7 @@ class frmProgress: public QWidget
         void dropEvent(QDropEvent *event);
 
         Ui::frmProgress ui;
-
+        const QNapiConfig config;
         GetThread getThread;    
         frmListSubtitles frmSelect;
         frmSummary summary;
