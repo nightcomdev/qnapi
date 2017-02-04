@@ -18,9 +18,9 @@
 #include "ui_frmscan.h"
 
 #include "config/staticconfig.h"
+#include "config/scanconfig.h"
 
 #include "qnapithread.h"
-#include "qnapiconfigold.h"
 #include "qnapiopendialog.h"
 
 #include "frmsummary.h"
@@ -85,6 +85,7 @@ Q_OBJECT
         void keyPressEvent(QKeyEvent * event);
 
         Ui::frmScan ui;
+        const ScanConfig scanConfig;
         ScanFilesThread scanThread;
 
         QIcon iconFilm;

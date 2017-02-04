@@ -16,7 +16,6 @@
 #define __FRMSUMMARY__H__
 
 #include "engines/subtitledownloadenginesregistry.h"
-#include "qnapiconfigold.h"
 
 #include "ui_frmsummary.h"
 #include "subtitleinfo.h"
