@@ -19,32 +19,37 @@
 #include <QTextCodec>
 #include <QTranslator>
 #include <QLibraryInfo>
+#include <QFileInfo>
 #include <QLocale>
 #include "libqnapi.h"
-#include "qnapiconfigold.h"
 #include "qnapiapp.h"
 #include "qnapicli.h"
 #include <signal.h>
 
+bool shouldUseGui(const GeneralConfig & genConfig, bool isCliCall, QStringList parsedFilePaths);
 QStringList parseArgs(int argc, char **argv);
 void regSignal();
 void sigHandler(int);
+
 
 int main(int argc, char **argv)
 {
     LibQNapi::init(argv[0]);
 
+    const QNapiConfig config = LibQNapi::loadConfig();
+
     bool isCliCall = QNapiCli::isCliCall(argc, argv);
 
-    QStringList pathList = parseArgs(argc, argv);
+    QStringList parsedFilePaths = parseArgs(argc, argv);
 
     regSignal();
 
-    QFileInfo appExe(argv[0]);
-    OldGlobalConfig().load(appExe.absoluteDir().path());
+    bool quietBatch = config.generalConfig().quietBatch();
+#ifdef Q_OS_MAC
+    quietBatch = false;
+#endif
 
-    bool quietBatch = OldGlobalConfig().quietBatch();
-    bool useGui = !isCliCall && !(quietBatch && !pathList.isEmpty());
+    bool useGui = !isCliCall && !(quietBatch && !parsedFilePaths.isEmpty());
 
     if(useGui)
     {
@@ -65,15 +70,15 @@ int main(int argc, char **argv)
 
         if(!app.isInstanceAllowed())
         {
-            for(int i = 0; i < pathList.size(); i++) {
-                QString & fileName = pathList[i];
+            for(int i = 0; i < parsedFilePaths.size(); i++) {
+                QString & fileName = parsedFilePaths[i];
                 QFileInfo fi(fileName);
                 app.sendRequest(fi.absoluteFilePath());
             }
             return 0;
         }
         
-        if(OldGlobalConfig().firstRun())
+        if(config.firstrun())
         {
             if(QMessageBox::question(0, QObject::tr("Pierwsze uruchomienie"),
                     QObject::tr("To jest pierwsze uruchomienie programu QNapi. Czy chcesz go "
@@ -85,7 +90,7 @@ int main(int argc, char **argv)
         }
 
         // Jesli podano parametry, ustawiamy tzw. batch mode
-        if(pathList.size() > 0)
+        if(parsedFilePaths.size() > 0)
         {
             app.progress()->setBatchMode(true);
 
@@ -132,14 +137,14 @@ int main(int argc, char **argv)
 
             app.progress()->setBatchLanguages(batchLang, batchLangBackup, batchLangBackupPassed);
 
-            if(QFileInfo(pathList.at(0)).isDir())
+            if(QFileInfo(parsedFilePaths.at(0)).isDir())
             {
-                if(!app.showScanDialog(pathList.at(0)))
+                if(!app.showScanDialog(parsedFilePaths.at(0)))
                     return 1;
             }
             else
             {
-                app.progress()->enqueueFiles(pathList);
+                app.progress()->enqueueFiles(parsedFilePaths);
                 if(!app.progress()->download()) return 1;
             }
         }
@@ -175,7 +180,7 @@ int main(int argc, char **argv)
 
 QStringList parseArgs(int argc, char **argv)
 {
-    QStringList pathList;
+    QStringList parsedFilePaths;
 
     for(int i = 1; i < argc; i++)
     {
@@ -187,16 +192,16 @@ QStringList parseArgs(int argc, char **argv)
         if(p.startsWith("file://"))
             p = p.remove(0, 7);
 
-        if((pathList.size() == 0) && QFileInfo(p).isDir())
+        if((parsedFilePaths.size() == 0) && QFileInfo(p).isDir())
         {
-            pathList << p;
+            parsedFilePaths << p;
             break;
         }
 
         if(QFileInfo(p).isFile())
-            pathList << p;
+            parsedFilePaths << p;
     }
-    return pathList;
+    return parsedFilePaths;
 }
 
 void regSignal()
@@ -220,20 +225,22 @@ void sigHandler(int sig)
 
     qDebug() << "\nQNapi: usuwanie plików tymczasowych...";
 
-    QString tmpPath = OldGlobalConfig().tmpPath();
+    const QNapiConfig config = LibQNapi::loadConfig();
+    QString tmpPath = config.generalConfig().tmpPath();
+    QDir tmpDir(tmpPath);
 
     QStringList filters;
     filters << "QNapi-*-rc";
     filters << "QNapi.*.tmp";
 
-    QDir dir(tmpPath);
+    QFileInfoList files = tmpDir.entryInfoList(filters);
 
-    QStringList files = dir.entryList(filters);
-
-    foreach(QString file, files)
+    foreach(QFileInfo file, files)
     {
-        QFile::remove(tmpPath + QDir::separator() + file);
+        QFile::remove(file.filePath());
     }
+
+    qDebug() << "\nQNapi: zakończono.";
 
     exit(666);
 }
