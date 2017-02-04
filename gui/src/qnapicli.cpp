@@ -14,7 +14,15 @@
 
 #include "qnapicli.h"
 #include "libqnapi.h"
-#include "qnapiconfigold.h"
+#include "subtitlelanguage.h"
+
+QNapiCli::QNapiCli(int argc, char **argv, const QNapiConfig & config) :
+    QCoreApplication(argc, argv),
+    config(config),
+    mode(CM_UNSET),
+    showPolicy(SLP_USE_CONFIG),
+    langBackupPassed(false)
+{}
 
 bool QNapiCli::isCliCall(int argc, char **argv)
 {
@@ -43,7 +51,7 @@ bool QNapiCli::isCliCall(int argc, char **argv)
         {
             return true;
         }
-        
+
         if( (p == "--help") || (p == "-h") ||
             (p == "--help-languages") || (p == "-hl"))
         {
@@ -140,8 +148,7 @@ bool QNapiCli::analyze()
         }
     }
 
-    bool quietBatch = OldGlobalConfig().quietBatch();
-    if(quietBatch && !movieList.isEmpty())
+    if(config.generalConfig().quietBatch() && !movieList.isEmpty())
     {
         mode = CM_QUIET;
         return true;
@@ -195,18 +202,11 @@ int QNapiCli::exec()
         return EC_CANNOT_WRITE_TMP_DIR;
     }
 
-    
-    if(!napi.addEngines(OldGlobalConfig().enginesList()))
-    {
-        printCli(QString("Blad: ") + napi.error());
-        return EC_UNSUPPORTED_ENGINE;
-    }
-
     if(lang.isEmpty())
-        lang = OldGlobalConfig().language();
+        lang = config.generalConfig().language();
 
     if(!langBackupPassed)
-        langBackup = OldGlobalConfig().languageBackup();
+        langBackup = config.generalConfig().backupLanguage();
 
     foreach(QString movie, movieList)
     {
@@ -226,9 +226,9 @@ int QNapiCli::exec()
         napi.checksum();
 
         bool found = false;
-        OldSearchPolicy sp = OldGlobalConfig().searchPolicy();
+        SearchPolicy sp = config.generalConfig().searchPolicy();
 
-        if(sp == OLD_SP_SEARCH_ALL_WITH_BACKUP_LANG)
+        if(sp == SP_SEARCH_ALL_WITH_BACKUP_LANG)
         {
             foreach(QString e, napi.listLoadedEngines())
             {
@@ -245,7 +245,7 @@ int QNapiCli::exec()
                 printCli(QString(QString("   Szukanie napisow [%1] (%2)...").arg(lang, e)));
                 found = napi.lookForSubtitles(lang, e) || found;
 
-                if(sp == OLD_SP_BREAK_IF_FOUND && found)
+                if(sp == SP_BREAK_IF_FOUND && found)
                     break;
             }
 
@@ -255,7 +255,7 @@ int QNapiCli::exec()
                     printCli(QString(QString("   Szukanie napisow w jezyku zapasowym [%1] (%2)...").arg(langBackup, e)));
                     found = napi.lookForSubtitles(langBackup, e) || found;
 
-                    if(sp == OLD_SP_BREAK_IF_FOUND && found)
+                    if(sp == SP_BREAK_IF_FOUND && found)
                         break;
                 }
             }
@@ -410,8 +410,8 @@ void QNapiCli::printHelpLanguages()
         printCli(QString(" %1 - %2").arg(L.toTwoLetter()).arg(lang));
     }
 
-    L.setLanguage(OldGlobalConfig().language());
-    LB.setLanguage(OldGlobalConfig().languageBackup());
+    L.setLanguage(config.generalConfig().language());
+    LB.setLanguage(config.generalConfig().backupLanguage());
 
     printCli(QString("\nAktualnie ustawiony domyslny jezyk napisow: %1 (%2)")
                 .arg(L.toFullName()).arg(L.toTwoLetter()));

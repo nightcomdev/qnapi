@@ -15,31 +15,28 @@
 #ifndef __QNAPICLI__H__
 #define __QNAPICLI__H__
 
+#include "config/qnapiconfig.h"
+
 #include <QCoreApplication>
 #include <QString>
 #include <QStringList>
 #include <QFileInfo>
 #include <iostream>
 #include "qnapi.h"
-#include "subtitlelanguage.h"
 
 class QNapiCli : public QCoreApplication
 {
 public:
 
-    QNapiCli(int argc, char **argv) :
-        QCoreApplication(argc, argv),
-        mode(CM_UNSET),
-        showPolicy(SLP_USE_CONFIG),
-        langBackupPassed(false)
-    {}
+    QNapiCli(int argc, char **argv, const QNapiConfig & config);
 
     static bool isCliCall(int argc, char **argv);
-    int exec();
+    virtual int exec();
 
 private:
 
     QStringList movieList;
+    const QNapiConfig config;
     QNapi napi;
 
     enum CliExitCode {
@@ -77,7 +74,6 @@ private:
     void printHelp();
     void printHelpLanguages();
     void printCli(const QString & string);
-
 };
 
 #endif

@@ -38,8 +38,6 @@ class QNapi
         static bool checkTmpPath();
         static bool ppEnabled();
 
-        bool addEngines(QStringList engines);
-
         void setMoviePath(QString path);
         QString moviePath();
         bool checkWritePermissions();

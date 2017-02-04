@@ -269,17 +269,6 @@ void GetThread::run()
 
     QNapi *napi = new QNapi();
 
-    if(!engines.isEmpty())
-    {
-        napi->addEngines(engines);
-    }
-    else if(!napi->addEngines(OldGlobalConfig().enginesList()))
-    {
-        emit criticalError(tr("Błąd: ") + napi->error());
-        delete napi;
-        return;
-    }
-
     emit progressChange(0, queue.size(), 0.0f);
 
     QString language = !lang.isEmpty() ? lang : OldGlobalConfig().language();

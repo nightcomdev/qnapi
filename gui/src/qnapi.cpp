@@ -28,7 +28,9 @@
 QNapi::QNapi()
     : enginesRegistry(LibQNapi::subtitleDownloadEngineRegistry()),
       config(LibQNapi::loadConfig())
-{}
+{
+    enginesList << enginesRegistry->createEnabledEngines(config);
+}
 
 
 QNapi::~QNapi()
@@ -50,12 +52,6 @@ bool QNapi::checkTmpPath()
 bool QNapi::ppEnabled()
 {
     return OldGlobalConfig().ppEnabled();
-}
-
-bool QNapi::addEngines(QStringList engines)
-{
-    enginesList << enginesRegistry->createEngines(engines, config);
-    return true;
 }
 
 void QNapi::setMoviePath(QString path)

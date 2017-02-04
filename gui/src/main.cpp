@@ -173,7 +173,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        QNapiCli app(argc, argv);
+        QNapiCli app(argc, argv, config);
         return app.exec();
     }
 }
