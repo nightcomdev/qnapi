@@ -15,7 +15,6 @@
 #include "movieinfo/movieinfoprovider.h"
 #include "utils/encodingutils.h"
 #include "libqnapi.h"
-#include "qnapiconfigold.h"
 #include "subtitleconverter.h"
 #include <cmath>
 #include <QTextStream>
@@ -23,9 +22,11 @@
 
 
 SubtitleConverter::SubtitleConverter(QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry,
-                                     QSharedPointer<const MovieInfoProvider> movieInfoProvider)
+                                     QSharedPointer<const MovieInfoProvider> movieInfoProvider,
+                                     bool skipConvertAds)
     : subtitleFormatsRegistry(subtitleFormatsRegistry),
-      movieInfoProvider(movieInfoProvider)
+      movieInfoProvider(movieInfoProvider),
+      skipConvertAds(skipConvertAds)
 {}
 
 QString SubtitleConverter::detectFormat(const QString &subtitleFile) const
@@ -150,7 +151,7 @@ bool SubtitleConverter::convertSubtitles(QString subtitleFile,
         }
     }
 
-    if(!OldGlobalConfig().ppSkipConvertAds() && !sf.entries.isEmpty())
+    if(!skipConvertAds && !sf.entries.isEmpty())
     {
         SubToken stQNapi;
         stQNapi.type = STT_WORD;
@@ -186,12 +187,12 @@ bool SubtitleConverter::convertSubtitles(QString subtitleFile,
 
 long SubtitleConverter::ts2frame(long ts, double frameRate) const
 {
-    return (long)floor(frameRate * ts / 1000.0);
+    return static_cast<long>(floor(frameRate * ts / 1000.0));
 }
 
 long SubtitleConverter::frame2ts(long frame, double frameRate) const
 {
-    return (long)floor(1000.0 * frame / frameRate);
+    return static_cast<long>(floor(1000.0 * frame / frameRate));
 }
 
 QStringList SubtitleConverter::readFile(const QString & filename, QString encoding, long atMostLines) const

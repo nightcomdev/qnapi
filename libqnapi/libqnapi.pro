@@ -50,8 +50,7 @@ SOURCES += src/libqnapi.cpp \
     src/subtitlematcher.cpp \
     src/subtitlepostprocessor.cpp \
     src/subtitlelanguage.cpp \
-    src/subtitleinfo.cpp \
-    src/qnapisubtitledownloader.cpp
+    src/subtitleinfo.cpp
 
 
 HEADERS += src/libqnapi.h \
@@ -89,8 +88,7 @@ HEADERS += src/libqnapi.h \
     src/subtitlematcher.h \
     src/subtitlepostprocessor.h \
     src/subtitlelanguage.h \
-    src/subtitleinfo.h \
-    src/qnapisubtitledownloader.h
+    src/subtitleinfo.h
 
 unix:!macx {
     PKGCONFIG += libmediainfo

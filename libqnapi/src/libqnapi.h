@@ -43,6 +43,8 @@ public:
 
     static QString appExecutablePath;
 
+    static void init(const QString & appExecutablePath);
+
     static QString version();
     static QString displayableVersion();
     static QString webpageUrl();
@@ -61,7 +63,7 @@ public:
     static QSharedPointer<const MovieInfoProvider> movieInfoProvider();
 
     static QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry();
-    static QSharedPointer<const SubtitleConverter> subtitleConverter();
+    static QSharedPointer<const SubtitleConverter> subtitleConverter(const PostProcessingConfig & ppConfig);
 
     static QSharedPointer<const P7ZipDecoder> p7zipDecoder(const QString & p7zipPath);
 

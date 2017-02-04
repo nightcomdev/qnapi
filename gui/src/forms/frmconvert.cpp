@@ -29,7 +29,11 @@ frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
     : QDialog(parent, f),
       staticConfig(LibQNapi::staticConfig()),
       subtitleFormatsRegistry(LibQNapi::subtitleFormatsRegistry()),
-      subConverter(subtitleFormatsRegistry, LibQNapi::movieInfoProvider()),
+      subConverter(
+          subtitleFormatsRegistry,
+          LibQNapi::movieInfoProvider(),
+          LibQNapi::loadConfig().postProcessingConfig().skipConvertAds()
+      ),
       targetFileNameSelected(false)
 {
     ui.setupUi(this);

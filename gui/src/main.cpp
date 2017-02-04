@@ -32,7 +32,7 @@ void sigHandler(int);
 
 int main(int argc, char **argv)
 {
-    LibQNapi::appExecutablePath = argv[0];
+    LibQNapi::init(argv[0]);
 
     bool isCliCall = QNapiCli::isCliCall(argc, argv);
 

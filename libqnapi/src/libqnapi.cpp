@@ -19,7 +19,12 @@
 #include <QFileInfo>
 #include <QDir>
 
-QString LibQNapi::appExecutablePath = ".";
+QString LibQNapi::appExecutablePath = "";
+
+void LibQNapi::init(const QString & appExecutablePath)
+{
+    LibQNapi::appExecutablePath = appExecutablePath;
+}
 
 QString LibQNapi::version()
 {
@@ -103,10 +108,14 @@ LibQNapi::movieInfoProvider()
 }
 
 QSharedPointer<const SubtitleConverter>
-LibQNapi::subtitleConverter()
+LibQNapi::subtitleConverter(const PostProcessingConfig & ppConfig)
 {
     return QSharedPointer<const SubtitleConverter>(
-        new SubtitleConverter(LibQNapi::subtitleFormatsRegistry(), LibQNapi::movieInfoProvider())
+        new SubtitleConverter(
+            LibQNapi::subtitleFormatsRegistry(),
+            LibQNapi::movieInfoProvider(),
+            ppConfig.skipConvertAds()
+        )
     );
 }
 
@@ -139,6 +148,9 @@ QSharedPointer<const SubtitleMatcher> LibQNapi::subtitleMatcher(const QNapiConfi
 QSharedPointer<const SubtitlePostProcessor> LibQNapi::subtitlePostProcessor(const PostProcessingConfig & config)
 {
     return QSharedPointer<const SubtitlePostProcessor>(
-        new SubtitlePostProcessor(config, LibQNapi::subtitleConverter())
+        new SubtitlePostProcessor(
+            config,
+            LibQNapi::subtitleConverter(config)
+        )
     );
 }

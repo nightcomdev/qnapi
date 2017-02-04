@@ -27,7 +27,8 @@ class SubtitleConverter
 {
 public:
     SubtitleConverter(QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry,
-                      QSharedPointer<const MovieInfoProvider> movieInfoProvider);
+                      QSharedPointer<const MovieInfoProvider> movieInfoProvider,
+                      bool skipConvertAds);
 
     QString detectFormat(const QString &subtitleFile) const;
     QString detectFormat(const QStringList &subtitleLines) const;
@@ -54,6 +55,7 @@ public:
 private:
     QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry;
     QSharedPointer<const MovieInfoProvider> movieInfoProvider;
+    bool skipConvertAds;
 
     long ts2frame(long ts, double frameRate) const;
     long frame2ts(long frame, double frameRate) const;
