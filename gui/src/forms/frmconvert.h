@@ -19,6 +19,7 @@
 #include "subconvert/subtitleconverter.h"
 #include "subconvert/subtitleformatsregistry.h"
 #include "config/staticconfig.h"
+#include "config/postprocessingconfig.h"
 #include <Maybe.h>
 #include <QDialog>
 #include <QSharedPointer>
@@ -32,6 +33,7 @@ public:
 private:
     Ui::frmConvert ui;
     QSharedPointer<const StaticConfig> staticConfig;
+    const PostProcessingConfig ppConfig;
     QSharedPointer<const SubtitleFormatsRegistry> subtitleFormatsRegistry;
     SubtitleConverter subConverter;
     bool targetFileNameSelected;

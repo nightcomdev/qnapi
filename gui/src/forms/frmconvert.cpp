@@ -15,7 +15,6 @@
 #include "frmconvert.h"
 #include "movieinfo/movieinfoprovider.h"
 #include "libqnapi.h"
-#include "qnapiconfigold.h"
 #include "qnapiopendialog.h"
 
 #include <QDesktopWidget>
@@ -28,11 +27,12 @@
 frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
     : QDialog(parent, f),
       staticConfig(LibQNapi::staticConfig()),
+      ppConfig(LibQNapi::loadConfig().postProcessingConfig()),
       subtitleFormatsRegistry(LibQNapi::subtitleFormatsRegistry()),
       subConverter(
           subtitleFormatsRegistry,
           LibQNapi::movieInfoProvider(),
-          LibQNapi::loadConfig().postProcessingConfig().skipConvertAds()
+          ppConfig.skipConvertAds()
       ),
       targetFileNameSelected(false)
 {
@@ -61,19 +61,19 @@ frmConvert::frmConvert(QWidget *parent, Qt::WindowFlags f)
     connect(ui.cbDelaySubtitles, SIGNAL(toggled(bool)), this, SLOT(subDelayToggled()));
     connect(ui.pbConvert, SIGNAL(clicked()), this, SLOT(convertClicked()));
 
-    if(OldGlobalConfig().ppSubFormat().isEmpty())
+    if(ppConfig.subFormat().isEmpty())
     {
         targetFormat = subtitleFormatsRegistry->listFormatNames().first();
     }
     else
     {
-        targetFormat = OldGlobalConfig().ppSubFormat();
+        targetFormat = ppConfig.subFormat();
         ui.cbTargetFormat->setCurrentText(targetFormat);
     }
 
-    if(!OldGlobalConfig().ppSubExtension().isEmpty())
+    if(!ppConfig.subExtension().isEmpty())
     {
-        ui.cbTargetExtension->setCurrentText(OldGlobalConfig().ppSubExtension());
+        ui.cbTargetExtension->setCurrentText(ppConfig.subExtension());
     }
 }
 
